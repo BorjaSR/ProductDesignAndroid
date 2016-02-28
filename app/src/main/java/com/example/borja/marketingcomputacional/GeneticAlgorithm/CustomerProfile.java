@@ -1,4 +1,4 @@
-package com.example.borja.marketingcomputacional;
+package com.example.borja.marketingcomputacional.GeneticAlgorithm;
 
 import java.util.ArrayList;
 

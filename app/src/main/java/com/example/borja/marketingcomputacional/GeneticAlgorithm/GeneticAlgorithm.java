@@ -1,17 +1,15 @@
-package com.example.borja.marketingcomputacional;
+package com.example.borja.marketingcomputacional.GeneticAlgorithm;
+
+import android.content.Context;
+import android.content.Intent;
+
+import com.example.borja.marketingcomputacional.StoredData;
+import com.example.borja.marketingcomputacional.area_menu.DashboardAttributes;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import org.apache.poi.ss.usermodel.Cell;
 
@@ -70,7 +68,7 @@ public class GeneticAlgorithm {
      * " AUXILIARY EXCEL METHODS " * @throws Exception
      ***************************************/
 
-    public void start() throws Exception {
+    public void start(Context context) throws Exception {
 
 //		// An excel file name. You can create a file name with a full path
 //		// information.
@@ -121,10 +119,18 @@ public class GeneticAlgorithm {
 
 //		generateAttributeValor(sheetData);
         generateAttributeRandom();
+        StoredData.Atributos = TotalAttributes;
+
         generateCustomerProfiles();
-        divideCustomerProfile();
-        generateProducers();
-        showProducers();
+        StoredData.Prefiles = CustomerProfileList;
+
+        Intent dashboard_attributes = new Intent(context, DashboardAttributes.class);
+        dashboard_attributes.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(dashboard_attributes);
+
+//        divideCustomerProfile();
+//        generateProducers();
+//        showProducers();
         //showAttributes();
         //showAvailableAttributes(createAvailableAttributes());
         //showExcelData(sheetData);
@@ -274,15 +280,16 @@ public class GeneticAlgorithm {
     }
 
     private void generateAttributeRandom() {
+        TotalAttributes.clear();
         for (int i = 0; i < 70; i++) {
 
             double rnd = Math.random();
             if (rnd < 0.34)
-                TotalAttributes.add(new Attribute("Attribute " + i, 1, 3));
+                TotalAttributes.add(new Attribute("Atributo " + (i+1), 1, 3));
             else if (rnd < 0.67)
-                TotalAttributes.add(new Attribute("Attribute " + i, 1, 4));
+                TotalAttributes.add(new Attribute("Atributo " + (i+1), 1, 4));
             else
-                TotalAttributes.add(new Attribute("Attribute " + i, 1, 5));
+                TotalAttributes.add(new Attribute("Atributo " + (i+1), 1, 5));
         }
     }
 
@@ -342,6 +349,8 @@ public class GeneticAlgorithm {
      * Generating the producers
      */
     private static void generateProducers() {
+        Producers.clear();
+
         Producers = new ArrayList<>();
         for (int i = 0; i < Number_Producers; i++) {
             Producer new_producer = new Producer();
@@ -356,6 +365,7 @@ public class GeneticAlgorithm {
      * Creating different customer profiles
      */
     private static void generateCustomerProfiles() {
+        CustomerProfileList.clear();
 
         //Generate 4 random Customer Profile
         for (int i = 0; i < 4; i++) {
@@ -422,8 +432,11 @@ public class GeneticAlgorithm {
      * @throws Exception
      */
     private void divideCustomerProfile() throws Exception {
+        CustomerProfileListAux.clear();
+
         int numOfSubProfile;
         CustomerProfileListAux = new LinkedList<>();
+
         for (int i = 0; i < CustomerProfileList.size(); i++) {
             CustomerProfileListAux.add(new CustomerProfile(new ArrayList<Attribute>()));
             numOfSubProfile = CustomerProfileList.get(i).getScoreAttributes().size() / RESP_PER_GROUP;

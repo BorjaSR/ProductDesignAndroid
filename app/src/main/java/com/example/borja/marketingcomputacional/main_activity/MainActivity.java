@@ -14,7 +14,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.borja.marketingcomputacional.GeneticAlgorithm;
+import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm;
 import com.example.borja.marketingcomputacional.R;
 import com.example.borja.marketingcomputacional.StoredData;
 
@@ -27,9 +27,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        StoredData.GeneticAlgorithm = new GeneticAlgorithm();
 
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 
         final ImageView first_circle = (ImageView) findViewById(R.id.first_circle);
@@ -75,7 +74,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(mainPager.getCurrentItem() == 0){
                     try {
-                        StoredData.GeneticAlgorithm.start();
+                        StoredData.GeneticAlgorithm = new GeneticAlgorithm();
+                        StoredData.GeneticAlgorithm.start(getApplicationContext());
                     } catch (Exception e) {
                         e.printStackTrace();
                         Snackbar.make(mainPager, e.getMessage(), Snackbar.LENGTH_SHORT)

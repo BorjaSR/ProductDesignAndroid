@@ -19,6 +19,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".area_menu.DashboardAttributes"
+            android:label="Marketing Comp"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>
