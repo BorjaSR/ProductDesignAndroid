@@ -7,12 +7,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
 
 import com.example.borja.marketingcomputacional.R;
-import com.example.borja.marketingcomputacional.area_menu.ui.ProfileListAdapter;
+import com.example.borja.marketingcomputacional.area_menu.ui.DetailProfileListAdapter;
 import com.example.borja.marketingcomputacional.general.StoredData;
 
 /**
  * Created by Borja on 28/02/2016.
  */
+
 public class DashboardDetailProfiles extends AppCompatActivity {
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -22,8 +23,8 @@ public class DashboardDetailProfiles extends AppCompatActivity {
 
         setContentView(R.layout.menu_data);
 
-        ListView profile_list = (ListView) findViewById(R.id.attribute_list);
-        ProfileListAdapter adapter = new ProfileListAdapter(getApplicationContext(), R.layout.list_detail_profile_item, StoredData.Profiles);
-        profile_list.setAdapter(adapter);
+        ListView detail_profile_list = (ListView) findViewById(R.id.attribute_list);
+        DetailProfileListAdapter adapter = new DetailProfileListAdapter(getApplicationContext(), R.layout.list_detail_profile_item, StoredData.Attributes_profile_selected);
+        detail_profile_list.setAdapter(adapter);
     }
 }

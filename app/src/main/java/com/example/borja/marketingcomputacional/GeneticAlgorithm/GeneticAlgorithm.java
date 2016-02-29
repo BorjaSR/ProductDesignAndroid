@@ -564,6 +564,7 @@ public class GeneticAlgorithm {
         for (int i = 0; i < Number_Attributes - 1; i++) {
             attrVal = chooseAttribute(i, custProfsInd, availableAttribute);
 
+
             product.getAttributeValue().put(TotalAttributes.get(i), attrVal);
 
         }

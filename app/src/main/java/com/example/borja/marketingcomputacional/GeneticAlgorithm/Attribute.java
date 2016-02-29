@@ -36,6 +36,7 @@ public class Attribute {
 	public int getMAX() {
 		return MAX;
 	}
+
 	public void setMAX(int mAX) {
 		MAX = mAX;
 	}

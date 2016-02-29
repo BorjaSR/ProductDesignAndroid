@@ -37,6 +37,12 @@
             android:label="Perfiles"
             android:screenOrientation="portrait">
         </activity>
+
+        <activity
+            android:name=".area_menu.fragments.DashboardDetailProfiles"
+            android:label="Perfiles"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

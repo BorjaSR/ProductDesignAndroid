@@ -12,26 +12,34 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="5dp"
         android:background="@color/white"
-        android:elevation="2dp"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:elevation="2dp">
 
-        <TextView
-            android:id="@+id/attribute_name"
+        <LinearLayout
+            android:id="@+id/profile_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="5dp"
-            android:text="Perfil de usuarios 1"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:background="?android:selectableItemBackground"
+            android:orientation="vertical"
+            android:padding="10dp">
 
-        <TextView
-            android:id="@+id/attribute_number_values"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Pulsa para ver detalles"
-            android:textColor="@color/grey_medium"
-            android:textSize="15sp" />
+            <TextView
+                android:id="@+id/attribute_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:text="Perfil de usuarios 1"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
 
+            <TextView
+                android:id="@+id/attribute_number_values"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pulsa para ver detalles"
+                android:textColor="@color/grey_medium"
+                android:textSize="15sp" />
+
+        </LinearLayout>
     </LinearLayout>
+
 </LinearLayout>

@@ -18,6 +18,7 @@ public class StoredData {
     public static com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm GeneticAlgorithm;
     public static ArrayList<Attribute> Atributos;
     public static ArrayList<CustomerProfile> Profiles;
+    public static ArrayList<Attribute> Attributes_profile_selected;
 
     public static Typeface roboto_light(Context context){
         return Typeface.createFromAsset(context.getAssets(), "Roboto-Light.ttf");
