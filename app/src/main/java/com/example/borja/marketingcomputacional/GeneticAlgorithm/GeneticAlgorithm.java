@@ -3,8 +3,9 @@ package com.example.borja.marketingcomputacional.GeneticAlgorithm;
 import android.content.Context;
 import android.content.Intent;
 
-import com.example.borja.marketingcomputacional.StoredData;
-import com.example.borja.marketingcomputacional.area_menu.DashboardAttributes;
+import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardMenu;
+import com.example.borja.marketingcomputacional.general.StoredData;
+import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardAttributes;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -60,7 +61,7 @@ public class GeneticAlgorithm {
     private LinkedList<Integer> Results;
     private LinkedList<Integer> Initial_Results;
 
-    private static LinkedList<CustomerProfile> CustomerProfileList = new LinkedList<>();
+    private static ArrayList<CustomerProfile> CustomerProfileList = new ArrayList<>();
     private static LinkedList<CustomerProfile> CustomerProfileListAux = new LinkedList<>();
     private static LinkedList<Integer> NumberCustomerProfile = new LinkedList<>();
 
@@ -122,11 +123,11 @@ public class GeneticAlgorithm {
         StoredData.Atributos = TotalAttributes;
 
         generateCustomerProfiles();
-        StoredData.Prefiles = CustomerProfileList;
+        StoredData.Profiles = CustomerProfileList;
 
-        Intent dashboard_attributes = new Intent(context, DashboardAttributes.class);
-        dashboard_attributes.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(dashboard_attributes);
+        Intent dashboard_menu = new Intent(context, DashboardMenu.class);
+        dashboard_menu.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(dashboard_menu);
 
 //        divideCustomerProfile();
 //        generateProducers();

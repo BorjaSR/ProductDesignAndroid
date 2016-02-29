@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm;
 import com.example.borja.marketingcomputacional.R;
-import com.example.borja.marketingcomputacional.StoredData;
+import com.example.borja.marketingcomputacional.general.StoredData;
 
 public class MainActivity extends AppCompatActivity {
 

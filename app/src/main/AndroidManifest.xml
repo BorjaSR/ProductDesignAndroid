@@ -21,8 +21,20 @@
         </activity>
 
         <activity
-            android:name=".area_menu.DashboardAttributes"
-            android:label="Marketing Comp"
+            android:name=".area_menu.fragments.DashboardMenu"
+            android:label="Menu"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".area_menu.fragments.DashboardAttributes"
+            android:label="Atributos"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".area_menu.fragments.DashboardProfiles"
+            android:label="Perfiles"
             android:screenOrientation="portrait">
         </activity>
     </application>

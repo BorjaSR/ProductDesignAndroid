@@ -1,6 +1,5 @@
 package com.example.borja.marketingcomputacional.main_activity;
 
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.borja.marketingcomputacional.R;
+import com.example.borja.marketingcomputacional.general.StoredData;
 
 /**
  * Created by Borja on 20/02/2016.
@@ -31,8 +31,7 @@ public class MainViewPagerFragment extends Fragment {
         title_viewer = (TextView) rootView.findViewById(R.id.title_view_pager);
         image_viewer = (ImageView) rootView.findViewById(R.id.image_view_pager);
 
-        Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "Roboto-Light.ttf");
-        title_viewer.setTypeface(font);
+        title_viewer.setTypeface(StoredData.roboto_light(getActivity()));
 
         return rootView;
     }
