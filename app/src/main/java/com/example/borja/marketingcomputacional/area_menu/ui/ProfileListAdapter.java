@@ -37,7 +37,7 @@ public class ProfileListAdapter extends ArrayAdapter<CustomerProfile> {
 
     @SuppressLint("SetTextI18n")
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         if (convertView == null) {
             // inflate the layout
@@ -57,6 +57,7 @@ public class ProfileListAdapter extends ArrayAdapter<CustomerProfile> {
         profile_content.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                StoredData.profile_selected = "Customer profile " + (position + 1);
                 StoredData.Attributes_profile_selected = profile.getScoreAttributes();
 
                 Intent dashboard_detail_profiles = new Intent(context, DashboardDetailProfiles.class);

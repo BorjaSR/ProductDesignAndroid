@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.w3c.dom.Attr;
 
 public class GeneticAlgorithm {
 
@@ -23,8 +24,9 @@ public class GeneticAlgorithm {
     static final double SPECIAL_ATTRIBUTES = 33; /* 33
                                                  * % of special attributes known
 												 * for some producers
-												 */
-    static final int MUT_PROB_CUSTOMER_PROFILE = 33; /*  * % of mutated
+
+												 						 */
+    static final double MUT_PROB_CUSTOMER_PROFILE = 33; /*  * % of mutated
 														 * attributes in a
 														 * customer profile
 														 */
@@ -372,7 +374,8 @@ public class GeneticAlgorithm {
         for (int i = 0; i < 4; i++) {
             ArrayList<Attribute> attrs = new ArrayList<>();
             for (int j = 0; j < TotalAttributes.size(); j++) {
-                Attribute attr = TotalAttributes.get(j);
+                Attribute attr = new Attribute(TotalAttributes.get(j).getName(), TotalAttributes.get(j).getMIN(), TotalAttributes.get(j).getMAX());
+
                 ArrayList<Integer> scoreValues = new ArrayList<>();
                 for (int k = 0; k < attr.MAX; k++) {
                     int random = (int) (attr.MAX * Math.random());
@@ -394,7 +397,7 @@ public class GeneticAlgorithm {
         for (int i = 0; i < 4; i++) {
             ArrayList<Attribute> attrs = new ArrayList<>();
             for (int j = 0; j < TotalAttributes.size(); j++) {
-                Attribute attr = TotalAttributes.get(j);
+                Attribute attr = new Attribute(TotalAttributes.get(j).getName(), TotalAttributes.get(j).getMIN(), TotalAttributes.get(j).getMAX());
                 ArrayList<Integer> scoreValues = new ArrayList<>();
                 for (int k = 0; k < attr.MAX; k++) {
                     int random = (int) (attr.MAX * Math.random());
@@ -411,7 +414,7 @@ public class GeneticAlgorithm {
         CustomerProfile mutant = new CustomerProfile(null);
         ArrayList<Attribute> attrs = new ArrayList<>();
         for (int i = 0; i < TotalAttributes.size(); i++) {
-            Attribute attr = TotalAttributes.get(i);
+            Attribute attr = new Attribute(TotalAttributes.get(i).getName(), TotalAttributes.get(i).getMIN(), TotalAttributes.get(i).getMAX());
             ArrayList<Integer> scoreValues = new ArrayList<>();
             for (int k = 0; k < attr.MAX; k++) {
                 if (Math.random() < (MUT_PROB_CUSTOMER_PROFILE / 100)) {

@@ -22,6 +22,7 @@ public class DashboardDetailProfiles extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.menu_data);
+        setTitle(StoredData.profile_selected);
 
         ListView detail_profile_list = (ListView) findViewById(R.id.attribute_list);
         DetailProfileListAdapter adapter = new DetailProfileListAdapter(getApplicationContext(), R.layout.list_detail_profile_item, StoredData.Attributes_profile_selected);

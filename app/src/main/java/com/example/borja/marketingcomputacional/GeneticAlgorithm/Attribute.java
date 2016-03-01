@@ -10,11 +10,11 @@ public class Attribute {
 	private ArrayList<Boolean> availableValues;
 	private ArrayList<Integer> scoreValues;
 	
-	public Attribute(String name, int mIN, int mAX) {
+	public Attribute(String name, int Min, int Max) {
 		super();
 		this.name = name;
-		MIN = mIN;
-		MAX = mAX;
+		MIN = Min;
+		MAX = Max;
 	}
 
 	public String getName() {
