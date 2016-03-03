@@ -64,8 +64,8 @@ public class GeneticAlgorithm {
     private LinkedList<Integer> Initial_Results;
 
     private static ArrayList<CustomerProfile> CustomerProfileList = new ArrayList<>();
-    private static LinkedList<CustomerProfile> CustomerProfileListAux = new LinkedList<>();
-    private static LinkedList<Integer> NumberCustomerProfile = new LinkedList<>();
+    private static ArrayList<CustomerProfile> CustomerProfileListAux = new ArrayList<>();
+    private static ArrayList<Integer> NumberCustomerProfile = new ArrayList<>();
 
     /***************************************
      * " AUXILIARY EXCEL METHODS " * @throws Exception
@@ -73,65 +73,20 @@ public class GeneticAlgorithm {
 
     public void start(Context context) throws Exception {
 
-//		// An excel file name. You can create a file name with a full path
-//		// information.
-//		String filename = "EncuestasCIS.xlsx";
-//		// Create an ArrayList to store the data read from excel sheet.
-//		List sheetData = new ArrayList();
-//		FileInputStream fis = null;
-//		try {
-//			// Create a FileInputStream that will be use to read the excel file.
-//			fis = new FileInputStream(filename);
-//
-//			// Create an excel workbook from the file system.
-//			XSSFWorkbook workbook = new XSSFWorkbook(fis);
-//
-//			// Get the first sheet on the workbook.
-//			XSSFSheet sheet = workbook.getSheetAt(0);
-//
-//			/*
-//			 * When we have a sheet object in hand we can iterator on each
-//			 * sheet's rows and on each row's cells. We store the data read on
-//			 * an ArrayList so that we can printed the content of the excel to
-//			 * the console.
-//			 */
-//			Iterator rows = sheet.rowIterator();
-//			while (rows.hasNext()) {
-//				XSSFRow row = (XSSFRow) rows.next();
-//				Iterator cells = row.cellIterator();
-//				List data = new ArrayList();
-//				while (cells.hasNext()) {
-//					XSSFCell cell = (XSSFCell) cells.next();
-//					// System.out.println("A�adiendo Celda: " +
-//					// cell.toString());
-//					data.add(cell);
-//				}
-//				sheetData.add(data);
-//			}
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} finally {
-//			if (fis != null) {
-//				try {
-//					fis.close();
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		}
-
 //		generateAttributeValor(sheetData);
         generateAttributeRandom();
         StoredData.Atributos = TotalAttributes;
 
         generateCustomerProfiles();
+        generareNumberOfCustomers();
         StoredData.Profiles = CustomerProfileList;
+
+        divideCustomerProfile();
 
         Intent dashboard_menu = new Intent(context, DashboardMenu.class);
         dashboard_menu.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(dashboard_menu);
 
-//        divideCustomerProfile();
 //        generateProducers();
 //        showProducers();
         //showAttributes();
@@ -430,29 +385,45 @@ public class GeneticAlgorithm {
         return mutant;
     }
 
+
+
+    private void generareNumberOfCustomers() {
+
+        for(int i = 0; i < CustomerProfileList.size(); i++)
+            CustomerProfileList.get(i).setNumberCustomers((int)((Math.random() * 100) + (Math.random() * 100)));
+    }
+
     /**
      * Dividing the customer profiles into sub-profiles
      *
      * @throws Exception
      */
     private void divideCustomerProfile() throws Exception {
-        CustomerProfileListAux.clear();
+
 
         int numOfSubProfile;
-        CustomerProfileListAux = new LinkedList<>();
+//        CustomerProfileListAux = new ArrayList<>();
 
         for (int i = 0; i < CustomerProfileList.size(); i++) {
-            CustomerProfileListAux.add(new CustomerProfile(new ArrayList<Attribute>()));
-            numOfSubProfile = CustomerProfileList.get(i).getScoreAttributes().size() / RESP_PER_GROUP;
+            ArrayList<SubProfile> subProfiles = new ArrayList<>();
+//            CustomerProfileListAux.add(new CustomerProfile(new ArrayList<Attribute>()));
+            numOfSubProfile = CustomerProfileList.get(i).getNumberCustomers() / RESP_PER_GROUP;
 
-            if ((CustomerProfileList.get(i).getScoreAttributes().size() % RESP_PER_GROUP) != 0)
+            if ((CustomerProfileList.get(i).getNumberCustomers() % RESP_PER_GROUP) != 0)
                 numOfSubProfile++;
 
-            for (int j = 0; j < numOfSubProfile - 1; j++){ //We divide into sub-profiles
-                CustomerProfileListAux.get(i).getScoreAttributes().add(TotalAttributes.get(j));
+            for (int j = 0; j < numOfSubProfile; j++){ //We divide into sub-profiles
+                SubProfile subprofile = new SubProfile();
+                subprofile.setName("Subperfil " + (j+1) + ", Perfil " + (i+1));
+//                CustomerProfileListAux.get(i).getScoreAttributes().add(TotalAttributes.get(j));
+                HashMap<Attribute, Integer> valuesChosen = new HashMap<>();
                 for (int k = 0; k < TotalAttributes.size(); k++) //Each of the sub-profiles choose a value for each of the attributes
-                    CustomerProfileListAux.get(i).getScoreAttributes().get(j).getScoreValues().add(chooseValueForAttribute(i, k));
+                    valuesChosen.put(TotalAttributes.get(k), chooseValueForAttribute(i, k));
+//                    CustomerProfileListAux.get(i).getScoreAttributes().get(j).getScoreValues().add(chooseValueForAttribute(i, k));
+                subprofile.setValueChosen(valuesChosen);
+                subProfiles.add(subprofile);
             }
+            CustomerProfileList.get(i).setSubProfiles(subProfiles);
         }
     }
 
@@ -461,29 +432,29 @@ public class GeneticAlgorithm {
      * for that attribute of the sub-profile having into account the values of the poll
      */
     private Integer chooseValueForAttribute(int custProfInd, int attrInd) throws Exception {
-        int value = 0;
-        double total = 0;
-        double rndVal;
-        boolean found = false;
-        double accumulated = 0;
-
-        for (int i = 0; i < CustomerProfileList.get(custProfInd).getScoreAttributes().get(attrInd).getScoreValues().size() - 1; i++) {
-            total += CustomerProfileList.get(custProfInd).getScoreAttributes().get(attrInd).getScoreValues().get(i);
-        }
-        rndVal = total * Math.random();
-        while (!found) {
-            accumulated += CustomerProfileList.get(custProfInd).getScoreAttributes().get(attrInd).getScoreValues().get(value);
-            if (rndVal <= accumulated) found = true;
-            else value++;
-
-
-            if (value >= CustomerProfileList.get(custProfInd).getScoreAttributes().size())
-                throw new Exception("Error 1 in chooseValueForAttribute() method: Value not found");
-        }
-
-        if (!found)
-            throw new Exception("Error 2 in chooseValueForAttribute() method: Value not found");
-        return value;
+//        int value = 0;
+//        double total = 0;
+//        double rndVal;
+//        boolean found = false;
+//        double accumulated = 0;
+//
+//        for (int i = 0; i < CustomerProfileList.get(custProfInd).getScoreAttributes().get(attrInd).getScoreValues().size() - 1; i++) {
+//            total += CustomerProfileList.get(custProfInd).getScoreAttributes().get(attrInd).getScoreValues().get(i);
+//        }
+//        rndVal = total * Math.random();
+//        while (!found) {
+//            accumulated += CustomerProfileList.get(custProfInd).getScoreAttributes().get(attrInd).getScoreValues().get(value);
+//            if (rndVal <= accumulated) found = true;
+//            else value++;
+//
+//
+//            if (value >= CustomerProfileList.get(custProfInd).getScoreAttributes().size())
+//                throw new Exception("Error 1 in chooseValueForAttribute() method: Value not found");
+//        }
+//
+//        if (!found)
+//            throw new Exception("Error 2 in chooseValueForAttribute() method: Value not found");
+        return 1;
     }
 
     /**
@@ -944,5 +915,53 @@ public class GeneticAlgorithm {
         return (sqrSum / NUM_EXECUTIONS);
     }
 
+
+
+//		// An excel file name. You can create a file name with a full path
+//		// information.
+//		String filename = "EncuestasCIS.xlsx";
+//		// Create an ArrayList to store the data read from excel sheet.
+//		List sheetData = new ArrayList();
+//		FileInputStream fis = null;
+//		try {
+//			// Create a FileInputStream that will be use to read the excel file.
+//			fis = new FileInputStream(filename);
+//
+//			// Create an excel workbook from the file system.
+//			XSSFWorkbook workbook = new XSSFWorkbook(fis);
+//
+//			// Get the first sheet on the workbook.
+//			XSSFSheet sheet = workbook.getSheetAt(0);
+//
+//			/*
+//			 * When we have a sheet object in hand we can iterator on each
+//			 * sheet's rows and on each row's cells. We store the data read on
+//			 * an ArrayList so that we can printed the content of the excel to
+//			 * the console.
+//			 */
+//			Iterator rows = sheet.rowIterator();
+//			while (rows.hasNext()) {
+//				XSSFRow row = (XSSFRow) rows.next();
+//				Iterator cells = row.cellIterator();
+//				List data = new ArrayList();
+//				while (cells.hasNext()) {
+//					XSSFCell cell = (XSSFCell) cells.next();
+//					// System.out.println("A�adiendo Celda: " +
+//					// cell.toString());
+//					data.add(cell);
+//				}
+//				sheetData.add(data);
+//			}
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		} finally {
+//			if (fis != null) {
+//				try {
+//					fis.close();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
 
 }
