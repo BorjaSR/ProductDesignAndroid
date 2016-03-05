@@ -418,7 +418,7 @@ public class GeneticAlgorithm {
 //                CustomerProfileListAux.get(i).getScoreAttributes().add(TotalAttributes.get(j));
                 HashMap<Attribute, Integer> valuesChosen = new HashMap<>();
                 for (int k = 0; k < TotalAttributes.size(); k++) //Each of the sub-profiles choose a value for each of the attributes
-                    valuesChosen.put(TotalAttributes.get(k), chooseValueForAttribute(i, k));
+                    valuesChosen.put(TotalAttributes.get(k), chooseValueForAttribute(CustomerProfileList.get(i).getScoreAttributes().get(k)));
 //                    CustomerProfileListAux.get(i).getScoreAttributes().get(j).getScoreValues().add(chooseValueForAttribute(i, k));
                 subprofile.setValueChosen(valuesChosen);
                 subProfiles.add(subprofile);
@@ -431,30 +431,34 @@ public class GeneticAlgorithm {
      * Given an index of a customer profile and the index of an attribute we choose a value
      * for that attribute of the sub-profile having into account the values of the poll
      */
-    private Integer chooseValueForAttribute(int custProfInd, int attrInd) throws Exception {
-//        int value = 0;
-//        double total = 0;
-//        double rndVal;
-//        boolean found = false;
-//        double accumulated = 0;
-//
-//        for (int i = 0; i < CustomerProfileList.get(custProfInd).getScoreAttributes().get(attrInd).getScoreValues().size() - 1; i++) {
-//            total += CustomerProfileList.get(custProfInd).getScoreAttributes().get(attrInd).getScoreValues().get(i);
-//        }
-//        rndVal = total * Math.random();
-//        while (!found) {
-//            accumulated += CustomerProfileList.get(custProfInd).getScoreAttributes().get(attrInd).getScoreValues().get(value);
-//            if (rndVal <= accumulated) found = true;
-//            else value++;
-//
-//
-//            if (value >= CustomerProfileList.get(custProfInd).getScoreAttributes().size())
-//                throw new Exception("Error 1 in chooseValueForAttribute() method: Value not found");
-//        }
-//
-//        if (!found)
-//            throw new Exception("Error 2 in chooseValueForAttribute() method: Value not found");
-        return 1;
+    private Integer chooseValueForAttribute(Attribute attribute) throws Exception {
+
+        int total = 0;
+        int accumulated = 0;
+        boolean found = false;
+
+        for(int i = 0; i < attribute.getScoreValues().size(); i++)
+            total += attribute.getScoreValues().get(i);
+
+        int rndVal = (int) (total * Math.random());
+
+        int value = 0;
+        while (!found){
+            accumulated += attribute.getScoreValues().get(value);
+            if(rndVal <= accumulated)
+                found = true;
+            else
+                value++;;
+
+            if(value >= attribute.getScoreValues().size())
+                throw new Exception("Error 1 in chooseValueForAttribute() method: Value not found");
+
+        }
+
+        if(value >= attribute.getScoreValues().size())
+            throw new Exception("Error 2 in chooseValueForAttribute() method: Value not found");
+
+        return value;
     }
 
     /**
