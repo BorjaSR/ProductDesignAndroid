@@ -405,7 +405,6 @@ public class GeneticAlgorithm {
 
         for (int i = 0; i < CustomerProfileList.size(); i++) {
             ArrayList<SubProfile> subProfiles = new ArrayList<>();
-//            CustomerProfileListAux.add(new CustomerProfile(new ArrayList<Attribute>()));
             numOfSubProfile = CustomerProfileList.get(i).getNumberCustomers() / RESP_PER_GROUP;
 
             if ((CustomerProfileList.get(i).getNumberCustomers() % RESP_PER_GROUP) != 0)
@@ -414,11 +413,11 @@ public class GeneticAlgorithm {
             for (int j = 0; j < numOfSubProfile; j++){ //We divide into sub-profiles
                 SubProfile subprofile = new SubProfile();
                 subprofile.setName("Subperfil " + (j+1) + ", Perfil " + (i+1));
-//                CustomerProfileListAux.get(i).getScoreAttributes().add(TotalAttributes.get(j));
+
                 HashMap<Attribute, Integer> valuesChosen = new HashMap<>();
                 for (int k = 0; k < TotalAttributes.size(); k++) //Each of the sub-profiles choose a value for each of the attributes
                     valuesChosen.put(TotalAttributes.get(k), chooseValueForAttribute(CustomerProfileList.get(i).getScoreAttributes().get(k)));
-//                    CustomerProfileListAux.get(i).getScoreAttributes().get(j).getScoreValues().add(chooseValueForAttribute(i, k));
+
                 subprofile.setValueChosen(valuesChosen);
                 subProfiles.add(subprofile);
             }

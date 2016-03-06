@@ -15,6 +15,7 @@ import com.example.borja.marketingcomputacional.GeneticAlgorithm.CustomerProfile
 import com.example.borja.marketingcomputacional.R;
 import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardDetailProfiles;
 import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardProfiles;
+import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardSubprofiles;
 import com.example.borja.marketingcomputacional.general.StoredData;
 
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public class ProfileListAdapter extends ArrayAdapter<CustomerProfile> {
         view_attribute_values.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StoredData.profile_selected = "Customer profile " + (position + 1);
+                StoredData.profile_name_selected = "Customer profile " + (position + 1);
                 StoredData.Attributes_profile_selected = profile.getScoreAttributes();
 
                 Intent dashboard_detail_profiles = new Intent(context, DashboardDetailProfiles.class);
@@ -69,9 +70,12 @@ public class ProfileListAdapter extends ArrayAdapter<CustomerProfile> {
         view_subprofiles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StoredData.profile_selected = "Customer profile " + (position + 1);
-                StoredData.Attributes_profile_selected = profile.getScoreAttributes();
+                StoredData.profile_name_selected = "Customer profile " + (position + 1);
+                StoredData.profile_selected = profile;
 
+                Intent dashboard_subprofiles = new Intent(context, DashboardSubprofiles.class);
+                dashboard_subprofiles.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(dashboard_subprofiles);
             }
         });
         return convertView;
