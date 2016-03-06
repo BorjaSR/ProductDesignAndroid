@@ -12,7 +12,6 @@ import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.ss.usermodel.Cell;
 import org.w3c.dom.Attr;
 
 public class GeneticAlgorithm {
@@ -215,7 +214,7 @@ public class GeneticAlgorithm {
     /**
      * Creating the attributes and the possible values of them
      */
-    private static void generateAttributeValor(List sheetData) {
+   /* private static void generateAttributeValor(List sheetData) {
 
         int MIN_VAL = 1;
 
@@ -235,7 +234,7 @@ public class GeneticAlgorithm {
             }
             number_valors--;
         }
-    }
+    }*/
 
     private void generateAttributeRandom() {
         TotalAttributes.clear();
@@ -281,7 +280,7 @@ public class GeneticAlgorithm {
         }
     }
 
-    private static void showExcelData(List sheetData) {
+   /* private static void showExcelData(List sheetData) {
         // Iterates the data and print it out to the console.
         for (int i = 0; i < sheetData.size(); i++) {
             List list = (List) sheetData.get(i);
@@ -300,7 +299,7 @@ public class GeneticAlgorithm {
             }
             System.out.println("");
         }
-    }
+    }*/
 
 
     /**

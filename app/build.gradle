@@ -24,9 +24,9 @@ android {
         exclude 'META-INF/NOTICE'
     }
 
-    dexOptions{
+  /  dexOptions{
         javaMaxHeapSize "4g"
-    }
+    }/
 }
 
 dependencies {

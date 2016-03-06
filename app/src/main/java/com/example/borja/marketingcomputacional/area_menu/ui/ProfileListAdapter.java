@@ -47,14 +47,14 @@ public class ProfileListAdapter extends ArrayAdapter<CustomerProfile> {
 
         final CustomerProfile profile = Profiles.get(position);
 
-        LinearLayout profile_content = (LinearLayout)convertView.findViewById(R.id.profile_content);
         TextView name = (TextView) convertView.findViewById(R.id.attribute_name);
-        TextView number_values = (TextView) convertView.findViewById(R.id.attribute_number_values);
+        TextView view_attribute_values = (TextView) convertView.findViewById(R.id.view_attribute_values);
+        TextView view_subprofiles = (TextView) convertView.findViewById(R.id.view_subprofiles);
 
         name.setText("Customer profile " + (position + 1));
 
 
-        profile_content.setOnClickListener(new View.OnClickListener() {
+        view_attribute_values.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 StoredData.profile_selected = "Customer profile " + (position + 1);
@@ -63,6 +63,15 @@ public class ProfileListAdapter extends ArrayAdapter<CustomerProfile> {
                 Intent dashboard_detail_profiles = new Intent(context, DashboardDetailProfiles.class);
                 dashboard_detail_profiles.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(dashboard_detail_profiles);
+            }
+        });
+
+        view_subprofiles.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                StoredData.profile_selected = "Customer profile " + (position + 1);
+                StoredData.Attributes_profile_selected = profile.getScoreAttributes();
+
             }
         });
         return convertView;

@@ -16,7 +16,6 @@
         android:elevation="2dp">
 
         <LinearLayout
-            android:id="@+id/profile_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?android:selectableItemBackground"
@@ -28,18 +27,29 @@
                 android:id="@+id/attribute_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="5dp"
+                android:paddingBottom="10dp"
                 android:text="Perfil de usuarios 1"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/attribute_number_values"
+                android:id="@+id/view_attribute_values"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Pulsa para ver detalles"
+                android:text="Ver la valoracion de los atributos"
                 android:textColor="@color/grey_medium"
-                android:textSize="15sp" />
+                android:paddingBottom="5dp"
+                android:textSize="15sp"
+                android:background="?android:selectableItemBackground"/>
+
+            <TextView
+                android:id="@+id/view_subprofiles"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ver el detalle de los subperfiles"
+                android:textColor="@color/grey_medium"
+                android:textSize="15sp"
+                android:background="?android:selectableItemBackground"/>
 
         </LinearLayout>
     </LinearLayout>
