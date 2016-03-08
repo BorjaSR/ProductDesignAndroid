@@ -5,6 +5,7 @@ import android.graphics.Typeface;
 
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.Attribute;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.CustomerProfile;
+import com.example.borja.marketingcomputacional.GeneticAlgorithm.Producer;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -19,6 +20,7 @@ public class StoredData {
 
     public static ArrayList<Attribute> Atributos;
     public static ArrayList<CustomerProfile> Profiles;
+    public static ArrayList<Producer> Producers;
 
     public static ArrayList<Attribute> Attributes_profile_selected;
     public static CustomerProfile profile_selected;

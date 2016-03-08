@@ -46,7 +46,7 @@ public class GeneticAlgorithm {
     static final String EOF = "EOF";
 
     private static ArrayList<Attribute> TotalAttributes = new ArrayList<>();
-    private static ArrayList<Producer> Producers;
+    private static ArrayList<Producer> Producers = new ArrayList<>();
 
     /* INPUT VARIABLES */
     private static int Number_Attributes; /* Number of attributes */
@@ -82,11 +82,13 @@ public class GeneticAlgorithm {
 
         divideCustomerProfile();
 
+        generateProducers();
+        StoredData.Producers = Producers;
+
         Intent dashboard_menu = new Intent(context, DashboardMenu.class);
         dashboard_menu.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(dashboard_menu);
 
-//        generateProducers();
 //        showProducers();
         //showAttributes();
         //showAvailableAttributes(createAvailableAttributes());
@@ -312,7 +314,7 @@ public class GeneticAlgorithm {
         for (int i = 0; i < Number_Producers; i++) {
             Producer new_producer = new Producer();
             new_producer.setAvailableAttribute(createAvailableAttributes());
-            new_producer.setProduct(createProduct(new_producer.getAvailableAttribute()));
+//            new_producer.setProduct(createProduct(new_producer.getAvailableAttribute()));
             Producers.add(new_producer);
         }
     }
@@ -464,35 +466,35 @@ public class GeneticAlgorithm {
      */
     private static ArrayList<Attribute> createAvailableAttributes() {
         ArrayList<Attribute> availableAttributes = new ArrayList<>();
-        int limit = Number_Attributes * KNOWN_ATTRIBUTES / 100;
+        int limit = TotalAttributes.size() * KNOWN_ATTRIBUTES / 100;
 		
 		/*All producers know the first ATTRIBUTES_KNOWN % of the attributes*/
-        for (int i = 0; i < limit - 1; i++) {
+        for (int i = 0; i < limit; i++) {
             Attribute attr = new Attribute(TotalAttributes.get(i).getName(), TotalAttributes.get(i).getMIN(), TotalAttributes.get(i).getMAX());
-            ArrayList<Boolean> values = new ArrayList<>();
+            ArrayList<Boolean> availablevalues = new ArrayList<>();
             for (int j = 0; j < attr.getMAX(); j++) {
-                values.add(true);
+                availablevalues.add(true);
             }
 
-            attr.setAvailableValues(values);
+            attr.setAvailableValues(availablevalues);
             availableAttributes.add(attr);
         }
 		
 		/*The remaining attributes are only known by SPECIAL_ATTRIBUTES % producers*/
-        for (int k = limit; k < TotalAttributes.size() - 1; k++) {
+        for (int k = limit; k < TotalAttributes.size(); k++) {
             Attribute attr = new Attribute(TotalAttributes.get(k).getName(), TotalAttributes.get(k).getMIN(), TotalAttributes.get(k).getMAX());
-            ArrayList<Boolean> values = new ArrayList<>();
+            ArrayList<Boolean> availableValues = new ArrayList<>();
 
             for (int j = 0; j < attr.getMAX(); j++) {
                 double rnd = Math.random();
                 double rndVal = Math.random();
 				/*Furthermore, with a 50% of probabilities it can know this attribute*/
                 if (rndVal < (SPECIAL_ATTRIBUTES / 100) && rnd < 0.5)
-                    values.add(true);
+                    availableValues.add(true);
                 else
-                    values.add(false);
+                    availableValues.add(false);
             }
-            attr.setAvailableValues(values);
+            attr.setAvailableValues(availableValues);
             availableAttributes.add(attr);
         }
 
