@@ -314,7 +314,7 @@ public class GeneticAlgorithm {
         for (int i = 0; i < Number_Producers; i++) {
             Producer new_producer = new Producer();
             new_producer.setAvailableAttribute(createAvailableAttributes());
-//            new_producer.setProduct(createProduct(new_producer.getAvailableAttribute()));
+            new_producer.setProduct(createProduct(new_producer.getAvailableAttribute()));
             Producers.add(new_producer);
         }
     }
@@ -389,7 +389,6 @@ public class GeneticAlgorithm {
 
 
     private void generareNumberOfCustomers() {
-
         for(int i = 0; i < CustomerProfileList.size(); i++)
             CustomerProfileList.get(i).setNumberCustomers((int)((Math.random() * 100) + (Math.random() * 100)));
     }
@@ -553,15 +552,15 @@ public class GeneticAlgorithm {
 
         Product product = new Product(new HashMap<Attribute, Integer>());
         ArrayList<Integer> customNearProfs = new ArrayList<>();
-        for (int i = 0; i < NEAR_CUST_PROFS; i++) {
+
+        for (int i = 0; i < NEAR_CUST_PROFS; i++)
             customNearProfs.add((int) Math.floor(CustomerProfileList.size() * Math.random()));
-        }
 
         HashMap<Attribute, Integer> attrValues = new HashMap<>();
 
-        for (int j = 0; j < availableAttrs.size(); j++) {
-            attrValues.put(availableAttrs.get(j), chooseAttribute(j, customNearProfs, availableAttrs)); //TotalAttributes.get(j) o availableAttrs.get(j)
-        }
+        for (int j = 0; j < TotalAttributes.size(); j++)
+            attrValues.put(TotalAttributes.get(j), chooseAttribute(j, customNearProfs, availableAttrs)); //TotalAttributes.get(j) o availableAttrs.get(j)
+
         product.setAttributeValue(attrValues);
         return product;
     }
@@ -571,19 +570,16 @@ public class GeneticAlgorithm {
      */
     private static int chooseAttribute(int attrInd, ArrayList<Integer> custProfInd, ArrayList<Attribute> availableAttrs) {
         int attrVal;
-        int possible = 0;
 
-        ArrayList<Integer> possibleAttr = new ArrayList<Integer>();
+        ArrayList<Integer> possibleAttr = new ArrayList<>();
 
-        for (int i = 0; i < availableAttrs.get(attrInd).getAvailableValues().size() - 1; i++) {
+        for (int i = 0; i < TotalAttributes.get(attrInd).getMAX(); i++) {
 			/*We count the valoration of each selected profile for attribute attrInd value i*/
-            possibleAttr.add(0);
-            //possible = possibleAttr.get(i);
-            for (int j = 0; j < custProfInd.size() - 1; j++) {
-                possible = possibleAttr.get(i);
+			int possible = 0;
+            for (int j = 0; j < custProfInd.size(); j++) {
                 possible += CustomerProfileList.get(custProfInd.get(j)).getScoreAttributes().get(attrInd).getScoreValues().get(i);
-
             }
+			possibleAttr.add(possible);
         }
         attrVal = getMaxAttrVal(attrInd, possibleAttr, availableAttrs);
 
@@ -594,9 +590,11 @@ public class GeneticAlgorithm {
      * Chosing the attribute with the maximum score for the customer profiles given
      */
     private static int getMaxAttrVal(int attrInd, ArrayList<Integer> possibleAttr, ArrayList<Attribute> availableAttr) {
+
         int attrVal = -1;
         double max = -1;
-        for (int i = 0; i < possibleAttr.size() - 1; i++) {
+
+        for (int i = 0; i < possibleAttr.size(); i++) {
             if (availableAttr.get(attrInd).getAvailableValues().get(i) && possibleAttr.get(i) > max) {
                 max = possibleAttr.get(i);
                 attrVal = i;
