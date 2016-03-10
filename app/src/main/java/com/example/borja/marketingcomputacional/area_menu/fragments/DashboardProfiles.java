@@ -20,7 +20,7 @@ public class DashboardProfiles extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.menu_data);
+        setContentView(R.layout.simple_list);
 
         ListView profile_list = (ListView) findViewById(R.id.attribute_list);
         ProfileListAdapter adapter = new ProfileListAdapter(getApplicationContext(), R.layout.list_profile_item, StoredData.Profiles);

@@ -313,6 +313,7 @@ public class GeneticAlgorithm {
         Producers = new ArrayList<>();
         for (int i = 0; i < Number_Producers; i++) {
             Producer new_producer = new Producer();
+            new_producer.setName("Productor " + (i+1));
             new_producer.setAvailableAttribute(createAvailableAttributes());
             new_producer.setProduct(createProduct(new_producer.getAvailableAttribute()));
             Producers.add(new_producer);
@@ -413,7 +414,7 @@ public class GeneticAlgorithm {
 
             for (int j = 0; j < numOfSubProfile; j++){ //We divide into sub-profiles
                 SubProfile subprofile = new SubProfile();
-                subprofile.setName("Subperfil " + (j+1) + ", Perfil " + (i+1));
+                subprofile.setName("Subperfil " + (j+1));// + ", Perfil " + (i+1));
 
                 HashMap<Attribute, Integer> valuesChosen = new HashMap<>();
                 for (int k = 0; k < TotalAttributes.size(); k++) //Each of the sub-profiles choose a value for each of the attributes

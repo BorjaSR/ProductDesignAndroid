@@ -7,14 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.Attribute;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.CustomerProfile;
 import com.example.borja.marketingcomputacional.R;
-import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardDetailProfiles;
-import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardProfiles;
+import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardProfilesDetail;
 import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardSubprofiles;
 import com.example.borja.marketingcomputacional.general.StoredData;
 
@@ -61,7 +58,7 @@ public class ProfileListAdapter extends ArrayAdapter<CustomerProfile> {
                 StoredData.profile_name_selected = "Customer profile " + (position + 1);
                 StoredData.Attributes_profile_selected = profile.getScoreAttributes();
 
-                Intent dashboard_detail_profiles = new Intent(context, DashboardDetailProfiles.class);
+                Intent dashboard_detail_profiles = new Intent(context, DashboardProfilesDetail.class);
                 dashboard_detail_profiles.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(dashboard_detail_profiles);
             }

@@ -20,7 +20,7 @@ public class DashboardAttributes extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.menu_data);
+        setContentView(R.layout.simple_list);
 
         ListView attribute_list = (ListView) findViewById(R.id.attribute_list);
         AttributeListAdapter adapter = new AttributeListAdapter(getApplicationContext(), R.layout.list_attribute_item, StoredData.Atributos);

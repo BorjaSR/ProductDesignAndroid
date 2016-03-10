@@ -3,7 +3,8 @@ package com.example.borja.marketingcomputacional.GeneticAlgorithm;
 import java.util.ArrayList;
 
 public class Producer {
-	
+
+	private String Name;
 	public ArrayList<Attribute> AvailableAttribute;
 	public Product product;	
 
@@ -32,6 +33,12 @@ public class Producer {
 	public void setProduct(Product product) {
 		this.product = product;
 	}
-	
-	
+
+	public String getName() {
+		return Name;
+	}
+
+	public void setName(String name) {
+		Name = name;
+	}
 }

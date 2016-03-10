@@ -39,14 +39,31 @@
         </activity>
 
         <activity
-            android:name=".area_menu.fragments.DashboardDetailProfiles"
+            android:name=".area_menu.fragments.DashboardProfilesDetail"
             android:label="Perfiles"
             android:screenOrientation="portrait">
         </activity>
 
-
         <activity
             android:name=".area_menu.fragments.DashboardSubprofiles"
+            android:label="Perfiles"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".area_menu.fragments.DashboardSubprofilesDetail"
+            android:label="Perfiles"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".area_menu.fragments.DashboardProducers"
+            android:label="Productores"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".area_menu.fragments.DashboardProducersDetail"
             android:label="Perfiles"
             android:screenOrientation="portrait">
         </activity>

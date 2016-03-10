@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.Attribute;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.CustomerProfile;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.Producer;
+import com.example.borja.marketingcomputacional.GeneticAlgorithm.SubProfile;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -25,6 +26,8 @@ public class StoredData {
     public static ArrayList<Attribute> Attributes_profile_selected;
     public static CustomerProfile profile_selected;
     public static String profile_name_selected;
+    public static SubProfile Subprofile_selected;
+    public static Producer Producer_selected;
 
     public static Typeface roboto_light(Context context){
         return Typeface.createFromAsset(context.getAssets(), "Roboto-Light.ttf");
