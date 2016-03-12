@@ -7,6 +7,7 @@ public class Product implements Cloneable{
 	
 	public HashMap<Attribute, Integer> attributeValue;
 	public ArrayList<Integer> ValuesPopuProduct;
+	private int Fitness;
 	
 	public Product() {
 		super();
@@ -33,7 +34,15 @@ public class Product implements Cloneable{
 	public void setValuesPopuProduct(ArrayList<Integer> valuesPopu) {
 		this.ValuesPopuProduct = valuesPopu;
 	}
-	
+
+	public int getFitness() {
+		return Fitness;
+	}
+
+	public void setFitness(int fitness) {
+		Fitness = fitness;
+	}
+
 	/**Creates a deep copy of Product*/
 	public Product clone(){
 		Product product = new Product(this.attributeValue);

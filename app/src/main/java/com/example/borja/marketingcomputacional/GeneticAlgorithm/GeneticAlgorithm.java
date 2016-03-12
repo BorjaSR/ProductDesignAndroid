@@ -16,7 +16,7 @@ import org.w3c.dom.Attr;
 
 public class GeneticAlgorithm {
 
-    static final int KNOWN_ATTRIBUTES = 100; /* 100
+    static final double KNOWN_ATTRIBUTES = 100; /* 100
                                                  * % of attributes known for all
 												 * producers
 												 */
@@ -59,8 +59,8 @@ public class GeneticAlgorithm {
     private ArrayList<Integer> Fitness; /* * mFitness(i) = wsc of mPopu(i) */
 
     /* STATISTICAL VARIABLES */
-    private LinkedList<Integer> Results;
-    private LinkedList<Integer> Initial_Results;
+    private ArrayList<Integer> Results = new ArrayList<>();
+    private ArrayList<Integer> Initial_Results = new ArrayList<>();
 
     private static ArrayList<CustomerProfile> CustomerProfileList = new ArrayList<>();
     private static ArrayList<CustomerProfile> CustomerProfileListAux = new ArrayList<>();
@@ -84,6 +84,8 @@ public class GeneticAlgorithm {
 
         generateProducers();
         StoredData.Producers = Producers;
+
+        solvePD_GA();
 
         Intent dashboard_menu = new Intent(context, DashboardMenu.class);
         dashboard_menu.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -143,8 +145,8 @@ public class GeneticAlgorithm {
     private void solvePD_GA() throws Exception {
         int generation = 0;
 
-        ArrayList<Product> newPopu = new ArrayList<Product>();
-        ArrayList<Integer> newFitness = new ArrayList<Integer>();
+        ArrayList<Product> newPopu;
+        ArrayList<Integer> newFitness = new ArrayList<>();
         createInitPopu();
         while (generation < NUM_GENERATIONS) {
             generation++;
@@ -174,8 +176,8 @@ public class GeneticAlgorithm {
         double initPercCust; /*% of initial customers achieved*/
         String msg;
 
-        Results = new LinkedList<Integer>();
-        Initial_Results = new LinkedList<Integer>();
+        Results = new ArrayList<>();
+        Initial_Results = new ArrayList<>();
 
         Math.random();
         if (Number_Producers == 0) {
@@ -466,7 +468,7 @@ public class GeneticAlgorithm {
      */
     private static ArrayList<Attribute> createAvailableAttributes() {
         ArrayList<Attribute> availableAttributes = new ArrayList<>();
-        int limit = TotalAttributes.size() * KNOWN_ATTRIBUTES / 100;
+        int limit = (int) (TotalAttributes.size() * KNOWN_ATTRIBUTES / 100);
 		
 		/*All producers know the first ATTRIBUTES_KNOWN % of the attributes*/
         for (int i = 0; i < limit; i++) {
@@ -506,20 +508,25 @@ public class GeneticAlgorithm {
      */
     private Product createRndProduct(ArrayList<Attribute> availableAttribute) {
         Product product = new Product(new HashMap<Attribute, Integer>());
-        int limit = (Number_Attributes * KNOWN_ATTRIBUTES) / 100;
+        int limit = (int) (TotalAttributes.size() * KNOWN_ATTRIBUTES / 100);
         int attrVal = 0;
 
-        for (int i = 0; i < limit - 1; i++) {
-            attrVal = (int) (TotalAttributes.get(i).getScoreValues().get((int) Math.random()));
+        for (int i = 0; i < limit; i++) {
+            attrVal = (int) (TotalAttributes.get(i).getMAX() * Math.random());
             product.getAttributeValue().put(TotalAttributes.get(i), attrVal);
 
         }
 
-        for (int i = limit; i < Number_Attributes - 1; i++) {
+        for (int i = limit; i < TotalAttributes.size(); i++) {
             boolean attrFound = false;
             while (!attrFound) {
-                attrVal = (int) ((int) TotalAttributes.get(i).getScoreValues().get((int) Math.random()));
-                if (availableAttribute.get(i).getAvailableValues().get(attrVal)) attrFound = true;
+//                attrVal =  TotalAttributes.get(i).getScoreValues().get((int) (Math.random() * TotalAttributes.get(i).getScoreValues().size()));
+
+                attrVal = (int) (TotalAttributes.get(i).getMAX() * Math.random());
+
+                if (availableAttribute.get(i).getAvailableValues().get(attrVal))
+                    attrFound = true;
+
             }
             product.getAttributeValue().put(TotalAttributes.get(i), attrVal);
         }
@@ -532,7 +539,7 @@ public class GeneticAlgorithm {
     private Product createNearProduct(ArrayList<Attribute> availableAttribute, int nearCustProfs) {
 		/*TODO: improve having into account the sub-profiles*/
         Product product = new Product(new HashMap<Attribute, Integer>());
-        int limit = (Number_Attributes * KNOWN_ATTRIBUTES) / 100;
+        int limit = (int) ((Number_Attributes * KNOWN_ATTRIBUTES) / 100);
         int attrVal = 0;
         ArrayList<Integer> custProfsInd = new ArrayList<Integer>();
 
@@ -613,15 +620,16 @@ public class GeneticAlgorithm {
      * @throws Exception
      */
     private void createInitPopu() throws Exception {
-        ArrayList<Product> mPopu = new ArrayList<Product>();
-        ArrayList<Integer> mFitness = new ArrayList<Integer>();
+        ArrayList<Product> mPopu = new ArrayList<>();
+        ArrayList<Integer> mFitness = new ArrayList<>();
 
         mPopu.add((Producers.get(0).getProduct()).clone());
+//        mPopu.get(0).setFitness(computeWSC(mPopu.get(0), 0));
         mFitness.add(computeWSC(mPopu.get(0), 0));
         BestWSC = mFitness.get(0);
         Initial_Results.add(BestWSC);
 
-        for (int i = 0; i < NUM_POPULATION - 1; i++) {
+        for (int i = 0; i < NUM_POPULATION; i++) {
             if (i % 2 == 0) /*We create a random product*/
                 mPopu.add(createRndProduct(Producers.get(0).getAvailableAttribute()));
             else /*We create a near product*/
@@ -651,24 +659,29 @@ public class GeneticAlgorithm {
         int score;
         int k;
         int numTies;
-        for (int i = 0; i < Number_CustomerProfile - 1; i++) {
-            for (int j = 0; j < CustomerProfileListAux.get(i).getScoreAttributes().size() - 1; j++) {
+        for (int i = 0; i < CustomerProfileList.size(); i++) {
+            for (int j = 0; j < CustomerProfileList.get(i).getSubProfiles().size(); j++) {
                 isTheFavourite = true;
                 numTies = 1;
-                meScore = scoreProduct(i, j, product);
+                meScore = scoreProduct(CustomerProfileList.get(i).getSubProfiles().get(j), product);
                 k = 0;
-                while (isTheFavourite && k < Number_Producers) {
+                while (isTheFavourite && k < Producers.size()) {
                     if (k != prodInd) {
-                        score = scoreProduct(i, j, Producers.get(k).product);
-                        if (score > meScore) isTheFavourite = false;
-                        else if (score == meScore) numTies += 1;
+
+                        score = scoreProduct(CustomerProfileList.get(i).getSubProfiles().get(j), Producers.get(k).product);
+
+                        if (score > meScore)
+                            isTheFavourite = false;
+
+                        else if (score == meScore)
+                            numTies += 1;
                     }
                     k++;
                 }
 				/*TODO: When there exists ties we loose some voters because of decimals (undecided voters)*/
                 if (isTheFavourite) {
-                    if ((j == (CustomerProfileListAux.get(i).getScoreAttributes().size() - 1)) && ((NumberCustomerProfile.get(i) % RESP_PER_GROUP) != 0)) {
-                        wsc += (NumberCustomerProfile.get(i) % RESP_PER_GROUP) / numTies;
+                    if ((j == CustomerProfileList.get(i).getSubProfiles().size()) && ((CustomerProfileList.get(i).getNumberCustomers() % RESP_PER_GROUP) != 0)) {
+                        wsc += (CustomerProfileList.get(i).getNumberCustomers() % RESP_PER_GROUP) / numTies;
                     } else {
                         wsc += RESP_PER_GROUP / numTies;
                     }
@@ -685,10 +698,10 @@ public class GeneticAlgorithm {
      * Computing the score of a product given the customer profile index
      * custProfInd and the product
      */
-    private int scoreProduct(int custProfInd, int custSubProfInd, Product product) throws Exception {
+    private int scoreProduct(SubProfile subprofile, Product product) throws Exception {
         int score = 0;
-        for (int i = 0; i < Number_Attributes - 1; i++) {
-            score += scoreAttribute(TotalAttributes.get(custProfInd).getScoreValues().get(i), CustomerProfileListAux.get(custProfInd).getScoreAttributes().get(custSubProfInd).getScoreValues().get(i), product.getAttributeValue().get(i));//////////
+        for (int i = 0; i < TotalAttributes.size(); i++) {
+            score += scoreAttribute(TotalAttributes.get(i).getMAX(), subprofile.getValueChosen().get(TotalAttributes.get(i)), product.getAttributeValue().get(TotalAttributes.get(i)));
             // score += scoreAttribute(mAttributes(i), mCustProfAux(custProfInd)(custSubProfInd)(i), product(i))
         }
         return score;
