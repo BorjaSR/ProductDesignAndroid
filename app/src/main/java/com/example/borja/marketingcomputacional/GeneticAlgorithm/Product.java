@@ -1,12 +1,10 @@
 package com.example.borja.marketingcomputacional.GeneticAlgorithm;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Product implements Cloneable{
 	
-	public HashMap<Attribute, Integer> attributeValue;
-	public ArrayList<Integer> ValuesPopuProduct;
+	private HashMap<Attribute, Integer> attributeValue;
 	private int Fitness;
 	
 	public Product() {
@@ -25,15 +23,6 @@ public class Product implements Cloneable{
 	public void setAttributeValue(HashMap<Attribute, Integer> product) {
 		attributeValue = product;
 	}
-	
-	public ArrayList<Integer> getValuesPopuProduct()
-	{
-		return ValuesPopuProduct;
-	}
-	
-	public void setValuesPopuProduct(ArrayList<Integer> valuesPopu) {
-		this.ValuesPopuProduct = valuesPopu;
-	}
 
 	public int getFitness() {
 		return Fitness;
@@ -46,6 +35,7 @@ public class Product implements Cloneable{
 	/**Creates a deep copy of Product*/
 	public Product clone(){
 		Product product = new Product(this.attributeValue);
+//		product.setFitness(this.Fitness);
 		return product;
 	}
 }

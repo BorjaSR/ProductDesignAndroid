@@ -2,6 +2,7 @@ package com.example.borja.marketingcomputacional.main_activity;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm;
@@ -20,7 +22,8 @@ import com.example.borja.marketingcomputacional.general.StoredData;
 
 public class MainActivity extends AppCompatActivity {
 
-
+    private static TextView texto_carga;
+    private static LinearLayout container_carga;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +37,12 @@ public class MainActivity extends AppCompatActivity {
         final ImageView first_circle = (ImageView) findViewById(R.id.first_circle);
         final ImageView second_circle = (ImageView) findViewById(R.id.second_circle);
 
+        texto_carga = (TextView) findViewById(R.id.texto_carga);
+        Typeface font = Typeface.createFromAsset(getAssets(), "Roboto-Regular.ttf");
+        texto_carga.setTypeface(font);
+        container_carga = (LinearLayout) findViewById(R.id.container_carga);
 
-        final ViewPager mainPager = (ViewPager)findViewById(R.id.main_viewpager);
+        final ViewPager mainPager = (ViewPager) findViewById(R.id.main_viewpager);
         ScreenSlidePagerAdapter adapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         mainPager.setAdapter(adapter);
 
@@ -47,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                switch (position){
+                switch (position) {
                     case 0:
                         first_circle.setImageResource(R.drawable.circle_white);
                         second_circle.setImageResource(R.drawable.circle_black);
@@ -66,21 +73,27 @@ public class MainActivity extends AppCompatActivity {
         });
 
         TextView start = (TextView) findViewById(R.id.start);
-        Typeface font = Typeface.createFromAsset(getAssets(), "Roboto-Regular.ttf");
         start.setTypeface(font);
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mainPager.getCurrentItem() == 0){
-                    try {
-                        StoredData.GeneticAlgorithm = new GeneticAlgorithm();
-                        StoredData.GeneticAlgorithm.start(getApplicationContext());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Snackbar.make(mainPager, e.getMessage(), Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
-                    }
+                if (mainPager.getCurrentItem() == 0) {
+                    container_carga.setVisibility(View.VISIBLE);
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                StoredData.GeneticAlgorithm = new GeneticAlgorithm();
+                                StoredData.GeneticAlgorithm.start(getApplicationContext());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Snackbar.make(mainPager, e.getMessage(), Snackbar.LENGTH_SHORT)
+                                        .setAction("Action", null).show();
+                            }
+                        }
+                    }, 0);
                 }
             }
         });
@@ -93,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
 //            }
 //        });
-
 
     }
 
@@ -143,5 +155,17 @@ public class MainActivity extends AppCompatActivity {
         public int getCount() {
             return 2;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        container_carga.setVisibility(View.INVISIBLE);
+        texto_carga.setText("Comenzamos...");
+    }
+
+    public static void cambiar_texto_carga(String text) {
+        container_carga.setVisibility(View.VISIBLE);
+        texto_carga.setText(text);
     }
 }

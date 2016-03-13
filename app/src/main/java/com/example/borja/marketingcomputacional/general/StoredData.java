@@ -7,6 +7,7 @@ import com.example.borja.marketingcomputacional.GeneticAlgorithm.Attribute;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.CustomerProfile;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.Producer;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.SubProfile;
+import com.example.borja.marketingcomputacional.main_activity.MainActivity;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
