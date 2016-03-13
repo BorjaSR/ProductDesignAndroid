@@ -78,22 +78,17 @@ public class GeneticAlgorithm {
 
     public void start(final Context context) throws Exception {
 
-        MainActivity.cambiar_texto_carga("Generando atributos...");
         generateAttributeRandom();
         StoredData.Atributos = TotalAttributes;
 
-        MainActivity.cambiar_texto_carga("Generando perfiles de clientes...");
         generateCustomerProfiles();
         generareNumberOfCustomers();
         divideCustomerProfile();
         StoredData.Profiles = CustomerProfileList;
 
-
-        MainActivity.cambiar_texto_carga("Generando productores...");
         generateProducers();
         StoredData.Producers = Producers;
 
-        MainActivity.cambiar_texto_carga("Resolviendo algoritmo genetico...");
         solvePD_GA();
 
         Intent dashboard_menu = new Intent(context, DashboardMenu.class);
@@ -152,7 +147,6 @@ public class GeneticAlgorithm {
         ArrayList<Integer> newFitness = new ArrayList<>();
         createInitPopu();
         for (int generation = 0; generation < NUM_GENERATIONS; generation++) {
-
             newPopu = createNewPopu(newFitness);
             Population = tournament(newPopu, newFitness);
         }

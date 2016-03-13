@@ -161,7 +161,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         container_carga.setVisibility(View.INVISIBLE);
-        texto_carga.setText("Comenzamos...");
     }
 
     public static void cambiar_texto_carga(String text) {

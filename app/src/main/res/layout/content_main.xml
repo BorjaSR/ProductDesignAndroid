@@ -14,14 +14,14 @@
             android:id="@+id/main_viewpager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.70">
+            android:layout_weight="0.72">
 
         </android.support.v4.view.ViewPager>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.3"
+            android:layout_weight="0.28"
             android:orientation="vertical"
             android:weightSum="1">
 
@@ -56,17 +56,13 @@
                 android:gravity="center"
                 android:visibility="visible">
 
-                <ProgressBar
-                    android:layout_width="60dp"
-                    android:layout_height="30dp" />
-
                 <TextView
                     android:id="@+id/texto_carga"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
                     android:textColor="@color/white"
-                    android:text="Comencemos..."/>
+                    android:text="Un momento por favor..."/>
 
             </LinearLayout>
 
