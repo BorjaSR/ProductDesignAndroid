@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.borja.marketingcomputacional.R;
@@ -23,14 +24,14 @@ public class DashboardMenu extends AppCompatActivity {
 
         setContentView(R.layout.dashboard_menu);
 
-        TextView view_attributes = (TextView)findViewById(R.id.view_attributes);
-        view_attributes.setTypeface(StoredData.roboto_regular(getApplicationContext()));
+        ImageView view_attributes = (ImageView)findViewById(R.id.view_attributes);
+//        view_attributes.setTypeface(StoredData.roboto_regular(getApplicationContext()));
 
-        TextView view_profiles = (TextView)findViewById(R.id.view_profiles);
-        view_profiles.setTypeface(StoredData.roboto_regular(getApplicationContext()));
+        ImageView view_profiles = (ImageView)findViewById(R.id.view_profiles);
+//        view_profiles.setTypeface(StoredData.roboto_regular(getApplicationContext()));
 
-        TextView view_producers = (TextView)findViewById(R.id.view_producers);
-        view_producers.setTypeface(StoredData.roboto_regular(getApplicationContext()));
+        ImageView view_producers = (ImageView)findViewById(R.id.view_producers);
+//        view_producers.setTypeface(StoredData.roboto_regular(getApplicationContext()));
 
         view_attributes.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,5 +59,21 @@ public class DashboardMenu extends AppCompatActivity {
                 getApplicationContext().startActivity(dashboard_producers);
             }
         });
+
+        TextView mean = (TextView) findViewById(R.id.mean_value);
+        TextView init_mean = (TextView) findViewById(R.id.init_mean_value);
+        TextView std_dev = (TextView) findViewById(R.id.std_dev_value);
+        TextView init_std_dev = (TextView) findViewById(R.id.init_std_dev_value);
+        TextView cust_mean = (TextView) findViewById(R.id.cust_mean_value);
+        TextView percent_cust = (TextView) findViewById(R.id.percent_cust_mean_value);
+        TextView percent_init_cust = (TextView) findViewById(R.id.percent_init_cust_mean_value);
+
+        mean.setText(StoredData.mean + "");
+        init_mean.setText(StoredData.initMean + "");
+        std_dev.setText(StoredData.stdDev + "");
+        init_std_dev.setText(StoredData.initStdDev + "");
+        cust_mean.setText(StoredData.custMean + "");
+        percent_cust.setText(StoredData.percCust + "");
+        percent_init_cust.setText(StoredData.initPercCust + "");
     }
 }

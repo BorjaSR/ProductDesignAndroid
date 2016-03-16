@@ -43,7 +43,7 @@ public class GeneticAlgorithm {
 											 * RESP_PER_GROUP respondents
 											 */
     static final int NEAR_CUST_PROFS = 4;
-    static final int NUM_EXECUTIONS = 20; /* number of executions */
+    static final int NUM_EXECUTIONS = 5; /* number of executions */
 
     static final int MY_PRODUCER = 0;  //The index of my producer
 
@@ -55,10 +55,6 @@ public class GeneticAlgorithm {
     private static ArrayList<Attribute> TotalAttributes = new ArrayList<>();
     private static ArrayList<Producer> Producers = new ArrayList<>();
 
-    /* INPUT VARIABLES */
-    private static int Number_Producers = 10; /* Number of producers */
-    private static int Number_CustomerProfile = 100; //TODO Este  dato lo sacamos de la propia lista -> CustomerProfileList.size()//tiene que venir del excel /* Number of customer profiles */
-
     /* GA VARIABLES */
     private int BestWSC; /* Stores the best wsc found */
     private ArrayList<Product> Population;   //Private mPopu As List(Of List(Of Integer))
@@ -67,10 +63,9 @@ public class GeneticAlgorithm {
     /* STATISTICAL VARIABLES */
     private ArrayList<Integer> Results = new ArrayList<>();
     private ArrayList<Integer> Initial_Results = new ArrayList<>();
+    private int wscSum;
 
     private static ArrayList<CustomerProfile> CustomerProfileList = new ArrayList<>();
-    private static ArrayList<CustomerProfile> CustomerProfileListAux = new ArrayList<>();
-    private static ArrayList<Integer> NumberCustomerProfile = new ArrayList<>();
 
     /***************************************
      * " AUXILIARY EXCEL METHODS " * @throws Exception
@@ -78,18 +73,8 @@ public class GeneticAlgorithm {
 
     public void start(final Context context) throws Exception {
 
-        generateAttributeRandom();
-        StoredData.Atributos = TotalAttributes;
-
-        generateCustomerProfiles();
-        generareNumberOfCustomers();
-        divideCustomerProfile();
-        StoredData.Profiles = CustomerProfileList;
-
-        generateProducers();
-        StoredData.Producers = Producers;
-
-        solvePD_GA();
+//        solvePD();
+        statisticsPD();
 
         Intent dashboard_menu = new Intent(context, DashboardMenu.class);
         dashboard_menu.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -113,28 +98,16 @@ public class GeneticAlgorithm {
      * @throws Exception
      */
     private void generateInput() throws Exception {
-         /*In this case study the number of attributes mNAttr
-           of the product is the number of questions of the poll
-	       The number of producers mNProd is the number of political parties:
-	       MyPP, PP, PSOE, IU, UPyD, CiU*/
-//        Number_Attributes = 0;
-        Number_Producers = 6;
+        generateAttributeRandom();
+        StoredData.Atributos = TotalAttributes;
 
-	     /*   readExcelWorksheet(SHEET_POLITICAL_PARTIES)
-            genAttrVal()
-	        closeExcel()
+        generateCustomerProfiles();
+        generareNumberOfCustomers();
+        divideCustomerProfile();
+        StoredData.Profiles = CustomerProfileList;
 
-	        readExcelWorksheet(SHEET_AGE_STUDIES)
-	        genCustomerProfiles()
-	        closeExcel()
-
-	        genCustomerProfilesNum()*/
-        // divideCustomerProfile();
-
-	     /*   readExcelWorksheet(SHEET_POLITICAL_PARTIES)
-            genProducers()
-	        closeExcel()*/
-
+        generateProducers();
+        StoredData.Producers = Producers;
     }
 
 
@@ -159,52 +132,38 @@ public class GeneticAlgorithm {
      * Generating statistics about the PD problem
      */
     private void statisticsPD() throws Exception {
-        double mean;
-        double initMean;
+
         double sum = 0; /*sum of customers achieved*/
         double initSum = 0; /*sum of initial customers*/
         int sumCust = 0; /*sum of the total number of customers*/
-        double custMean;
         double variance;
         double initVariance;
-        double stdDev;
-        double initStdDev;
-        double percCust; /*% of customers achieved*/
-        double initPercCust; /*% of initial customers achieved*/
-        String msg;
 
         Results = new ArrayList<>();
         Initial_Results = new ArrayList<>();
 
         Math.random();
-        if (Number_Producers == 0) {
-            generateInput();
-        }
+        if (Producers.size() == 0) generateInput();
 
-        for (int i = 0; i < NUM_EXECUTIONS - 1; i++) {
+        for (int i = 0; i < NUM_EXECUTIONS; i++) {
             if (i != 0) /*We reset myPP and create a new product as the first product*/ {
-                for (int j = 0; j < Producers.get(0).getAvailableAttribute().size() - 1; j++) {
-                    @SuppressWarnings("unused")
-                    Product prod = Producers.get(j).getProduct();
-                    prod = createNearProduct(Producers.get(j).getAvailableAttribute(), (int) ((Number_CustomerProfile * Math.random()) + 1));
-                }
-
+                Producers.get(MY_PRODUCER).setProduct(createNearProduct(Producers.get(MY_PRODUCER).getAvailableAttribute(), (int) (CustomerProfileList.size() * Math.random())));
             }
             solvePD_GA();
             sum += Results.get(i);
             initSum += Initial_Results.get(i);
-            //sumCust += /*xtNCust.Text*/
+            sumCust += wscSum;
         }
 
-        mean = sum / NUM_EXECUTIONS;
-        initMean = initSum / NUM_EXECUTIONS;
-        variance = computeVariance(mean);
-        initVariance = computeVariance(initMean);
-        stdDev = Math.sqrt(variance);
-        initStdDev = Math.sqrt(initVariance);
-        custMean = sumCust / NUM_EXECUTIONS;
-        percCust = 100 * mean / custMean;
-        initPercCust = 100 * initMean / custMean;
+        StoredData.mean = sum / NUM_EXECUTIONS;
+        StoredData.initMean = initSum / NUM_EXECUTIONS;
+        variance = computeVariance(StoredData.mean);
+        initVariance = computeVariance(StoredData.initMean);
+        StoredData.stdDev = Math.sqrt(variance);
+        StoredData.initStdDev = Math.sqrt(initVariance);
+        StoredData.custMean = sumCust / NUM_EXECUTIONS;
+        StoredData.percCust = 100 * StoredData.mean / StoredData.custMean;
+        StoredData.initPercCust = 100 * StoredData.initMean / StoredData.custMean;
 		
 		/*MOSTRARLO*/
     }
@@ -309,7 +268,7 @@ public class GeneticAlgorithm {
         Producers.clear();
 
         Producers = new ArrayList<>();
-        for (int i = 0; i < Number_Producers; i++) {
+        for (int i = 0; i < 10; i++) { //Creamos 10 productores random
             Producer new_producer = new Producer();
             new_producer.setName("Productor " + (i + 1));
             new_producer.setAvailableAttribute(createAvailableAttributes());
@@ -890,19 +849,12 @@ public class GeneticAlgorithm {
 
     private void showWSC() throws Exception {
         int wsc;
-        int wscSum = 0;
+        wscSum = 0;
 
         for (int i = 0; i < Producers.size(); i++) {
             wsc = computeWSC(Producers.get(i).getProduct(), i);
             wscSum += wsc;
         }
-//        for (int j = 0; j < CustomerProfileList.size(); j++) {
-//            custSum += CustomerProfileList.get(j).getNumberCustomers();
-//        }
-
-//        if (wscSum != custSum)
-//            throw new Exception("Error in showWSC() method");
-        Log.d("WSCSum: ", wscSum + "");
     }
 
 

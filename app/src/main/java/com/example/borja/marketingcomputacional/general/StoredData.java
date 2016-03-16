@@ -30,6 +30,15 @@ public class StoredData {
     public static SubProfile Subprofile_selected;
     public static Producer Producer_selected;
 
+//    FINAL DATA
+    public static double mean;
+    public static double initMean;
+    public static double stdDev;
+    public static double initStdDev;
+    public static int custMean;
+    public static double percCust;
+    public static double initPercCust;
+
     public static Typeface roboto_light(Context context){
         return Typeface.createFromAsset(context.getAssets(), "Roboto-Light.ttf");
     }

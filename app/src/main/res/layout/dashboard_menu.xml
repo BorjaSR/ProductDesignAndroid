@@ -2,108 +2,276 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="10dp">
+    android:layout_height="match_parent">
 
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1"
-        android:orientation="horizontal">
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:background="@color/white"
-            android:layout_margin="5dp"
-            android:elevation="2dp">
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.33"
+                    android:background="@color/colorPrimary"
+                    android:layout_margin="5dp"
+                    android:orientation="vertical"
+                    android:elevation="2dp">
+
+                    <!--android:background="?android:selectableItemBackground"-->
+
+                    <ImageView
+                        android:id="@+id/view_attributes"
+                        android:layout_width="match_parent"
+                        android:layout_height="85dp"
+                        android:padding="15dp"
+                        android:src="@drawable/descarga"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorAccent"
+                        android:text="Atributos"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:gravity="center"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.33"
+                    android:background="@color/colorPrimary"
+                    android:layout_margin="5dp"
+                    android:orientation="vertical"
+                    android:elevation="2dp">
+
+                    <ImageView
+                        android:id="@+id/view_profiles"
+                        android:layout_width="match_parent"
+                        android:layout_height="85dp"
+                        android:padding="15dp"
+                        android:src="@drawable/perfiles"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorAccent"
+                        android:text="Perfiles"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:gravity="center"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.33"
+                    android:background="@color/colorPrimary"
+                    android:layout_margin="5dp"
+                    android:orientation="vertical"
+                    android:elevation="2dp">
+
+                    <ImageView
+                        android:id="@+id/view_producers"
+                        android:layout_width="match_parent"
+                        android:layout_height="85dp"
+                        android:padding="15dp"
+                        android:src="@drawable/industry"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorAccent"
+                        android:text="Productores"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:gravity="center"/>
+
+                </LinearLayout>
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/view_attributes"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="?android:selectableItemBackground"
-                android:text="Atributos generados"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:padding="15dp"
-                android:gravity="center"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:padding="10dp"
+                android:background="@color/colorPrimaryTrans"
+                android:text="DATOS ESTADISTICOS FINALES"
+                android:textColor="@color/white"/>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:background="@color/white"
-            android:layout_margin="5dp"
-            android:elevation="2dp">
-
-
-            <TextView
-                android:id="@+id/view_profiles"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="?android:selectableItemBackground"
-                android:text="Perfiles generados"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:padding="15dp"
-                android:gravity="center"/>
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/white"
+                android:elevation="2dp"
+                android:layout_margin="10dp">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mean: "
+                        android:textColor="@color/black"/>
+
+                    <TextView
+                        android:id="@+id/mean_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="123"
+                        android:textColor="@color/grey_dark"/>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Init mean: "
+                        android:textColor="@color/black"/>
+
+                    <TextView
+                        android:id="@+id/init_mean_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="123"
+                        android:textColor="@color/grey_dark"/>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Std dev: "
+                        android:textColor="@color/black"/>
+
+                    <TextView
+                        android:id="@+id/std_dev_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="123"
+                        android:textColor="@color/grey_dark"/>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Init std dev: "
+                        android:textColor="@color/black"/>
+
+                    <TextView
+                        android:id="@+id/init_std_dev_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="123"
+                        android:textColor="@color/grey_dark"/>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cust mean: "
+                        android:textColor="@color/black"/>
+
+                    <TextView
+                        android:id="@+id/cust_mean_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="123"
+                        android:textColor="@color/grey_dark"/>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="% Cust: "
+                        android:textColor="@color/black"/>
+
+                    <TextView
+                        android:id="@+id/percent_cust_mean_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="123"
+                        android:textColor="@color/grey_dark"/>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="% Init cust: "
+                        android:textColor="@color/black"/>
+
+                    <TextView
+                        android:id="@+id/percent_init_cust_mean_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="123"
+                        android:textColor="@color/grey_dark"/>
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:background="@color/white"
-            android:layout_margin="5dp"
-            android:elevation="2dp">
-
-            <TextView
-                android:id="@+id/view_producers"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="?android:selectableItemBackground"
-                android:text="Productores generados"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:padding="15dp"
-                android:gravity="center"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:background="@color/white"
-            android:layout_margin="5dp"
-            android:elevation="2dp"
-            android:visibility="invisible">
-
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="?android:selectableItemBackground"
-                android:text="Ver perfiles generados"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:padding="15dp"
-                android:gravity="center"/>
-
-        </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 </LinearLayout>
