@@ -1,23 +1,13 @@
 package com.example.borja.marketingcomputacional.GeneticAlgorithm;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
 
 import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardMenu;
 import com.example.borja.marketingcomputacional.general.StoredData;
-import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardAttributes;
-import com.example.borja.marketingcomputacional.main_activity.MainActivity;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.ArrayList;
-import java.util.List;
-
-import org.w3c.dom.Attr;
 
 public class GeneticAlgorithm {
 
@@ -65,7 +55,7 @@ public class GeneticAlgorithm {
     private ArrayList<Integer> Initial_Results = new ArrayList<>();
     private int wscSum;
 
-    private static ArrayList<CustomerProfile> CustomerProfileList = new ArrayList<>();
+    private static ArrayList<CustomerProfile> CustomerProfiles = new ArrayList<>();
 
     /***************************************
      * " AUXILIARY EXCEL METHODS " * @throws Exception
@@ -104,7 +94,7 @@ public class GeneticAlgorithm {
         generateCustomerProfiles();
         generareNumberOfCustomers();
         divideCustomerProfile();
-        StoredData.Profiles = CustomerProfileList;
+        StoredData.Profiles = CustomerProfiles;
 
         generateProducers();
         StoredData.Producers = Producers;
@@ -147,7 +137,7 @@ public class GeneticAlgorithm {
 
         for (int i = 0; i < NUM_EXECUTIONS; i++) {
             if (i != 0) /*We reset myPP and create a new product as the first product*/ {
-                Producers.get(MY_PRODUCER).setProduct(createNearProduct(Producers.get(MY_PRODUCER).getAvailableAttribute(), (int) (CustomerProfileList.size() * Math.random())));
+                Producers.get(MY_PRODUCER).setProduct(createNearProduct(Producers.get(MY_PRODUCER).getAvailableAttribute(), (int) (CustomerProfiles.size() * Math.random())));
             }
             solvePD_GA();
             sum += Results.get(i);
@@ -282,7 +272,7 @@ public class GeneticAlgorithm {
      * Creating different customer profiles
      */
     private static void generateCustomerProfiles() {
-        CustomerProfileList.clear();
+        CustomerProfiles.clear();
 
         //Generate 4 random Customer Profile
         for (int i = 0; i < 4; i++) {
@@ -298,13 +288,13 @@ public class GeneticAlgorithm {
                 attr.setScoreValues(scoreValues);
                 attrs.add(attr);
             }
-            CustomerProfileList.add(new CustomerProfile(attrs));
+            CustomerProfiles.add(new CustomerProfile(attrs));
         }
 
         //Create 2 mutants for each basic profile
         for (int i = 0; i < 4; i++) {
-            CustomerProfileList.add(mutateCustomerProfile(CustomerProfileList.get(i)));
-            CustomerProfileList.add(mutateCustomerProfile(CustomerProfileList.get(i)));
+            CustomerProfiles.add(mutateCustomerProfile(CustomerProfiles.get(i)));
+            CustomerProfiles.add(mutateCustomerProfile(CustomerProfiles.get(i)));
         }
 
         //Creating 4 isolated profiles
@@ -320,7 +310,7 @@ public class GeneticAlgorithm {
                 attr.setScoreValues(scoreValues);
                 attrs.add(attr);
             }
-            CustomerProfileList.add(new CustomerProfile(attrs));
+            CustomerProfiles.add(new CustomerProfile(attrs));
         }
     }
 
@@ -346,8 +336,8 @@ public class GeneticAlgorithm {
 
 
     private void generareNumberOfCustomers() {
-        for (int i = 0; i < CustomerProfileList.size(); i++)
-            CustomerProfileList.get(i).setNumberCustomers((int) ((Math.random() * 100) + (Math.random() * 100)));
+        for (int i = 0; i < CustomerProfiles.size(); i++)
+            CustomerProfiles.get(i).setNumberCustomers((int) ((Math.random() * 100) + (Math.random() * 100)));
     }
 
     /**
@@ -361,11 +351,11 @@ public class GeneticAlgorithm {
         int numOfSubProfile;
 //        CustomerProfileListAux = new ArrayList<>();
 
-        for (int i = 0; i < CustomerProfileList.size(); i++) {
+        for (int i = 0; i < CustomerProfiles.size(); i++) {
             ArrayList<SubProfile> subProfiles = new ArrayList<>();
-            numOfSubProfile = CustomerProfileList.get(i).getNumberCustomers() / RESP_PER_GROUP;
+            numOfSubProfile = CustomerProfiles.get(i).getNumberCustomers() / RESP_PER_GROUP;
 
-            if ((CustomerProfileList.get(i).getNumberCustomers() % RESP_PER_GROUP) != 0)
+            if ((CustomerProfiles.get(i).getNumberCustomers() % RESP_PER_GROUP) != 0)
                 numOfSubProfile++;
 
             for (int j = 0; j < numOfSubProfile; j++) { //We divide into sub-profiles
@@ -374,12 +364,12 @@ public class GeneticAlgorithm {
 
                 HashMap<Attribute, Integer> valuesChosen = new HashMap<>();
                 for (int k = 0; k < TotalAttributes.size(); k++) //Each of the sub-profiles choose a value for each of the attributes
-                    valuesChosen.put(TotalAttributes.get(k), chooseValueForAttribute(CustomerProfileList.get(i).getScoreAttributes().get(k)));
+                    valuesChosen.put(TotalAttributes.get(k), chooseValueForAttribute(CustomerProfiles.get(i).getScoreAttributes().get(k)));
 
                 subprofile.setValueChosen(valuesChosen);
                 subProfiles.add(subprofile);
             }
-            CustomerProfileList.get(i).setSubProfiles(subProfiles);
+            CustomerProfiles.get(i).setSubProfiles(subProfiles);
         }
     }
 
@@ -498,7 +488,7 @@ public class GeneticAlgorithm {
 
         ArrayList<Integer> custProfsInd = new ArrayList<>();
         for (int i = 1; i < nearCustProfs; i++)
-            custProfsInd.add((int) Math.floor(CustomerProfileList.size() * Math.random()));
+            custProfsInd.add((int) Math.floor(CustomerProfiles.size() * Math.random()));
 
 
         for (int i = 0; i < TotalAttributes.size(); i++) {
@@ -514,7 +504,7 @@ public class GeneticAlgorithm {
         ArrayList<Integer> customNearProfs = new ArrayList<>();
 
         for (int i = 0; i < NEAR_CUST_PROFS; i++)
-            customNearProfs.add((int) Math.floor(CustomerProfileList.size() * Math.random()));
+            customNearProfs.add((int) Math.floor(CustomerProfiles.size() * Math.random()));
 
         HashMap<Attribute, Integer> attrValues = new HashMap<>();
 
@@ -537,7 +527,7 @@ public class GeneticAlgorithm {
 			/*We count the valoration of each selected profile for attribute attrInd value i*/
             int possible = 0;
             for (int j = 0; j < custProfInd.size(); j++) {
-                possible += CustomerProfileList.get(custProfInd.get(j)).getScoreAttributes().get(attrInd).getScoreValues().get(i);
+                possible += CustomerProfiles.get(custProfInd.get(j)).getScoreAttributes().get(attrInd).getScoreValues().get(i);
             }
             possibleAttr.add(possible);
         }
@@ -586,7 +576,7 @@ public class GeneticAlgorithm {
             if (i % 2 == 0) /*We create a random product*/
                 Population.add(createRndProduct(Producers.get(MY_PRODUCER).getAvailableAttribute()));
             else /*We create a near product*/
-                Population.add(createNearProduct(Producers.get(MY_PRODUCER).getAvailableAttribute(), (int) (CustomerProfileList.size() * Math.random())));  /////////??verificar//////////
+                Population.add(createNearProduct(Producers.get(MY_PRODUCER).getAvailableAttribute(), (int) (CustomerProfiles.size() * Math.random())));  /////////??verificar//////////
 
             Fitness.add(computeWSC(Population.get(i), MY_PRODUCER));
 
@@ -608,16 +598,16 @@ public class GeneticAlgorithm {
         boolean isTheFavourite;
         int meScore, score, k, numTies;
 
-        for (int i = 0; i < CustomerProfileList.size(); i++) {
-            for (int j = 0; j < CustomerProfileList.get(i).getSubProfiles().size(); j++) {
+        for (int i = 0; i < CustomerProfiles.size(); i++) {
+            for (int j = 0; j < CustomerProfiles.get(i).getSubProfiles().size(); j++) {
                 isTheFavourite = true;
                 numTies = 1;
-                meScore = scoreProduct(CustomerProfileList.get(i).getSubProfiles().get(j), product);
+                meScore = scoreProduct(CustomerProfiles.get(i).getSubProfiles().get(j), product);
                 k = 0;
                 while (isTheFavourite && k < Producers.size()) {
                     if (k != prodInd) {
 
-                        score = scoreProduct(CustomerProfileList.get(i).getSubProfiles().get(j), Producers.get(k).product);
+                        score = scoreProduct(CustomerProfiles.get(i).getSubProfiles().get(j), Producers.get(k).product);
 
                         if (score > meScore)
                             isTheFavourite = false;
@@ -629,8 +619,8 @@ public class GeneticAlgorithm {
                 }
 				/*TODO: When there exists ties we loose some voters because of decimals (undecided voters)*/
                 if (isTheFavourite) {
-                    if ((j == CustomerProfileList.get(i).getSubProfiles().size()) && ((CustomerProfileList.get(i).getNumberCustomers() % RESP_PER_GROUP) != 0)) {
-                        wsc += (CustomerProfileList.get(i).getNumberCustomers() % RESP_PER_GROUP) / numTies;
+                    if ((j == CustomerProfiles.get(i).getSubProfiles().size()) && ((CustomerProfiles.get(i).getNumberCustomers() % RESP_PER_GROUP) != 0)) {
+                        wsc += (CustomerProfiles.get(i).getNumberCustomers() % RESP_PER_GROUP) / numTies;
                     } else {
                         wsc += RESP_PER_GROUP / numTies;
                     }
