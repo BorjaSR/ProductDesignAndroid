@@ -68,6 +68,7 @@ public class DashboardMenu extends AppCompatActivity {
         TextView percent_cust = (TextView) findViewById(R.id.percent_cust_mean_value);
         TextView percent_init_cust = (TextView) findViewById(R.id.percent_init_cust_mean_value);
 
+
         mean.setText(StoredData.mean + "");
         init_mean.setText(StoredData.initMean + "");
         std_dev.setText(StoredData.stdDev + "");

@@ -51,6 +51,10 @@ public class ProfileListAdapter extends ArrayAdapter<CustomerProfile> {
 
         name.setText("Customer profile " + (position + 1));
 
+        if(StoredData.Algorithm.equals(StoredData.MINIMAX))
+            view_subprofiles.setVisibility(View.GONE);
+        else
+            view_subprofiles.setVisibility(View.VISIBLE);
 
         view_attribute_values.setOnClickListener(new View.OnClickListener() {
             @Override

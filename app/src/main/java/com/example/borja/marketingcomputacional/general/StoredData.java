@@ -7,6 +7,7 @@ import com.example.borja.marketingcomputacional.GeneticAlgorithm.Attribute;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.CustomerProfile;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.Producer;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.SubProfile;
+import com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax;
 import com.example.borja.marketingcomputacional.main_activity.MainActivity;
 
 import java.util.ArrayList;
@@ -18,7 +19,10 @@ import java.util.LinkedList;
 public class StoredData {
 
 
+    public static final String GENETIC = "GeneticAlgorithm";
+    public static final String MINIMAX = "MinimaxAlgorithm";
     public static com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm GeneticAlgorithm;
+    public static com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax Minimax;
 
     public static ArrayList<Attribute> Atributos;
     public static ArrayList<CustomerProfile> Profiles;
@@ -31,13 +35,14 @@ public class StoredData {
     public static Producer Producer_selected;
 
 //    FINAL DATA
-    public static double mean;
-    public static double initMean;
-    public static double stdDev;
-    public static double initStdDev;
-    public static int custMean;
-    public static double percCust;
-    public static double initPercCust;
+    public static double mean = -1;
+    public static double initMean = -1;
+    public static double stdDev = -1;
+    public static double initStdDev = -1;
+    public static int custMean = -1;
+    public static double percCust = -1;
+    public static double initPercCust = -1;
+    public static String Algorithm;
 
     public static Typeface roboto_light(Context context){
         return Typeface.createFromAsset(context.getAssets(), "Roboto-Light.ttf");

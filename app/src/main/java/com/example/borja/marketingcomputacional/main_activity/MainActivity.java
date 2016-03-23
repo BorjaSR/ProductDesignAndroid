@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm;
+import com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax;
 import com.example.borja.marketingcomputacional.R;
 import com.example.borja.marketingcomputacional.general.StoredData;
 
@@ -85,8 +86,26 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             try {
+                                StoredData.Algorithm = StoredData.GENETIC;
                                 StoredData.GeneticAlgorithm = new GeneticAlgorithm();
                                 StoredData.GeneticAlgorithm.start(getApplicationContext());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Snackbar.make(mainPager, e.getMessage(), Snackbar.LENGTH_SHORT)
+                                        .setAction("Action", null).show();
+                            }
+                        }
+                    }, 0);
+                }else{
+                    container_carga.setVisibility(View.VISIBLE);
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                StoredData.Algorithm = StoredData.MINIMAX;
+                                StoredData.Minimax = new Minimax();
+                                StoredData.Minimax.start(getApplicationContext());
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 Snackbar.make(mainPager, e.getMessage(), Snackbar.LENGTH_SHORT)

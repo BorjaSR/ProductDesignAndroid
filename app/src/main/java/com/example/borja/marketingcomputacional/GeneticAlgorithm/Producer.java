@@ -6,7 +6,10 @@ public class Producer {
 
 	private String Name;
 	public ArrayList<Attribute> AvailableAttribute;
-	public Product product;	
+	public Product product;
+
+	/****** FOR MINIMAX *******/
+	private ArrayList<Integer> CustomersGathered = new ArrayList<>();
 
 	public Producer() {
 		
@@ -40,5 +43,22 @@ public class Producer {
 
 	public void setName(String name) {
 		Name = name;
+	}
+
+	public ArrayList<Integer> getCustomersGathered() {
+		return CustomersGathered;
+	}
+
+	public void setCustomersGathered(ArrayList<Integer> customersGathered) {
+		CustomersGathered = customersGathered;
+	}
+
+	public int getNumber_CustomerGathered() {
+
+		int Number_CG = 0;
+		for (int Cust = 0; Cust < CustomersGathered.size(); Cust++)
+			Number_CG += CustomersGathered.get(Cust);
+
+		return Number_CG;
 	}
 }
