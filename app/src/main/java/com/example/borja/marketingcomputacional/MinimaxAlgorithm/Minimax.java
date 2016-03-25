@@ -7,11 +7,11 @@ import com.example.borja.marketingcomputacional.GeneticAlgorithm.Attribute;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.CustomerProfile;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.Producer;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.Product;
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.SubProfile;
 import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardMenu;
 import com.example.borja.marketingcomputacional.general.StoredData;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 /**
@@ -61,12 +61,14 @@ public class Minimax {
 
     // STATISTICAL VARIABLES
     private ArrayList<Integer> mResults = new ArrayList<>();
+    private ArrayList<Integer> mInitialResults = new ArrayList<>();
 
     /************************
      * INITIAL METHOD
      **********************/
 
     public void start(Context context) throws Exception {
+
         //playPDG();
         statisticsPDG();
 
@@ -78,19 +80,27 @@ public class Minimax {
     public void statisticsPDG() throws Exception {
         double sum = 0;
         int sumCust = 0;
+        int initSum = 0;
 
         mResults = new ArrayList<>();
+        mInitialResults = new ArrayList<>();
+
         for(int i = 0; i < NUM_EXEC; i++){
             playPDG();
             sum += mResults.get(i);
+            initSum = mInitialResults.get(i);
             sumCust += countCustomers() * mNTurns * 2;
         }
 
         StoredData.mean = sum / NUM_EXEC;
+        StoredData.initMean = initSum / NUM_EXEC;
         double variance = computeVariance(StoredData.mean);
+        double initVariance = computeVariance(StoredData.initMean);
         StoredData.stdDev = Math.sqrt(variance);
+        StoredData.initStdDev = Math.sqrt(initVariance);
         StoredData.custMean = sumCust / NUM_EXEC;
         StoredData.percCust = 100 * StoredData.mean / StoredData.custMean;
+        StoredData.initPercCust = 100 * StoredData.initMean / StoredData.custMean;
     }
 
     public void playPDG() throws Exception {
@@ -121,6 +131,8 @@ public class Minimax {
     }
 
     public void playGame() throws Exception {
+        mInitialResults.add(computeWSC(Producers.get(MY_PRODUCER).getProduct(), MY_PRODUCER));
+
         for (int i = 0; i < mNTurns; i++) {
             for (int j = 0; j < Producers.size(); j++) {
                 changeProduct(j);
