@@ -361,7 +361,7 @@ public class Minimax {
 
         for (int attrInd = 0; attrInd < TotalAttributes.size(); attrInd++) {
             for (int attrVal = 0; attrVal < TotalAttributes.get(attrInd).getMAX(); attrVal++) {
-                if (producer.AvailableAttribute.get(attrInd).getAvailableValues().get(attrVal)) {
+                if (producer.getAvailableAttribute().get(attrInd).getAvailableValues().get(attrVal)) {
                     if (producer.getProduct().getAttributeValue().get(TotalAttributes.get(attrInd)) != attrVal || !repetedChild) {
 
                         if (producer.getProduct().getAttributeValue().get(TotalAttributes.get(attrInd)) == attrVal)
@@ -403,7 +403,7 @@ public class Minimax {
         for (int attrInd = 0; attrInd < TotalAttributes.size(); attrInd++){
             exitFor = false;
             for (int attrVal = 0; attrVal < TotalAttributes.get(attrInd).getMAX(); attrVal++) {
-                if (producer.AvailableAttribute.get(attrInd).getAvailableValues().get(attrVal)) {
+                if (producer.getAvailableAttribute().get(attrInd).getAvailableValues().get(attrVal)) {
                     if (producer.getProduct().getAttributeValue().get(TotalAttributes.get(attrInd)) != attrVal || !repeatedChild) {
 
                         if (producer.getProduct().getAttributeValue().get(TotalAttributes.get(attrInd)) == attrVal)
@@ -467,7 +467,7 @@ public class Minimax {
             while (isTheFavourite && k < Producers.size()) {
                 if (k != prodInd) {
 
-                    score = scoreProduct(CustomerProfiles.get(i), Producers.get(k).product);
+                    score = scoreProduct(CustomerProfiles.get(i), Producers.get(k).getProduct());
 
                     if (score > meScore)
                         isTheFavourite = false;

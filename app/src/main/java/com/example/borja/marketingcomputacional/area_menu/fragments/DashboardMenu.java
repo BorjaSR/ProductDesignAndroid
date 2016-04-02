@@ -67,6 +67,7 @@ public class DashboardMenu extends AppCompatActivity {
         TextView cust_mean = (TextView) findViewById(R.id.cust_mean_value);
         TextView percent_cust = (TextView) findViewById(R.id.percent_cust_mean_value);
         TextView percent_init_cust = (TextView) findViewById(R.id.percent_init_cust_mean_value);
+        TextView price = (TextView) findViewById(R.id.price_value);
 
 
         mean.setText(StoredData.mean + "");
@@ -76,5 +77,12 @@ public class DashboardMenu extends AppCompatActivity {
         cust_mean.setText(StoredData.custMean + "");
         percent_cust.setText(StoredData.percCust + "");
         percent_init_cust.setText(StoredData.initPercCust + "");
+
+        if(StoredData.Algorithm.equals(StoredData.GENETIC)){
+            price.setVisibility(View.VISIBLE);
+            price.setText(StoredData.My_price + " €");
+        }else{
+            price.setVisibility(View.GONE);
+        }
     }
 }

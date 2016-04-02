@@ -43,6 +43,7 @@ public class StoredData {
     public static double percCust = -1;
     public static double initPercCust = -1;
     public static String Algorithm;
+    public static int My_price;
 
     public static Typeface roboto_light(Context context){
         return Typeface.createFromAsset(context.getAssets(), "Roboto-Light.ttf");

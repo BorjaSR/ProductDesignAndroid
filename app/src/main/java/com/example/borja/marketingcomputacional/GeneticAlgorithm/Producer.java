@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class Producer {
 
 	private String Name;
-	public ArrayList<Attribute> AvailableAttribute;
-	public Product product;
+	private ArrayList<Attribute> AvailableAttribute;
+	private Product product;
 
 	/****** FOR MINIMAX *******/
 	private ArrayList<Integer> CustomersGathered = new ArrayList<>();

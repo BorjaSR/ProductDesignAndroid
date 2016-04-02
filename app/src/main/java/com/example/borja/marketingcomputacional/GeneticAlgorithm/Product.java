@@ -5,6 +5,7 @@ import java.util.HashMap;
 public class Product implements Cloneable{
 	
 	private HashMap<Attribute, Integer> attributeValue;
+	private int Price;
 	private int Fitness;
 	
 	public Product() {
@@ -30,6 +31,14 @@ public class Product implements Cloneable{
 
 	public void setFitness(int fitness) {
 		Fitness = fitness;
+	}
+
+	public int getPrice() {
+		return Price;
+	}
+
+	public void setPrice(int price) {
+		Price = price;
 	}
 
 	/**Creates a deep copy of Product*/
