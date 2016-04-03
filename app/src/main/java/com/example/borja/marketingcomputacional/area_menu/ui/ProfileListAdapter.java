@@ -51,7 +51,7 @@ public class ProfileListAdapter extends ArrayAdapter<CustomerProfile> {
 
         name.setText("Customer profile " + (position + 1));
 
-        if(StoredData.Algorithm.equals(StoredData.MINIMAX))
+        if(StoredData.Algorithm == StoredData.MINIMAX)
             view_subprofiles.setVisibility(View.GONE);
         else
             view_subprofiles.setVisibility(View.VISIBLE);

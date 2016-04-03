@@ -3,7 +3,8 @@
     <color name="colorPrimaryTrans">#AA3F51B5</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <!--<color name="colorAccent">#FF4081</color>-->
+    <color name="colorAccent">#FF5252</color>
     <color name="alpha_colorAccent">#CCFF4081</color>
     <color name="aguamarina">#18df9a</color>
 

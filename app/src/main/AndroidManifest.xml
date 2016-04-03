@@ -67,6 +67,12 @@
             android:label="Perfiles"
             android:screenOrientation="portrait">
         </activity>
+
+        <activity
+            android:name=".area_input.fragments.InputAttributes"
+            android:label="Introducir atributos"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

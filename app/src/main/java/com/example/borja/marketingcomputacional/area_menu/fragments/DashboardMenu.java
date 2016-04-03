@@ -78,7 +78,7 @@ public class DashboardMenu extends AppCompatActivity {
         percent_cust.setText(StoredData.percCust + "");
         percent_init_cust.setText(StoredData.initPercCust + "");
 
-        if(StoredData.Algorithm.equals(StoredData.GENETIC)){
+        if(StoredData.Algorithm == StoredData.GENETIC){
             price.setVisibility(View.VISIBLE);
             price.setText(StoredData.My_price + " €");
         }else{

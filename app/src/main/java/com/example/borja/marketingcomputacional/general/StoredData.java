@@ -19,8 +19,8 @@ import java.util.LinkedList;
 public class StoredData {
 
 
-    public static final String GENETIC = "GeneticAlgorithm";
-    public static final String MINIMAX = "MinimaxAlgorithm";
+    public static final int GENETIC = 0;
+    public static final int MINIMAX = 1;
     public static com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm GeneticAlgorithm;
     public static com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax Minimax;
 
@@ -42,7 +42,7 @@ public class StoredData {
     public static int custMean = -1;
     public static double percCust = -1;
     public static double initPercCust = -1;
-    public static String Algorithm;
+    public static int Algorithm;
     public static int My_price;
 
     public static Typeface roboto_light(Context context){

@@ -1,5 +1,6 @@
 package com.example.borja.marketingcomputacional.main_activity;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,6 +20,8 @@ import android.widget.TextView;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm;
 import com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax;
 import com.example.borja.marketingcomputacional.R;
+import com.example.borja.marketingcomputacional.area_input.fragments.InputAttributes;
+import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardProfiles;
 import com.example.borja.marketingcomputacional.general.StoredData;
 
 public class MainActivity extends AppCompatActivity {
@@ -80,30 +83,35 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (mainPager.getCurrentItem() == 0) {
+                    StoredData.Algorithm = StoredData.GENETIC;
                     container_carga.setVisibility(View.VISIBLE);
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            try {
-                                StoredData.Algorithm = StoredData.GENETIC;
-                                StoredData.GeneticAlgorithm = new GeneticAlgorithm();
-                                StoredData.GeneticAlgorithm.start(getApplicationContext());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                Snackbar.make(mainPager, e.getMessage(), Snackbar.LENGTH_SHORT)
-                                        .setAction("Action", null).show();
-                            }
+//                            try {
+//                                StoredData.Algorithm = StoredData.GENETIC;
+//                                StoredData.GeneticAlgorithm = new GeneticAlgorithm();
+//                                StoredData.GeneticAlgorithm.start(getApplicationContext());
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                                Snackbar.make(mainPager, e.getMessage(), Snackbar.LENGTH_SHORT)
+//                                        .setAction("Action", null).show();
+//                            }
+
+                            Intent input_attrs = new Intent(getApplicationContext(), InputAttributes.class);
+                            input_attrs.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            getApplicationContext().startActivity(input_attrs);
                         }
                     }, 0);
                 }else{
+                    StoredData.Algorithm = StoredData.MINIMAX;
                     container_carga.setVisibility(View.VISIBLE);
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             try {
-                                StoredData.Algorithm = StoredData.MINIMAX;
                                 StoredData.Minimax = new Minimax();
                                 StoredData.Minimax.start(getApplicationContext());
                             } catch (Exception e) {

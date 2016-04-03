@@ -33,7 +33,7 @@ public class GeneticAlgorithm {
 											 * RESP_PER_GROUP respondents
 											 */
     static final int NEAR_CUST_PROFS = 4;
-    static final int NUM_EXECUTIONS = 10; /* number of executions */
+    static final int NUM_EXECUTIONS = 1; /* number of executions */
 
     static final int MY_PRODUCER = 0;  //The index of my producer
 
