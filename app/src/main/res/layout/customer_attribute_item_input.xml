@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <TextView
+            android:id="@+id/puntuations_for"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Puntuaciones para el atributo 1"
+            android:textSize="15dp"
+            android:textColor="@color/black"
+            android:padding="10dp"/>
+
+        <LinearLayout
+            android:id="@+id/list_valorations_content"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <include layout="@layout/valorations_item_input"/>
+            <include layout="@layout/valorations_item_input"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

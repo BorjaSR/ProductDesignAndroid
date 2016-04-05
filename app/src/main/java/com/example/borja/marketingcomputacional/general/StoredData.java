@@ -24,6 +24,7 @@ public class StoredData {
     public static com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm GeneticAlgorithm;
     public static com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax Minimax;
 
+//    INPUT DATA
     public static ArrayList<Attribute> Atributos;
     public static ArrayList<CustomerProfile> Profiles;
     public static ArrayList<Producer> Producers;

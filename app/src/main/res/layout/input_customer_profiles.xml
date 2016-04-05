@@ -2,8 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:weightSum="1">
+    android:layout_height="match_parent">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -16,7 +15,7 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/how_much_attr"
+                android:id="@+id/how_much_cust"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -25,7 +24,16 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="¿Cuantos atributos tendra el producto?"
+                    android:text="Muy bien. Ya hemos creado los atributos. Ahora,"
+                    android:textColor="@color/black"
+                    android:textSize="15dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="¿Con cuantos perfiles trabajaremos?"
                     android:textColor="@color/black"
                     android:textSize="15dp"
                     android:paddingTop="10dp"
@@ -39,7 +47,7 @@
 
                     <EditText
                         android:layout_weight="1"
-                        android:id="@+id/number_input_attributes"
+                        android:id="@+id/number_input_customers"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:paddingTop="10dp"
@@ -55,7 +63,7 @@
                         android:background="@drawable/generar_button">
 
                         <TextView
-                            android:id="@+id/generate_attr"
+                            android:id="@+id/generate_cust"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:padding="10dp"
@@ -70,13 +78,16 @@
             </LinearLayout>
 
 
+
             <LinearLayout
-                android:id="@+id/input_attribute_list"
+                android:id="@+id/input_customer_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
             </LinearLayout>
+
+
         </LinearLayout>
     </ScrollView>
 
