@@ -81,9 +81,9 @@ public class InputCustomerProfiles extends AppCompatActivity {
                                 for(int p = 0; p < attr.getMAX(); p++)
                                     valors.add((p + 1) + "");
 
-                                ArrayAdapter<String> spinner_adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, valors);
+                                ArrayAdapter<String> spinner_adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.spinner_simple_item, valors);
                                 //Añadimos el layout para el menú y se lo damos al spinner
-                                spinner_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                spinner_adapter.setDropDownViewResource(R.layout.spinner_simple_dropdown_item);
                                 valoration_spinner.setAdapter(spinner_adapter);
 
                                 list_valorations_content.addView(valorations_item_input);
