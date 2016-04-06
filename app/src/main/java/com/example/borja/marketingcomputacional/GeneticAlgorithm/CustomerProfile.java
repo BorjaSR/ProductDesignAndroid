@@ -13,6 +13,11 @@ public class CustomerProfile {
 		this.scoreAttributes = scoreAttributes;
 	}
 
+	public CustomerProfile(int numberCustomers, ArrayList<Attribute> scoreAttributes) {
+		this.numberCustomers = numberCustomers;
+		this.scoreAttributes = scoreAttributes;
+	}
+
 	public ArrayList<Attribute> getScoreAttributes() {
 		return scoreAttributes;
 	}

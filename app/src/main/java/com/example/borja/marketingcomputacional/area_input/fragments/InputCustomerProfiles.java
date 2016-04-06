@@ -2,6 +2,7 @@ package com.example.borja.marketingcomputacional.area_input.fragments;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,8 +13,10 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.Attribute;
+import com.example.borja.marketingcomputacional.GeneticAlgorithm.CustomerProfile;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm;
 import com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax;
 import com.example.borja.marketingcomputacional.R;
@@ -27,6 +30,8 @@ import java.util.List;
  */
 public class InputCustomerProfiles extends AppCompatActivity {
 
+    private boolean isgenerated = false;
+
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +39,7 @@ public class InputCustomerProfiles extends AppCompatActivity {
 
         setContentView(R.layout.input_customer_profiles);
 
-        TextView generate = (TextView) findViewById(R.id.generate_cust);
+        final TextView generate = (TextView) findViewById(R.id.generate_cust);
         final EditText num_cust = (EditText) findViewById(R.id.number_input_customers);
         final LinearLayout list_input_cust = (LinearLayout) findViewById(R.id.input_customer_list);
         final LinearLayout how_much_cust = (LinearLayout) findViewById(R.id.how_much_cust);
@@ -58,7 +63,7 @@ public class InputCustomerProfiles extends AppCompatActivity {
                         final LinearLayout list_customer_attributes_content = (LinearLayout) input_cust_view.findViewById(R.id.list_customer_attributes_content);
                         list_customer_attributes_content.removeAllViews();
 
-                        for(int j = 0; j < StoredData.Atributos.size(); j++){
+                        for (int j = 0; j < StoredData.Atributos.size(); j++) {
                             View customer_attribute_item_input = inflater.inflate(R.layout.customer_attribute_item_input, list_customer_attributes_content, false);
 
                             TextView punt = (TextView) customer_attribute_item_input.findViewById(R.id.puntuations_for);
@@ -69,7 +74,7 @@ public class InputCustomerProfiles extends AppCompatActivity {
                             list_valorations_content.removeAllViews();
 
                             Attribute attr = StoredData.Atributos.get(j);
-                            for(int k = 0; k < attr.getMAX(); k++){
+                            for (int k = 0; k < attr.getMAX(); k++) {
                                 View valorations_item_input = inflater.inflate(R.layout.valorations_item_input, list_customer_attributes_content, false);
 
                                 TextView valor_input = (TextView) valorations_item_input.findViewById(R.id.valor_input);
@@ -78,7 +83,7 @@ public class InputCustomerProfiles extends AppCompatActivity {
                                 Spinner valoration_spinner = (Spinner) valorations_item_input.findViewById(R.id.valorations_spinner);
 
                                 List<String> valors = new ArrayList<>();
-                                for(int p = 0; p < attr.getMAX(); p++)
+                                for (int p = 0; p < attr.getMAX(); p++)
                                     valors.add((p + 1) + "");
 
                                 ArrayAdapter<String> spinner_adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.spinner_simple_item, valors);
@@ -92,7 +97,7 @@ public class InputCustomerProfiles extends AppCompatActivity {
                             list_customer_attributes_content.addView(customer_attribute_item_input);
                         }
 
-
+                        isgenerated = true;
                         list_input_cust.addView(input_cust_view);
                     }
                 }
@@ -104,21 +109,35 @@ public class InputCustomerProfiles extends AppCompatActivity {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(StoredData.Algorithm == StoredData.GENETIC){
-                    try {
-                        StoredData.GeneticAlgorithm = new GeneticAlgorithm();
-                        StoredData.GeneticAlgorithm.start(getApplicationContext());
-                    } catch (Exception e) {
-                        e.printStackTrace();
+
+                if (isgenerated) {
+
+                    boolean malformed = false;
+                    ArrayList<CustomerProfile> custProfiles = new ArrayList<CustomerProfile>();
+                    int num_customers = Integer.parseInt(num_cust.getText().toString());
+                    for(int i = 0; i < num_customers; i++){
+                        EditText num_people = (EditText)list_input_cust.getChildAt(i).findViewById(R.id.number_people_profile);
+                        if(num_people.getText().toString().length() == 0){
+                            malformed = true;
+                            break;
+                        }else if(Integer.parseInt(num_people.getText().toString()) < 1){
+                            malformed = true;
+                            break;
+                        }else{
+                            custProfiles.add(new CustomerProfile(Integer.parseInt(num_people.getText().toString()), null));
+                        }
                     }
-                }else{
-                    try {
-                        StoredData.Minimax = new Minimax();
-                        StoredData.Minimax.start(getApplicationContext());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+
+                    if(!malformed){
+                        StoredData.Profiles = custProfiles;
+
+                        Intent input_customers = new Intent(getApplicationContext(), InputProducers.class);
+                        input_customers.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        getApplicationContext().startActivity(input_customers);
+                    }else
+                        Toast.makeText(getApplicationContext(), "Debes rellenar bien los campos para continuar", Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(getApplicationContext(), "Debes generar algun atributo para continuar", Toast.LENGTH_SHORT).show();
             }
         });
     }

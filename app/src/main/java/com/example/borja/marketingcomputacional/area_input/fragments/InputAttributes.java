@@ -93,9 +93,9 @@ public class InputAttributes extends AppCompatActivity {
                         }
                     }
 
-                    StoredData.Atributos = attrs;
-
                     if(!malformed){
+                        StoredData.Atributos = attrs;
+
                         Intent input_customers = new Intent(getApplicationContext(), InputCustomerProfiles.class);
                         input_customers.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         getApplicationContext().startActivity(input_customers);
