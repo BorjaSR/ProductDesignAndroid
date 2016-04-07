@@ -22,6 +22,7 @@ import com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax;
 import com.example.borja.marketingcomputacional.R;
 import com.example.borja.marketingcomputacional.general.StoredData;
 
+import java.sql.SQLInvalidAuthorizationSpecException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,7 +76,7 @@ public class InputCustomerProfiles extends AppCompatActivity {
 
                             Attribute attr = StoredData.Atributos.get(j);
                             for (int k = 0; k < attr.getMAX(); k++) {
-                                View valorations_item_input = inflater.inflate(R.layout.valorations_item_input, list_customer_attributes_content, false);
+                                View valorations_item_input = inflater.inflate(R.layout.valorations_item_input, list_valorations_content, false);
 
                                 TextView valor_input = (TextView) valorations_item_input.findViewById(R.id.valor_input);
                                 valor_input.setText("Valor " + (k + 1));
@@ -117,6 +118,24 @@ public class InputCustomerProfiles extends AppCompatActivity {
                     int num_customers = Integer.parseInt(num_cust.getText().toString());
                     for(int i = 0; i < num_customers; i++){
                         EditText num_people = (EditText)list_input_cust.getChildAt(i).findViewById(R.id.number_people_profile);
+
+                        ArrayList<Attribute> attrs = new ArrayList<>();
+                        LinearLayout list_customer_attributes_content = (LinearLayout) list_input_cust.getChildAt(i).findViewById(R.id.list_customer_attributes_content);
+                        for (int j = 0; j < StoredData.Atributos.size(); j++) {
+                            LinearLayout list_valorations_content = (LinearLayout)list_customer_attributes_content.getChildAt(j).findViewById(R.id.list_valorations_content);
+
+
+                            Attribute attr = new Attribute(StoredData.Atributos.get(j).getName(), StoredData.Atributos.get(j).getMIN(), StoredData.Atributos.get(j).getMAX());
+                            ArrayList<Integer> scoreValues = new ArrayList<>();
+
+                            for (int k = 0; k < attr.getMAX(); k++) {
+                                Spinner valor = (Spinner) list_valorations_content.getChildAt(k).findViewById(R.id.valorations_spinner);
+                                scoreValues.add(Integer.parseInt(valor.getSelectedItem().toString()));
+                            }
+                            attr.setScoreValues(scoreValues);
+                            attrs.add(attr);
+                        }
+
                         if(num_people.getText().toString().length() == 0){
                             malformed = true;
                             break;
@@ -124,7 +143,7 @@ public class InputCustomerProfiles extends AppCompatActivity {
                             malformed = true;
                             break;
                         }else{
-                            custProfiles.add(new CustomerProfile(Integer.parseInt(num_people.getText().toString()), null));
+                            custProfiles.add(new CustomerProfile(Integer.parseInt(num_people.getText().toString()), attrs));
                         }
                     }
 
