@@ -85,6 +85,12 @@
             android:label="Introducir productores"
             android:screenOrientation="portrait">
         </activity>
+
+        <activity
+            android:name=".main_activity.SelectInput"
+            android:label="Seleccion de entrada"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

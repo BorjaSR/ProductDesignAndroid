@@ -21,6 +21,7 @@ import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorith
 import com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax;
 import com.example.borja.marketingcomputacional.R;
 import com.example.borja.marketingcomputacional.area_input.fragments.InputAttributes;
+import com.example.borja.marketingcomputacional.area_input.fragments.InputRandom;
 import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardProfiles;
 import com.example.borja.marketingcomputacional.general.StoredData;
 
@@ -99,9 +100,9 @@ public class MainActivity extends AppCompatActivity {
 //                                        .setAction("Action", null).show();
 //                            }
 
-                            Intent input_attrs = new Intent(getApplicationContext(), InputAttributes.class);
-                            input_attrs.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            getApplicationContext().startActivity(input_attrs);
+                            Intent select_input = new Intent(getApplicationContext(), SelectInput.class);
+                            select_input.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            getApplicationContext().startActivity(select_input);
                         }
                     }, 0);
                 }else{
