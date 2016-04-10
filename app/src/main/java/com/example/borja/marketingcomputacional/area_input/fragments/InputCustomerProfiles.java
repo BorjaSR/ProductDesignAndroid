@@ -18,12 +18,14 @@ import android.widget.Toast;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.Attribute;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.CustomerProfile;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm;
+import com.example.borja.marketingcomputacional.GeneticAlgorithm.SubProfile;
 import com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax;
 import com.example.borja.marketingcomputacional.R;
 import com.example.borja.marketingcomputacional.general.StoredData;
 
 import java.sql.SQLInvalidAuthorizationSpecException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -31,6 +33,7 @@ import java.util.List;
  */
 public class InputCustomerProfiles extends AppCompatActivity {
 
+    static final int RESP_PER_GROUP = 20;
     private boolean isgenerated = false;
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -149,6 +152,11 @@ public class InputCustomerProfiles extends AppCompatActivity {
 
                     if(!malformed){
                         StoredData.Profiles = custProfiles;
+                        try {
+                            divideCustomerProfile();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
                         Intent input_customers = new Intent(getApplicationContext(), InputProducers.class);
                         input_customers.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -159,5 +167,75 @@ public class InputCustomerProfiles extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Debes generar algun atributo para continuar", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+
+    /**
+     * Dividing the customer profiles into sub-profiles
+     *
+     * @throws Exception
+     */
+    private void divideCustomerProfile() throws Exception {
+
+
+        int numOfSubProfile;
+//        CustomerProfileListAux = new ArrayList<>();
+
+        for (int i = 0; i < StoredData.Profiles.size(); i++) {
+            ArrayList<SubProfile> subProfiles = new ArrayList<>();
+            numOfSubProfile = StoredData.Profiles.get(i).getNumberCustomers() / RESP_PER_GROUP;
+
+            if ((StoredData.Profiles.get(i).getNumberCustomers() % RESP_PER_GROUP) != 0)
+                numOfSubProfile++;
+
+            for (int j = 0; j < numOfSubProfile; j++) { //We divide into sub-profiles
+                SubProfile subprofile = new SubProfile();
+                subprofile.setName("Subperfil " + (j + 1));// + ", Perfil " + (i+1));
+
+                HashMap<Attribute, Integer> valuesChosen = new HashMap<>();
+                for (int k = 0; k < StoredData.Atributos.size(); k++) //Each of the sub-profiles choose a value for each of the attributes
+                    valuesChosen.put(StoredData.Atributos.get(k), chooseValueForAttribute(StoredData.Profiles.get(i).getScoreAttributes().get(k)));
+
+                subprofile.setValueChosen(valuesChosen);
+                subProfiles.add(subprofile);
+            }
+            StoredData.Profiles.get(i).setSubProfiles(subProfiles);
+        }
+    }
+
+
+    /**
+     * Given an index of a customer profile and the index of an attribute we choose a value
+     * for that attribute of the sub-profile having into account the values of the poll
+     */
+    private Integer chooseValueForAttribute(Attribute attribute) throws Exception {
+
+        int total = 0;
+        int accumulated = 0;
+        boolean found = false;
+
+        for (int i = 0; i < attribute.getScoreValues().size(); i++)
+            total += attribute.getScoreValues().get(i);
+
+        int rndVal = (int) (total * Math.random());
+
+        int value = 0;
+        while (!found) {
+            accumulated += attribute.getScoreValues().get(value);
+            if (rndVal <= accumulated)
+                found = true;
+            else
+                value++;
+            ;
+
+            if (value >= attribute.getScoreValues().size())
+                throw new Exception("Error 1 in chooseValueForAttribute() method: Value not found");
+
+        }
+
+        if (value >= attribute.getScoreValues().size())
+            throw new Exception("Error 2 in chooseValueForAttribute() method: Value not found");
+
+        return value;
     }
 }

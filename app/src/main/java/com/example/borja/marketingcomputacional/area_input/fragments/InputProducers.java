@@ -154,7 +154,6 @@ public class InputProducers extends AppCompatActivity {
 
                 StoredData.Producers = producers;
 
-
                 if (StoredData.Algorithm == StoredData.GENETIC) {
                     try {
                         StoredData.GeneticAlgorithm = new GeneticAlgorithm();
