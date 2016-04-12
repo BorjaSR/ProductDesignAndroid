@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.8"
-            android:src="@drawable/perfiles"
+            android:src="@drawable/al_azar"
             android:padding="10dp"
             android:background="?android:selectableItemBackground"/>
 
@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.8"
-            android:src="@drawable/perfiles"
+            android:src="@drawable/a_mano"
             android:padding="10dp"
             android:background="?android:selectableItemBackground"/>
 
@@ -78,7 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.8"
-            android:src="@drawable/perfiles"
+            android:src="@drawable/desde_fichero"
             android:padding="10dp"
             android:background="?android:selectableItemBackground"/>
 
