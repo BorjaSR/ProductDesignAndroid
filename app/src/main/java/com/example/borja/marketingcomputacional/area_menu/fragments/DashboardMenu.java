@@ -77,7 +77,7 @@ public class DashboardMenu extends AppCompatActivity {
         init_std_dev.setText(StoredData.initStdDev + "");
         cust_mean.setText(StoredData.custMean + "");
         percent_cust.setText(StoredData.percCust + "");
-        
+
         if(StoredData.Fitness == StoredData.Customers){
             mean.setText(StoredData.mean + "");
             init_mean.setText(StoredData.initMean + "");
@@ -85,6 +85,8 @@ public class DashboardMenu extends AppCompatActivity {
         }else if(StoredData.Fitness == StoredData.Benefits){
             mean.setText(StoredData.mean + " €");
             init_mean.setText(StoredData.initMean + " €");
+            TextView percent_init_cust_mean_value_text = (TextView) findViewById(R.id.percent_init_cust_mean_value_text);
+            percent_init_cust_mean_value_text.setText("% of increased benefits: ");
             percent_init_cust_mean_value_container.setVisibility(View.GONE);
         }
 

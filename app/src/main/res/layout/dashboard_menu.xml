@@ -257,9 +257,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="5dp">
+                    android:padding="5dp">Of increased benefits
 
                     <TextView
+                        android:id="@+id/percent_init_cust_mean_value_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="% Init cust: "
