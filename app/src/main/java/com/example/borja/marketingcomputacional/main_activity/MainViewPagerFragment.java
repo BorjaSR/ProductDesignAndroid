@@ -39,13 +39,19 @@ public class MainViewPagerFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        if (getArguments().getInt("page") == 0) {
-            title_viewer.setText("Algoritmo Genético");
-            image_viewer.setImageResource(R.drawable.adn);
-        } else {
-            title_viewer.setText("Minimax");
-            image_viewer.setImageResource(R.drawable.minimax);
+        switch (getArguments().getInt("page")){
+            case 0:
+                title_viewer.setText("Algoritmo Genético (Clientes)");
+                image_viewer.setImageResource(R.drawable.adn);
+                break;
+            case 1:
+                title_viewer.setText("Minimax");
+                image_viewer.setImageResource(R.drawable.minimax);
+                break;
+            case 2:
+                title_viewer.setText("Algoritmo Genético (Beneficios)");
+                image_viewer.setImageResource(R.drawable.adn);
+                break;
         }
     }
 

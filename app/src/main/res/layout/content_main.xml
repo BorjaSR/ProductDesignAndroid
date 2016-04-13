@@ -44,6 +44,14 @@
                     android:layout_width="10dp"
                     android:layout_height="10dp"
                     android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/circle_black" />
+
+                <ImageView
+                    android:id="@+id/third_circle"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_marginLeft="5dp"
                     android:src="@drawable/circle_black" />
 
             </LinearLayout>

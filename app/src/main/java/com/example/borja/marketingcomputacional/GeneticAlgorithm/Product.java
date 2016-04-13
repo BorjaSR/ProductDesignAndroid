@@ -44,6 +44,7 @@ public class Product implements Cloneable{
 	/**Creates a deep copy of Product*/
 	public Product clone(){
 		Product product = new Product(this.attributeValue);
+		product.setPrice(this.Price);
 //		product.setFitness(this.Fitness);
 		return product;
 	}

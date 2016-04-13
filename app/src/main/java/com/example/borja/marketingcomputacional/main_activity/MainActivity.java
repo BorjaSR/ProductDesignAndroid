@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         final ImageView first_circle = (ImageView) findViewById(R.id.first_circle);
         final ImageView second_circle = (ImageView) findViewById(R.id.second_circle);
+        final ImageView third_circle = (ImageView) findViewById(R.id.third_circle);
 
         texto_carga = (TextView) findViewById(R.id.texto_carga);
         Typeface font = Typeface.createFromAsset(getAssets(), "Roboto-Regular.ttf");
@@ -63,10 +64,17 @@ public class MainActivity extends AppCompatActivity {
                     case 0:
                         first_circle.setImageResource(R.drawable.circle_white);
                         second_circle.setImageResource(R.drawable.circle_black);
+                        third_circle.setImageResource(R.drawable.circle_black);
                         break;
                     case 1:
                         first_circle.setImageResource(R.drawable.circle_black);
                         second_circle.setImageResource(R.drawable.circle_white);
+                        third_circle.setImageResource(R.drawable.circle_black);
+                        break;
+                    case 2:
+                        first_circle.setImageResource(R.drawable.circle_black);
+                        second_circle.setImageResource(R.drawable.circle_black);
+                        third_circle.setImageResource(R.drawable.circle_white);
                         break;
                 }
             }
@@ -83,13 +91,16 @@ public class MainActivity extends AppCompatActivity {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mainPager.getCurrentItem() == 0) {
-                    StoredData.Algorithm = StoredData.GENETIC;
-                    container_carga.setVisibility(View.VISIBLE);
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
+                final Handler handler;
+                switch (mainPager.getCurrentItem()){
+                    case 0: //GENETICO CLIENTES
+                        StoredData.Algorithm = StoredData.GENETIC;
+                        StoredData.Fitness = StoredData.Customers;
+                        container_carga.setVisibility(View.VISIBLE);
+                        handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
 //                            try {
 //                                StoredData.Algorithm = StoredData.GENETIC;
 //                                StoredData.GeneticAlgorithm = new GeneticAlgorithm();
@@ -100,28 +111,44 @@ public class MainActivity extends AppCompatActivity {
 //                                        .setAction("Action", null).show();
 //                            }
 
-                            Intent select_input = new Intent(getApplicationContext(), SelectInput.class);
-                            select_input.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            getApplicationContext().startActivity(select_input);
-                        }
-                    }, 0);
-                }else{
-                    StoredData.Algorithm = StoredData.MINIMAX;
-                    container_carga.setVisibility(View.VISIBLE);
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                StoredData.Minimax = new Minimax();
-                                StoredData.Minimax.start(getApplicationContext());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                Snackbar.make(mainPager, e.getMessage(), Snackbar.LENGTH_SHORT)
-                                        .setAction("Action", null).show();
+                                Intent select_input = new Intent(getApplicationContext(), SelectInput.class);
+                                select_input.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                getApplicationContext().startActivity(select_input);
                             }
-                        }
-                    }, 0);
+                        }, 0);
+                        break;
+                    case 1:// MINIMAX
+                        StoredData.Algorithm = StoredData.MINIMAX;
+                        container_carga.setVisibility(View.VISIBLE);
+                        handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    StoredData.Minimax = new Minimax();
+                                    StoredData.Minimax.start(getApplicationContext());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    Snackbar.make(mainPager, e.getMessage(), Snackbar.LENGTH_SHORT)
+                                            .setAction("Action", null).show();
+                                }
+                            }
+                        }, 0);
+                        break;
+                    case 2:// GENETICO BENEFICIOS
+                        StoredData.Algorithm = StoredData.GENETIC;
+                        StoredData.Fitness = StoredData.Benefits;
+                        container_carga.setVisibility(View.VISIBLE);
+                        handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Intent select_input = new Intent(getApplicationContext(), SelectInput.class);
+                                select_input.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                getApplicationContext().startActivity(select_input);
+                            }
+                        }, 0);
+                        break;
                 }
             }
         });
@@ -181,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
     }
 

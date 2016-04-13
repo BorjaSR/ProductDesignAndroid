@@ -111,7 +111,10 @@ public class GeneticAlgorithm {
 
         Results.add(BestWSC);
         showWSC();
-        calculatePrice();
+
+        int price_MyProduct = calculatePrice(Producers.get(MY_PRODUCER).getProduct());
+        Producers.get(MY_PRODUCER).getProduct().setPrice(price_MyProduct);
+        Prices.add(price_MyProduct);
     }
 
     /**
@@ -150,10 +153,15 @@ public class GeneticAlgorithm {
         StoredData.stdDev = Math.sqrt(variance);
         StoredData.initStdDev = Math.sqrt(initVariance);
         StoredData.custMean = sumCust / NUM_EXECUTIONS;
-        StoredData.percCust = 100 * StoredData.mean / StoredData.custMean;
-        StoredData.initPercCust = 100 * StoredData.initMean / StoredData.custMean;
+        if(StoredData.Fitness == StoredData.Customers){
+            StoredData.percCust = 100 * StoredData.mean / StoredData.custMean;
+            StoredData.initPercCust = 100 * StoredData.initMean / StoredData.custMean;
+        }else if (StoredData.Fitness == StoredData.Benefits){
+            StoredData.percCust = (100 * StoredData.mean) / StoredData.initMean;
+        }
+
         StoredData.My_price = price / NUM_EXECUTIONS;
-		
+
 		/*MOSTRARLO*/
     }
 
@@ -187,6 +195,8 @@ public class GeneticAlgorithm {
             }
             product.getAttributeValue().put(TotalAttributes.get(i), attrVal);
         }
+
+        product.setPrice(calculatePrice(product));
         return product;
     }
 
@@ -207,6 +217,8 @@ public class GeneticAlgorithm {
             attrVal = chooseAttribute(i, custProfsInd, availableAttribute);
             product.getAttributeValue().put(TotalAttributes.get(i), attrVal);
         }
+
+        product.setPrice(calculatePrice(product));
         return product;
     }
 
@@ -219,7 +231,7 @@ public class GeneticAlgorithm {
         ArrayList<Integer> possibleAttr = new ArrayList<>();
 
         for (int i = 0; i < TotalAttributes.get(attrInd).getMAX(); i++) {
-			/*We count the valoration of each selected profile for attribute attrInd value i*/
+            /*We count the valoration of each selected profile for attribute attrInd value i*/
             int possible = 0;
             for (int j = 0; j < custProfInd.size(); j++) {
                 possible += CustomerProfiles.get(custProfInd.get(j)).getScoreAttributes().get(attrInd).getScoreValues().get(i);
@@ -262,7 +274,11 @@ public class GeneticAlgorithm {
 
         Population.add((Producers.get(MY_PRODUCER).getProduct()).clone());
 //        mPopu.get(0).setFitness(computeWSC(mPopu.get(0), 0));
-        Fitness.add(computeWSC(Population.get(MY_PRODUCER), MY_PRODUCER));
+        if (StoredData.Fitness == StoredData.Customers)
+            Fitness.add(computeWSC(Population.get(MY_PRODUCER), MY_PRODUCER));
+        else
+            Fitness.add(computeBenefits(Population.get(MY_PRODUCER), MY_PRODUCER));
+
         BestWSC = Fitness.get(MY_PRODUCER);
         Initial_Results.add(BestWSC);
 
@@ -273,13 +289,20 @@ public class GeneticAlgorithm {
             else /*We create a near product*/
                 Population.add(createNearProduct(Producers.get(MY_PRODUCER).getAvailableAttribute(), (int) (CustomerProfiles.size() * Math.random())));  /////////??verificar//////////
 
-            Fitness.add(computeWSC(Population.get(i), MY_PRODUCER));
+            if (StoredData.Fitness == StoredData.Customers)
+                Fitness.add(computeWSC(Population.get(i), MY_PRODUCER));
+            else
+                Fitness.add(computeBenefits(Population.get(i), MY_PRODUCER));
 
             if (Fitness.get(i) > BestWSC) {
                 BestWSC = Fitness.get(i);
                 Producers.get(MY_PRODUCER).setProduct(Population.get(i).clone());
             }
         }
+    }
+
+    private Integer computeBenefits(Product product, int myProducer) throws Exception {
+        return computeWSC(product, myProducer) * product.getPrice();
     }
 
     /***
@@ -406,7 +429,12 @@ public class GeneticAlgorithm {
             son = mutate(breed(father, mother));
 
             newPopu.add(son);
-            fitness.add(computeWSC(newPopu.get(i), MY_PRODUCER));
+
+            if (StoredData.Fitness == StoredData.Customers)
+                fitness.add(computeWSC(newPopu.get(i), MY_PRODUCER));
+            else
+                fitness.add(computeBenefits(newPopu.get(i), MY_PRODUCER));
+
         }
 
         return newPopu;
@@ -496,6 +524,7 @@ public class GeneticAlgorithm {
             }
         }
 
+        mutant.setPrice(calculatePrice(mutant));
         return mutant;
     }
 
@@ -556,40 +585,36 @@ public class GeneticAlgorithm {
         return (sqrSum / NUM_EXECUTIONS);
     }
 
-    /*************************************** " AUXILIARY METHODS TO CALCULATE THE PRICE" ***************************************/
+    /***************************************
+     * " AUXILIARY METHODS TO CALCULATE THE PRICE"
+     ***************************************/
 
-    private void calculatePrice() {
+    private int calculatePrice(Product product) {
         int price_MyProduct = 0;
-        int media_precios = 0;
 
-        for(int i = 1; i < Producers.size(); i++){
+        for (int i = 1; i < Producers.size(); i++) {
             Product prod_competence = Producers.get(i).getProduct();
-            double distance_product = getDistanceTo(prod_competence);
+            double distance_product = getDistanceTo(product, prod_competence);
 
-            if(distance_product == 0){
+            if (distance_product == 0) {
                 price_MyProduct = prod_competence.getPrice();
                 break;
             }
 
             price_MyProduct += prod_competence.getPrice() / distance_product;
-            media_precios += prod_competence.getPrice();
         }
-        media_precios /= Producers.size();
-        Producers.get(MY_PRODUCER).getProduct().setPrice(price_MyProduct);
-        Prices.add(price_MyProduct);
 
+        return price_MyProduct;
     }
 
-    private double getDistanceTo(Product prod_competence) {
-        Product my_product = Producers.get(MY_PRODUCER).getProduct();
+    private double getDistanceTo(Product my_product, Product prod_competence) {
         double distance = 0;
-        for(int i = 0; i < TotalAttributes.size(); i++){
+        for (int i = 0; i < TotalAttributes.size(); i++) {
             distance += Math.pow(my_product.getAttributeValue().get(TotalAttributes.get(i)) - prod_competence.getAttributeValue().get(TotalAttributes.get(i)), 2);
         }
         distance = Math.sqrt(distance);
         return distance;
     }
-
 
 
 //		// An excel file name. You can create a file name with a full path

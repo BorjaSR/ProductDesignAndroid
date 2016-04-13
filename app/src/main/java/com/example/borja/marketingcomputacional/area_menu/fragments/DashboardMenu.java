@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.borja.marketingcomputacional.R;
@@ -23,6 +24,7 @@ public class DashboardMenu extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.dashboard_menu);
+        LinearLayout percent_init_cust_mean_value_container = (LinearLayout) findViewById(R.id.percent_init_cust_mean_value_container);
 
         ImageView view_attributes = (ImageView)findViewById(R.id.view_attributes);
 //        view_attributes.setTypeface(StoredData.roboto_regular(getApplicationContext()));
@@ -70,13 +72,21 @@ public class DashboardMenu extends AppCompatActivity {
         TextView price = (TextView) findViewById(R.id.price_value);
 
 
-        mean.setText(StoredData.mean + "");
-        init_mean.setText(StoredData.initMean + "");
+
         std_dev.setText(StoredData.stdDev + "");
         init_std_dev.setText(StoredData.initStdDev + "");
         cust_mean.setText(StoredData.custMean + "");
         percent_cust.setText(StoredData.percCust + "");
-        percent_init_cust.setText(StoredData.initPercCust + "");
+        
+        if(StoredData.Fitness == StoredData.Customers){
+            mean.setText(StoredData.mean + "");
+            init_mean.setText(StoredData.initMean + "");
+            percent_init_cust.setText(StoredData.initPercCust + "");
+        }else if(StoredData.Fitness == StoredData.Benefits){
+            mean.setText(StoredData.mean + " €");
+            init_mean.setText(StoredData.initMean + " €");
+            percent_init_cust_mean_value_container.setVisibility(View.GONE);
+        }
 
         if(StoredData.Algorithm == StoredData.GENETIC){
             price.setVisibility(View.VISIBLE);

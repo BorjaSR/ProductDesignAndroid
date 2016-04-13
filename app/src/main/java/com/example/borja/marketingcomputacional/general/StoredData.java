@@ -46,6 +46,10 @@ public class StoredData {
     public static int Algorithm;
     public static int My_price;
 
+    public static int Fitness = 0;
+    public static int Customers = 0;
+    public static int Benefits = 1;
+
     public static Typeface roboto_light(Context context){
         return Typeface.createFromAsset(context.getAssets(), "Roboto-Light.ttf");
     }

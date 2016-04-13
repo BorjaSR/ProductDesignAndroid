@@ -11,19 +11,14 @@
         android:orientation="vertical"
         android:weightSum="1">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.1"/>
-
         <TextView
             android:id="@+id/title_view_pager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.3"
-            android:text="Algoritmo Generico"
+            android:layout_weight="0.5"
+            android:text="Algoritmo Generico (Beneficios)"
             android:textColor="@color/white"
-            android:textSize="55sp"
+            android:textSize="50sp"
             android:gravity="center"/>
 
         <ImageView
@@ -31,7 +26,7 @@
             android:layout_gravity="center"
             android:layout_width="150dp"
             android:layout_height="0dp"
-            android:layout_weight="0.6"
+            android:layout_weight="0.5"
             android:src="@drawable/minimax"/>
 
     </LinearLayout>
