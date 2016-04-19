@@ -14,10 +14,10 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.Attribute;
+import com.example.borja.marketingcomputacional.general.Attribute;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm;
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.Producer;
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.Product;
+import com.example.borja.marketingcomputacional.general.Producer;
+import com.example.borja.marketingcomputacional.general.Product;
 import com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax;
 import com.example.borja.marketingcomputacional.R;
 import com.example.borja.marketingcomputacional.general.StoredData;

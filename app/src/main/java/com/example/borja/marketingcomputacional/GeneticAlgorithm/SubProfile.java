@@ -1,6 +1,6 @@
 package com.example.borja.marketingcomputacional.GeneticAlgorithm;
 
-import org.w3c.dom.Attr;
+import com.example.borja.marketingcomputacional.general.Attribute;
 
 import java.util.HashMap;
 

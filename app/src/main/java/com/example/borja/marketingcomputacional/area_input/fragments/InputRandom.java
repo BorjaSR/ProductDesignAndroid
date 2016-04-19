@@ -1,12 +1,16 @@
 package com.example.borja.marketingcomputacional.area_input.fragments;
 
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.Attribute;
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.CustomerProfile;
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.Producer;
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.Product;
+import android.widget.LinearLayout;
+
+import com.example.borja.marketingcomputacional.general.Attribute;
+import com.example.borja.marketingcomputacional.general.CustomerProfile;
+import com.example.borja.marketingcomputacional.general.LinkedAttribute;
+import com.example.borja.marketingcomputacional.general.Producer;
+import com.example.borja.marketingcomputacional.general.Product;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.SubProfile;
 import com.example.borja.marketingcomputacional.general.StoredData;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -15,6 +19,7 @@ import java.util.HashMap;
  */
 public class InputRandom {
 
+    private static final double PROB_ATTRIBUTE_LINKED = 10;
     private static ArrayList<Attribute> TotalAttributes = new ArrayList<>();
     private static ArrayList<Producer> Producers = new ArrayList<>();
     private static ArrayList<CustomerProfile> CustomerProfiles = new ArrayList<>();
@@ -87,7 +92,27 @@ public class InputRandom {
                 attr.setScoreValues(scoreValues);
                 attrs.add(attr);
             }
-            CustomerProfiles.add(new CustomerProfile(attrs));
+            CustomerProfile custProf = new CustomerProfile(attrs);
+
+            if(StoredData.isAttributesLinked){
+                ArrayList<LinkedAttribute> linkedAttributes = new ArrayList<>();
+                for(int k = 0; k < TotalAttributes.size(); k++) {
+                    if (Math.random() < (PROB_ATTRIBUTE_LINKED / 100)) {
+                        LinkedAttribute link = new LinkedAttribute();
+
+                        link.setAttribute1(TotalAttributes.get(k));
+                        link.setValue1((int) (link.getAttribute1().MAX * Math.random()));
+                        link.setAttribute2(TotalAttributes.get((int) (TotalAttributes.size() * Math.random())));
+                        link.setValue2((int) (link.getAttribute2().MAX * Math.random()));
+                        link.setScoreModification((int) (-1 * (2 * (TotalAttributes.get(k).MAX * Math.random() + TotalAttributes.get(k).MAX * Math.random()))));
+
+                        linkedAttributes.add(link);
+                    }
+                }
+                custProf.setLinkedAttributes(linkedAttributes);
+            }
+
+            CustomerProfiles.add(custProf);
         }
 
         //Create 2 mutants for each basic profile
@@ -109,7 +134,28 @@ public class InputRandom {
                 attr.setScoreValues(scoreValues);
                 attrs.add(attr);
             }
-            CustomerProfiles.add(new CustomerProfile(attrs));
+
+            CustomerProfile custProf = new CustomerProfile(attrs);
+
+            if(StoredData.isAttributesLinked){
+                ArrayList<LinkedAttribute> linkedAttributes = new ArrayList<>();
+                for(int k = 0; k < TotalAttributes.size(); k++) {
+                    if (Math.random() < (PROB_ATTRIBUTE_LINKED / 100)) {
+                        LinkedAttribute link = new LinkedAttribute();
+
+                        link.setAttribute1(TotalAttributes.get(k));
+                        link.setValue1((int) (link.getAttribute1().MAX * Math.random()));
+                        link.setAttribute2(TotalAttributes.get((int) (TotalAttributes.size() * Math.random())));
+                        link.setValue2((int) (link.getAttribute2().MAX * Math.random()));
+                        link.setScoreModification((int) (-1 * (2 * (TotalAttributes.get(k).MAX * Math.random() + TotalAttributes.get(k).MAX * Math.random()))));
+
+                        linkedAttributes.add(link);
+                    }
+                }
+                custProf.setLinkedAttributes(linkedAttributes);
+            }
+
+            CustomerProfiles.add(custProf);
         }
     }
 
@@ -130,6 +176,7 @@ public class InputRandom {
             attrs.add(attr);
         }
         mutant.setScoreAttributes(attrs);
+        mutant.setLinkedAttributes(customerProfile.getLinkedAttributes());
         return mutant;
     }
 

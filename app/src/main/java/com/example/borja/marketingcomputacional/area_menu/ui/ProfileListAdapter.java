@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.CustomerProfile;
+import com.example.borja.marketingcomputacional.general.CustomerProfile;
 import com.example.borja.marketingcomputacional.R;
 import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardProfilesDetail;
 import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardSubprofiles;

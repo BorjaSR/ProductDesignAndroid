@@ -1,4 +1,4 @@
-package com.example.borja.marketingcomputacional.GeneticAlgorithm;
+package com.example.borja.marketingcomputacional.general;
 
 import java.util.HashMap;
 

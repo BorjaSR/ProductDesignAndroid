@@ -3,15 +3,9 @@ package com.example.borja.marketingcomputacional.general;
 import android.content.Context;
 import android.graphics.Typeface;
 
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.Attribute;
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.CustomerProfile;
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.Producer;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.SubProfile;
-import com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax;
-import com.example.borja.marketingcomputacional.main_activity.MainActivity;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 /**
  * Created by Borja on 21/02/2016.
@@ -46,9 +40,11 @@ public class StoredData {
     public static int Algorithm;
     public static int My_price;
 
-    public static int Fitness = 0;
     public static int Customers = 0;
     public static int Benefits = 1;
+    public static int Fitness = Customers;
+
+    public static boolean isAttributesLinked = true;
 
     public static Typeface roboto_light(Context context){
         return Typeface.createFromAsset(context.getAssets(), "Roboto-Light.ttf");

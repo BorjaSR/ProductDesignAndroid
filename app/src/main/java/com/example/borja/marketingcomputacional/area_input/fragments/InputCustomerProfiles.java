@@ -15,15 +15,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.Attribute;
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.CustomerProfile;
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm;
+import com.example.borja.marketingcomputacional.general.Attribute;
+import com.example.borja.marketingcomputacional.general.CustomerProfile;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.SubProfile;
-import com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax;
 import com.example.borja.marketingcomputacional.R;
 import com.example.borja.marketingcomputacional.general.StoredData;
 
-import java.sql.SQLInvalidAuthorizationSpecException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

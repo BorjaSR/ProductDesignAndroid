@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.Attribute;
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm;
-import com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax;
+import com.example.borja.marketingcomputacional.general.Attribute;
 import com.example.borja.marketingcomputacional.R;
-import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardProducers;
 import com.example.borja.marketingcomputacional.general.StoredData;
 
 import java.util.ArrayList;

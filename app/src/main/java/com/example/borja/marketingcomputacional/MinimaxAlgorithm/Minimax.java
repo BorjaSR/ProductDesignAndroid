@@ -3,15 +3,14 @@ package com.example.borja.marketingcomputacional.MinimaxAlgorithm;
 import android.content.Context;
 import android.content.Intent;
 
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.Attribute;
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.CustomerProfile;
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.Producer;
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.Product;
+import com.example.borja.marketingcomputacional.general.Attribute;
+import com.example.borja.marketingcomputacional.general.CustomerProfile;
+import com.example.borja.marketingcomputacional.general.Producer;
+import com.example.borja.marketingcomputacional.general.Product;
 import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardMenu;
 import com.example.borja.marketingcomputacional.general.StoredData;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 
 /**

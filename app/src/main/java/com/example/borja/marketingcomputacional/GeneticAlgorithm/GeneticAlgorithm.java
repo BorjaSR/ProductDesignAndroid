@@ -4,6 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardMenu;
+import com.example.borja.marketingcomputacional.general.Attribute;
+import com.example.borja.marketingcomputacional.general.CustomerProfile;
+import com.example.borja.marketingcomputacional.general.LinkedAttribute;
+import com.example.borja.marketingcomputacional.general.Producer;
+import com.example.borja.marketingcomputacional.general.Product;
 import com.example.borja.marketingcomputacional.general.StoredData;
 
 import java.util.HashMap;
@@ -153,10 +158,10 @@ public class GeneticAlgorithm {
         StoredData.stdDev = Math.sqrt(variance);
         StoredData.initStdDev = Math.sqrt(initVariance);
         StoredData.custMean = sumCust / NUM_EXECUTIONS;
-        if(StoredData.Fitness == StoredData.Customers){
+        if (StoredData.Fitness == StoredData.Customers) {
             StoredData.percCust = 100 * StoredData.mean / StoredData.custMean;
             StoredData.initPercCust = 100 * StoredData.initMean / StoredData.custMean;
-        }else if (StoredData.Fitness == StoredData.Benefits){
+        } else if (StoredData.Fitness == StoredData.Benefits) {
             StoredData.percCust = (100 * StoredData.mean) / StoredData.initMean;
         }
 
@@ -321,11 +326,17 @@ public class GeneticAlgorithm {
                 isTheFavourite = true;
                 numTies = 1;
                 meScore = scoreProduct(CustomerProfiles.get(i).getSubProfiles().get(j), product);
+
+                if(StoredData.isAttributesLinked)
+                    meScore += scoreLinkedAttributes(CustomerProfiles.get(i).getLinkedAttributes(), product);
+
                 k = 0;
                 while (isTheFavourite && k < Producers.size()) {
                     if (k != prodInd) {
 
                         score = scoreProduct(CustomerProfiles.get(i).getSubProfiles().get(j), Producers.get(k).getProduct());
+                        if(StoredData.isAttributesLinked)
+                            score += scoreLinkedAttributes(CustomerProfiles.get(i).getLinkedAttributes(), product);
 
                         if (score > meScore)
                             isTheFavourite = false;
@@ -335,7 +346,7 @@ public class GeneticAlgorithm {
                     }
                     k++;
                 }
-				/*TODO: When there exists ties we loose some voters because of decimals (undecided voters)*/
+                /*TODO: When there exists ties we loose some voters because of decimals (undecided voters)*/
                 if (isTheFavourite) {
                     if ((j == CustomerProfiles.get(i).getSubProfiles().size()) && ((CustomerProfiles.get(i).getNumberCustomers() % RESP_PER_GROUP) != 0)) {
                         wsc += (CustomerProfiles.get(i).getNumberCustomers() % RESP_PER_GROUP) / numTies;
@@ -348,6 +359,17 @@ public class GeneticAlgorithm {
         }
 
         return wsc;
+    }
+
+    private int scoreLinkedAttributes(ArrayList<LinkedAttribute> linkedAttributes, Product product) {
+        int modifyScore = 0;
+            for(int i = 0; i < linkedAttributes.size(); i++){
+                LinkedAttribute link = linkedAttributes.get(i);
+                if(product.getAttributeValue().get(link.getAttribute1()) == link.getValue1() && product.getAttributeValue().get(link.getAttribute2()) == link.getValue2()){
+                    modifyScore += link.getScoreModification();
+                }
+            }
+        return modifyScore;
     }
 
 
