@@ -335,6 +335,7 @@ public class GeneticAlgorithm {
                     if (k != prodInd) {
 
                         score = scoreProduct(CustomerProfiles.get(i).getSubProfiles().get(j), Producers.get(k).getProduct());
+
                         if(StoredData.isAttributesLinked)
                             score += scoreLinkedAttributes(CustomerProfiles.get(i).getLinkedAttributes(), product);
 

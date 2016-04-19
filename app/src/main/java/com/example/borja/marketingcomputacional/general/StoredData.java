@@ -44,7 +44,7 @@ public class StoredData {
     public static int Benefits = 1;
     public static int Fitness = Customers;
 
-    public static boolean isAttributesLinked = true;
+    public static boolean isAttributesLinked = false;
 
     public static Typeface roboto_light(Context context){
         return Typeface.createFromAsset(context.getAssets(), "Roboto-Light.ttf");

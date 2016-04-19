@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final Handler handler;
-                switch (mainPager.getCurrentItem()){
+                switch (mainPager.getCurrentItem()) {
                     case 0: //GENETICO CLIENTES
                         StoredData.Algorithm = StoredData.GENETIC;
                         StoredData.Fitness = StoredData.Customers;
@@ -120,11 +120,16 @@ public class MainActivity extends AppCompatActivity {
                     case 1:// MINIMAX
                         StoredData.Algorithm = StoredData.MINIMAX;
                         container_carga.setVisibility(View.VISIBLE);
+
+
                         handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
+                                InputRandom input = new InputRandom();
                                 try {
+                                    input.generate();
+
                                     StoredData.Minimax = new Minimax();
                                     StoredData.Minimax.start(getApplicationContext());
                                 } catch (Exception e) {
