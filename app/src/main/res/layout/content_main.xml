@@ -47,13 +47,6 @@
                     android:layout_marginRight="5dp"
                     android:src="@drawable/circle_black" />
 
-                <ImageView
-                    android:id="@+id/third_circle"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_marginLeft="5dp"
-                    android:src="@drawable/circle_black" />
-
             </LinearLayout>
 
             <LinearLayout
@@ -78,9 +71,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 android:layout_gravity="bottom"
-                android:layout_marginBottom="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
                 android:background="?attr/colorAccent"
                 android:elevation="4dp">
 
@@ -91,9 +81,9 @@
                     android:background="?android:selectableItemBackground"
                     android:clickable="true"
                     android:gravity="center"
-                    android:text="Comenzar"
+                    android:text="Seleccionar"
                     android:textColor="@color/white"
-                    android:textSize="28sp" />
+                    android:textSize="25sp"/>
 
             </LinearLayout>
 

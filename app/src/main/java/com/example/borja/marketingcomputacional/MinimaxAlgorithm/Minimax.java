@@ -21,10 +21,10 @@ public class Minimax {
 
     private int MY_PRODUCER = 0;
 
-    private int MAX_DEPTH_0 = 2; //Maximun depth of the minimax //depth 8 in initial
+    private int MAX_DEPTH_0 = 3; //Maximun depth of the minimax //depth 8 in initial
     private int MAX_DEPTH_1 = 2; //Maximun depth of the minimax //depth 2 in initial
 
-    private int NUM_EXEC = 5;
+    private int NUM_EXEC = 1; //5
 
 
     // INPUT VARIABLES
@@ -69,10 +69,10 @@ public class Minimax {
         mResults = new ArrayList<>();
         mInitialResults = new ArrayList<>();
 
-        if (Producers.size() == 0) generateInput();
+        generateInput();
 
-        for(int i = 0; i < NUM_EXEC; i++){
-            playPDG();
+        for (int i = 0; i < NUM_EXEC; i++) {
+            playGame();
             sum += mResults.get(i);
             initSum = mInitialResults.get(i);
             sumCust += countCustomers() * mNTurns * 2;
@@ -105,9 +105,17 @@ public class Minimax {
         mNAttr = 10;
         mNProd = 2;
 
-        TotalAttributes = StoredData.Atributos;
-        CustomerProfiles = StoredData.Profiles;
-        Producers = StoredData.Producers;
+        TotalAttributes.clear();
+        for (int i = 0; i < mNAttr; i++)
+            TotalAttributes.add(StoredData.Atributos.get(i));
+
+
+//        for (int i = 0; i < mNAttr; i++)
+            CustomerProfiles = StoredData.Profiles;
+
+        Producers.clear();
+        for (int i = 0; i < mNProd; i++)
+            Producers.add(StoredData.Producers.get(i));
     }
 
     public void playGame() throws Exception {
@@ -194,7 +202,7 @@ public class Minimax {
         if (depth == 0)
             return nCustGathered;
 
-        for (int attrInd = 0; attrInd < TotalAttributes.size(); attrInd++){
+        for (int attrInd = 0; attrInd < TotalAttributes.size(); attrInd++) {
             exitFor = false;
             for (int attrVal = 0; attrVal < TotalAttributes.get(attrInd).getMAX(); attrVal++) {
                 if (producer.getAvailableAttribute().get(attrInd).getAvailableValues().get(attrVal)) {
@@ -213,17 +221,17 @@ public class Minimax {
 
                         wsc = computeWSC(childs.get(prodIndex), prodInit);
 
-                        if (maximizingPlayer){
+                        if (maximizingPlayer) {
                             alpha = Math.max(alpha, alphaBeta(childs, nCustGathered + wsc, prodInit, (prodIndex + 1) % 2, depth - 1, alpha, beta, false));
 
-                            if(beta < alpha){
+                            if (beta < alpha) {
                                 exitFor = true;
                                 break;
                             }
-                        }else{
+                        } else {
                             beta = Math.max(beta, alphaBeta(childs, nCustGathered + wsc, prodInit, (prodIndex + 1) % 2, depth - 1, alpha, beta, true));
 
-                            if(beta < alpha){
+                            if (beta < alpha) {
                                 exitFor = true;
                                 break;
                             }
@@ -231,7 +239,7 @@ public class Minimax {
                     }
                 }
             }
-            if(exitFor)
+            if (exitFor)
                 break;
         }
 
@@ -278,7 +286,7 @@ public class Minimax {
                 }
                 k++;
             }
-				/*TODO: When there exists ties we loose some voters because of decimals (undecided voters)*/
+                /*TODO: When there exists ties we loose some voters because of decimals (undecided voters)*/
             if (isTheFavourite)
                 wsc += CustomerProfiles.get(i).getNumberCustomers() / numTies;
         }
@@ -289,9 +297,9 @@ public class Minimax {
 
     private int scoreLinkedAttributes(ArrayList<LinkedAttribute> linkedAttributes, Product product) {
         int modifyScore = 0;
-        for(int i = 0; i < linkedAttributes.size(); i++){
+        for (int i = 0; i < linkedAttributes.size(); i++) {
             LinkedAttribute link = linkedAttributes.get(i);
-            if(product.getAttributeValue().get(link.getAttribute1()) == link.getValue1() && product.getAttributeValue().get(link.getAttribute2()) == link.getValue2()){
+            if (product.getAttributeValue().get(link.getAttribute1()) == link.getValue1() && product.getAttributeValue().get(link.getAttribute2()) == link.getValue2()) {
                 modifyScore += link.getScoreModification();
             }
         }
@@ -315,8 +323,8 @@ public class Minimax {
     private StrAB bestMovement(ArrayList<StrAB> abList, int best) {
         StrAB ab = new StrAB();
 
-        for(int i = 0; i < abList.size(); i++){
-            if(abList.get(i).getAlphaBeta() == best){
+        for (int i = 0; i < abList.size(); i++) {
+            if (abList.get(i).getAlphaBeta() == best) {
                 ab.setAttrVal(abList.get(i).getAttrVal());
                 ab.setAttriInd(abList.get(i).getAttriInd());
                 ab.setAlphaBeta(abList.get(i).getAlphaBeta());
@@ -332,10 +340,10 @@ public class Minimax {
         for (int i = 0; i < Producers.size(); i++)
             list_products.add(Producers.get(i).getProduct().clone());
 
-        for(int i = 0;i < Producers.size(); i++){
+        for (int i = 0; i < Producers.size(); i++) {
             int wsc = computeWSC(Producers.get(i).getProduct(), i);
 
-            if(Producers.get(i).getCustomersGathered().size() == mPrevTurns * 2){
+            if (Producers.get(i).getCustomersGathered().size() == mPrevTurns * 2) {
                 Producers.get(i).getCustomersGathered().remove(0);
             }
 
@@ -356,9 +364,9 @@ public class Minimax {
         return (sqrSum / NUM_EXEC);
     }
 
-    public int countCustomers(){
+    public int countCustomers() {
         int total = 0;
-        for(int i = 0; i < CustomerProfiles.size(); i++)
+        for (int i = 0; i < CustomerProfiles.size(); i++)
             total += CustomerProfiles.get(i).getNumberCustomers();
 
         return total;

@@ -2,96 +2,72 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Selecciona una variante"
+        android:padding="15dp"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:background="@color/colorPrimaryTrans"/>
+
+    <Spinner
+        android:id="@+id/variant_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </Spinner>
 
     <LinearLayout
-        android:id="@+id/random_data"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.3"
-        android:layout_margin="10dp"
-        android:orientation="vertical"
-        android:background="@color/colorPrimary"
-        android:elevation="4dp">
+        android:layout_weight="0.5"/>
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.8"
-            android:src="@drawable/al_azar"
-            android:padding="10dp"
-            android:background="?android:selectableItemBackground"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Selecciona una entrada de datos"
+        android:padding="15dp"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:background="@color/colorPrimaryTrans"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.2"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:textColor="@color/white"
-            android:background="@color/colorAccent"
-            android:text="Usar datos aleatorios"/>
+    <Spinner
+        android:id="@+id/input_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </Spinner>
 
-    </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/manual_data"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.3"
-        android:layout_margin="10dp"
-        android:orientation="vertical"
-        android:background="@color/colorPrimary"
-        android:elevation="4dp">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.8"
-            android:src="@drawable/a_mano"
-            android:padding="10dp"
-            android:background="?android:selectableItemBackground"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.2"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:textColor="@color/white"
-            android:background="@color/colorAccent"
-            android:text="Introducir datos manualmente"/>
-
-    </LinearLayout>
+        android:layout_weight="0.5"/>
 
     <LinearLayout
-        android:id="@+id/file_data"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.3"
-        android:layout_margin="10dp"
-        android:orientation="vertical"
-        android:background="@color/colorPrimary"
-        android:elevation="4dp">
+        android:layout_height="60dp"
+        android:background="@color/colorAccent">
 
-        <ImageView
+        <LinearLayout
+            android:id="@+id/start"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.8"
-            android:src="@drawable/desde_fichero"
-            android:padding="10dp"
-            android:background="?android:selectableItemBackground"/>
+            android:layout_height="match_parent"
+            android:background="?android:selectableItemBackground">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.2"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:textColor="@color/white"
-            android:background="@color/colorAccent"
-            android:text="Importar desde fichero"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Comenzar"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:gravity="center"/>
 
+        </LinearLayout>
     </LinearLayout>
-
 </LinearLayout>

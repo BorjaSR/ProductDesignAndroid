@@ -17,12 +17,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm;
 import com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax;
 import com.example.borja.marketingcomputacional.R;
-import com.example.borja.marketingcomputacional.area_input.fragments.InputAttributes;
 import com.example.borja.marketingcomputacional.area_input.fragments.InputRandom;
-import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardProfiles;
 import com.example.borja.marketingcomputacional.general.StoredData;
 
 public class MainActivity extends AppCompatActivity {
@@ -41,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
 
         final ImageView first_circle = (ImageView) findViewById(R.id.first_circle);
         final ImageView second_circle = (ImageView) findViewById(R.id.second_circle);
-        final ImageView third_circle = (ImageView) findViewById(R.id.third_circle);
 
         texto_carga = (TextView) findViewById(R.id.texto_carga);
         Typeface font = Typeface.createFromAsset(getAssets(), "Roboto-Regular.ttf");
@@ -64,17 +60,10 @@ public class MainActivity extends AppCompatActivity {
                     case 0:
                         first_circle.setImageResource(R.drawable.circle_white);
                         second_circle.setImageResource(R.drawable.circle_black);
-                        third_circle.setImageResource(R.drawable.circle_black);
                         break;
                     case 1:
                         first_circle.setImageResource(R.drawable.circle_black);
                         second_circle.setImageResource(R.drawable.circle_white);
-                        third_circle.setImageResource(R.drawable.circle_black);
-                        break;
-                    case 2:
-                        first_circle.setImageResource(R.drawable.circle_black);
-                        second_circle.setImageResource(R.drawable.circle_black);
-                        third_circle.setImageResource(R.drawable.circle_white);
                         break;
                 }
             }
@@ -95,23 +84,12 @@ public class MainActivity extends AppCompatActivity {
                 switch (mainPager.getCurrentItem()) {
                     case 0: //GENETICO CLIENTES
                         StoredData.Algorithm = StoredData.GENETIC;
-                        StoredData.Fitness = StoredData.Customers;
                         container_carga.setVisibility(View.VISIBLE);
                         handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-//                            try {
-//                                StoredData.Algorithm = StoredData.GENETIC;
-//                                StoredData.GeneticAlgorithm = new GeneticAlgorithm();
-//                                StoredData.GeneticAlgorithm.start(getApplicationContext());
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                                Snackbar.make(mainPager, e.getMessage(), Snackbar.LENGTH_SHORT)
-//                                        .setAction("Action", null).show();
-//                            }
-
-                                Intent select_input = new Intent(getApplicationContext(), SelectInput.class);
+                                Intent select_input = new Intent(getApplicationContext(), Configuration.class);
                                 select_input.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 getApplicationContext().startActivity(select_input);
                             }
@@ -120,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
                     case 1:// MINIMAX
                         StoredData.Algorithm = StoredData.MINIMAX;
                         container_carga.setVisibility(View.VISIBLE);
-
 
                         handler = new Handler();
                         handler.postDelayed(new Runnable() {
@@ -137,20 +114,6 @@ public class MainActivity extends AppCompatActivity {
                                     Snackbar.make(mainPager, e.getMessage(), Snackbar.LENGTH_SHORT)
                                             .setAction("Action", null).show();
                                 }
-                            }
-                        }, 0);
-                        break;
-                    case 2:// GENETICO BENEFICIOS
-                        StoredData.Algorithm = StoredData.GENETIC;
-                        StoredData.Fitness = StoredData.Benefits;
-                        container_carga.setVisibility(View.VISIBLE);
-                        handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                Intent select_input = new Intent(getApplicationContext(), SelectInput.class);
-                                select_input.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                getApplicationContext().startActivity(select_input);
                             }
                         }, 0);
                         break;
@@ -213,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 3;
+            return 2;
         }
     }
 

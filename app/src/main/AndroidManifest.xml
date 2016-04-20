@@ -87,8 +87,8 @@
         </activity>
 
         <activity
-            android:name=".main_activity.SelectInput"
-            android:label="Seleccion de entrada"
+            android:name=".main_activity.Configuration"
+            android:label="Configuración"
             android:screenOrientation="portrait">
         </activity>
     </application>
