@@ -16,6 +16,7 @@ public class StoredData {
     public static final int GENETIC = 0;
     public static final int MINIMAX = 1;
     public static com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm GeneticAlgorithm;
+    public static com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithmVariant GeneticAlgorithmVariant;
     public static com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax Minimax;
 
 //    INPUT DATA
@@ -46,7 +47,7 @@ public class StoredData {
 
     public static boolean isAttributesLinked = false;
 
-    public static int Number_Products = 1;
+    public static int number_Products = 1;
 
     public static Typeface roboto_light(Context context){
         return Typeface.createFromAsset(context.getAssets(), "Roboto-Light.ttf");

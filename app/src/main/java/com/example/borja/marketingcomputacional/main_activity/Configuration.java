@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm;
+import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithmVariant;
 import com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax;
 import com.example.borja.marketingcomputacional.R;
 import com.example.borja.marketingcomputacional.area_input.fragments.InputAttributes;
@@ -23,9 +23,6 @@ import com.example.borja.marketingcomputacional.area_input.fragments.InputRandom
 import com.example.borja.marketingcomputacional.general.StoredData;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
@@ -43,6 +40,7 @@ public class Configuration extends AppCompatActivity implements View.OnClickList
     private String Without = "Sin variante";
     private String linkedAttributes = "Atributos linkados";
     private String benefits = "Producto con mayores beneficios";
+    private String many_products = "Varios productos por productor";
 
     private String random = "Aleatorio";
     private String write = "Introducir a mano";
@@ -64,6 +62,7 @@ public class Configuration extends AppCompatActivity implements View.OnClickList
         variant_valors.add(Without);
         variant_valors.add(linkedAttributes);
         variant_valors.add(benefits);
+        variant_valors.add(many_products);
 
         ArrayAdapter<String> variant_adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.initial_spinner_simple_item, variant_valors);
         variant_adapter.setDropDownViewResource(R.layout.initial_spinner_simple_dropdown_item);
@@ -93,12 +92,22 @@ public class Configuration extends AppCompatActivity implements View.OnClickList
                 if (variant.equals(linkedAttributes)) {
                     StoredData.Fitness = StoredData.Customers;
                     StoredData.isAttributesLinked = true;
+                    StoredData.number_Products = 1;
+
                 } else if (variant.equals(benefits)) {
                     StoredData.Fitness = StoredData.Benefits;
                     StoredData.isAttributesLinked = false;
-                } else {
+                    StoredData.number_Products = 1;
+
+                } else if (variant.equals(many_products)) {
+                    StoredData.number_Products = 2;
                     StoredData.Fitness = StoredData.Customers;
                     StoredData.isAttributesLinked = false;
+
+                }else{
+                    StoredData.Fitness = StoredData.Customers;
+                    StoredData.isAttributesLinked = false;
+                    StoredData.number_Products = 1;
                 }
 
 
@@ -110,8 +119,14 @@ public class Configuration extends AppCompatActivity implements View.OnClickList
                         input.generate();
 
                         if (StoredData.Algorithm == StoredData.GENETIC) {
-                            StoredData.GeneticAlgorithm = new GeneticAlgorithm();
-                            StoredData.GeneticAlgorithm.start(getApplicationContext());
+
+                            if (variant.equals(many_products)) {
+                                StoredData.GeneticAlgorithmVariant = new GeneticAlgorithmVariant();
+                                StoredData.GeneticAlgorithmVariant.start(getApplicationContext());
+                            }else {
+                                StoredData.GeneticAlgorithm = new GeneticAlgorithm();
+                                StoredData.GeneticAlgorithm.start(getApplicationContext());
+                            }
 
                         } else if (StoredData.Algorithm == StoredData.MINIMAX){
                             StoredData.Minimax = new Minimax();

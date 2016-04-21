@@ -94,9 +94,9 @@ public class InputRandom {
             }
             CustomerProfile custProf = new CustomerProfile(attrs);
 
-            if(StoredData.isAttributesLinked){
+            if (StoredData.isAttributesLinked) {
                 ArrayList<LinkedAttribute> linkedAttributes = new ArrayList<>();
-                for(int k = 0; k < TotalAttributes.size(); k++) {
+                for (int k = 0; k < TotalAttributes.size(); k++) {
                     if (Math.random() < (PROB_ATTRIBUTE_LINKED / 100)) {
                         LinkedAttribute link = new LinkedAttribute();
 
@@ -137,9 +137,9 @@ public class InputRandom {
 
             CustomerProfile custProf = new CustomerProfile(attrs);
 
-            if(StoredData.isAttributesLinked){
+            if (StoredData.isAttributesLinked) {
                 ArrayList<LinkedAttribute> linkedAttributes = new ArrayList<>();
-                for(int k = 0; k < TotalAttributes.size(); k++) {
+                for (int k = 0; k < TotalAttributes.size(); k++) {
                     if (Math.random() < (PROB_ATTRIBUTE_LINKED / 100)) {
                         LinkedAttribute link = new LinkedAttribute();
 
@@ -268,6 +268,12 @@ public class InputRandom {
             new_producer.setName("Productor " + (i + 1));
             new_producer.setAvailableAttribute(createAvailableAttributes());
             new_producer.setProduct(createProduct(new_producer.getAvailableAttribute()));
+
+            ArrayList<Product> products = new ArrayList<>();
+            for (int k = 0; k < StoredData.number_Products; k++)
+                products.add(createProduct(new_producer.getAvailableAttribute()));
+            new_producer.setProducts(products);
+
             Producers.add(new_producer);
         }
     }
@@ -299,7 +305,7 @@ public class InputRandom {
             for (int j = 0; j < attr.getMAX(); j++) {
                 double rnd = Math.random();
                 double rndVal = Math.random();
-				/*Furthermore, with a 50% of probabilities it can know this attribute*/
+                /*Furthermore, with a 50% of probabilities it can know this attribute*/
                 if (rndVal < (SPECIAL_ATTRIBUTES / 100) && rnd < 0.5)
                     availableValues.add(true);
                 else
@@ -326,10 +332,9 @@ public class InputRandom {
             attrValues.put(TotalAttributes.get(j), chooseAttribute(j, customNearProfs, availableAttrs)); //TotalAttributes.get(j) o availableAttrs.get(j)
 
         product.setAttributeValue(attrValues);
-        product.setPrice((int)( Math.random() * 400) + 100);
+        product.setPrice((int) (Math.random() * 400) + 100);
         return product;
     }
-
 
 
     /**
@@ -341,7 +346,7 @@ public class InputRandom {
         ArrayList<Integer> possibleAttr = new ArrayList<>();
 
         for (int i = 0; i < TotalAttributes.get(attrInd).getMAX(); i++) {
-			/*We count the valoration of each selected profile for attribute attrInd value i*/
+            /*We count the valoration of each selected profile for attribute attrInd value i*/
             int possible = 0;
             for (int j = 0; j < custProfInd.size(); j++) {
                 possible += CustomerProfiles.get(custProfInd.get(j)).getScoreAttributes().get(attrInd).getScoreValues().get(i);
