@@ -45,6 +45,7 @@ public class Minimax {
 
     // STATISTICAL VARIABLES
     private ArrayList<Integer> mResults = new ArrayList<>();
+    private ArrayList<Integer> Prices = new ArrayList<>();
     private ArrayList<Integer> mInitialResults = new ArrayList<>();
 
     /************************
@@ -65,9 +66,11 @@ public class Minimax {
         double sum = 0;
         int sumCust = 0;
         int initSum = 0;
+        int price = 0;
 
         mResults = new ArrayList<>();
         mInitialResults = new ArrayList<>();
+        Prices = new ArrayList<>();
 
         generateInput();
 
@@ -76,6 +79,7 @@ public class Minimax {
             sum += mResults.get(i);
             initSum = mInitialResults.get(i);
             sumCust += countCustomers() * mNTurns * 2;
+            price += Prices.get(i);
         }
 
         StoredData.mean = sum / NUM_EXEC;
@@ -85,8 +89,15 @@ public class Minimax {
         StoredData.stdDev = Math.sqrt(variance);
         StoredData.initStdDev = Math.sqrt(initVariance);
         StoredData.custMean = sumCust / NUM_EXEC;
-        StoredData.percCust = 100 * StoredData.mean / StoredData.custMean;
-        StoredData.initPercCust = 100 * StoredData.initMean / StoredData.custMean;
+
+        if (StoredData.Fitness == StoredData.Customers) {
+            StoredData.percCust = 100 * StoredData.mean / StoredData.custMean;
+            StoredData.initPercCust = 100 * StoredData.initMean / StoredData.custMean;
+        } else if (StoredData.Fitness == StoredData.Benefits) {
+            StoredData.percCust = (100 * StoredData.mean) / StoredData.initMean;
+        }
+
+        StoredData.My_price = price / NUM_EXEC;
     }
 
     public void playPDG() throws Exception {
@@ -111,7 +122,7 @@ public class Minimax {
 
 
 //        for (int i = 0; i < mNAttr; i++)
-            CustomerProfiles = StoredData.Profiles;
+        CustomerProfiles = StoredData.Profiles;
 
         Producers.clear();
         for (int i = 0; i < mNProd; i++)
@@ -129,6 +140,7 @@ public class Minimax {
         }
 
         mResults.add(Producers.get(MY_PRODUCER).getNumber_CustomerGathered());
+        Prices.add(calculatePrice(Producers.get(MY_PRODUCER).getProduct()));
     }
 
     /************************
@@ -176,7 +188,13 @@ public class Minimax {
 
                         childs.get(producerindex).getAttributeValue().put(TotalAttributes.get(attrInd), attrVal);
 
-                        nCustGathered = computeWSC(childs.get(producerindex), 0);
+                        if (StoredData.Fitness == StoredData.Benefits)
+                            childs.get(producerindex).setPrice(calculatePrice(childs.get(producerindex)));
+
+                        if (StoredData.Fitness == StoredData.Benefits)
+                            nCustGathered = computeBenefits(childs.get(producerindex), 0);
+                        else
+                            nCustGathered = computeWSC(childs.get(producerindex), 0);
 
                         ab.setAlphaBeta(alphaBeta(childs, nCustGathered, producerindex, (producerindex + 1) % 2, depth - 1, alpha, beta, false));
                         ab.setAttriInd(attrInd);
@@ -219,7 +237,14 @@ public class Minimax {
 
                         childs.get(prodIndex).getAttributeValue().put(TotalAttributes.get(attrInd), attrVal);
 
-                        wsc = computeWSC(childs.get(prodIndex), prodInit);
+                        if (StoredData.Fitness == StoredData.Benefits)
+                            childs.get(prodIndex).setPrice(calculatePrice(childs.get(prodIndex)));
+
+
+                        if (StoredData.Fitness == StoredData.Benefits)
+                            wsc = computeBenefits(childs.get(prodIndex), prodInit);
+                        else
+                            wsc = computeWSC(childs.get(prodIndex), prodInit);
 
                         if (maximizingPlayer) {
                             alpha = Math.max(alpha, alphaBeta(childs, nCustGathered + wsc, prodInit, (prodIndex + 1) % 2, depth - 1, alpha, beta, false));
@@ -250,6 +275,10 @@ public class Minimax {
     }
 
 
+    private Integer computeBenefits(Product product, int myProducer) throws Exception {
+        return computeWSC(product, myProducer) * product.getPrice();
+    }
+
     /***
      * Computing the weighted score of the producer
      * prodInd is the index of the producer
@@ -266,7 +295,7 @@ public class Minimax {
             numTies = 1;
             meScore = scoreProduct(CustomerProfiles.get(i), product);
 
-            if(StoredData.isAttributesLinked)
+            if (StoredData.isAttributesLinked)
                 meScore += scoreLinkedAttributes(CustomerProfiles.get(i).getLinkedAttributes(), product);
 
             k = 0;
@@ -275,7 +304,7 @@ public class Minimax {
 
                     score = scoreProduct(CustomerProfiles.get(i), Producers.get(k).getProduct());
 
-                    if(StoredData.isAttributesLinked)
+                    if (StoredData.isAttributesLinked)
                         score += scoreLinkedAttributes(CustomerProfiles.get(i).getLinkedAttributes(), product);
 
                     if (score > meScore)
@@ -370,6 +399,38 @@ public class Minimax {
             total += CustomerProfiles.get(i).getNumberCustomers();
 
         return total;
+    }
+
+
+    /***************************************
+     * " AUXILIARY METHODS TO CALCULATE THE PRICE"
+     ***************************************/
+
+    private int calculatePrice(Product product) {
+        int price_MyProduct = 0;
+
+        for (int i = 1; i < Producers.size(); i++) {
+            Product prod_competence = Producers.get(i).getProduct();
+            double distance_product = getDistanceTo(product, prod_competence);
+
+            if (distance_product == 0) {
+                price_MyProduct = prod_competence.getPrice();
+                break;
+            }
+
+            price_MyProduct += prod_competence.getPrice() / distance_product;
+        }
+
+        return price_MyProduct;
+    }
+
+    private double getDistanceTo(Product my_product, Product prod_competence) {
+        double distance = 0;
+        for (int i = 0; i < TotalAttributes.size(); i++) {
+            distance += Math.pow(my_product.getAttributeValue().get(TotalAttributes.get(i)) - prod_competence.getAttributeValue().get(TotalAttributes.get(i)), 2);
+        }
+        distance = Math.sqrt(distance);
+        return distance;
     }
 
 }

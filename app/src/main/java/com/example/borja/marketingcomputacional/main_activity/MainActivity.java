@@ -85,39 +85,46 @@ public class MainActivity extends AppCompatActivity {
                     case 0: //GENETICO CLIENTES
                         StoredData.Algorithm = StoredData.GENETIC;
                         container_carga.setVisibility(View.VISIBLE);
-                        handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                Intent select_input = new Intent(getApplicationContext(), Configuration.class);
-                                select_input.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                getApplicationContext().startActivity(select_input);
-                            }
-                        }, 0);
+//                        handler.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                Intent select_input = new Intent(getApplicationContext(), Configuration.class);
+//                                select_input.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                                getApplicationContext().startActivity(select_input);
+//                            }
+//                        }, 0);
                         break;
                     case 1:// MINIMAX
                         StoredData.Algorithm = StoredData.MINIMAX;
                         container_carga.setVisibility(View.VISIBLE);
-
-                        handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                InputRandom input = new InputRandom();
-                                try {
-                                    input.generate();
-
-                                    StoredData.Minimax = new Minimax();
-                                    StoredData.Minimax.start(getApplicationContext());
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    Snackbar.make(mainPager, e.getMessage(), Snackbar.LENGTH_SHORT)
-                                            .setAction("Action", null).show();
-                                }
-                            }
-                        }, 0);
+//                        handler.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                InputRandom input = new InputRandom();
+//                                try {
+//                                    input.generate();
+//
+//                                    StoredData.Minimax = new Minimax();
+//                                    StoredData.Minimax.start(getApplicationContext());
+//                                } catch (Exception e) {
+//                                    e.printStackTrace();
+//                                    Snackbar.make(mainPager, e.getMessage(), Snackbar.LENGTH_SHORT)
+//                                            .setAction("Action", null).show();
+//                                }
+//                            }
+//                        }, 0);
                         break;
                 }
+
+                handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent select_input = new Intent(getApplicationContext(), Configuration.class);
+                        select_input.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        getApplicationContext().startActivity(select_input);
+                    }
+                }, 0);
             }
         });
 

@@ -130,8 +130,6 @@ public class GeneticAlgorithm {
         double sum = 0; /*sum of customers achieved*/
         double initSum = 0; /*sum of initial customers*/
         int sumCust = 0; /*sum of the total number of customers*/
-        double variance;
-        double initVariance;
         int price = 0;
 
         Results = new ArrayList<>();
@@ -153,8 +151,8 @@ public class GeneticAlgorithm {
 
         StoredData.mean = sum / NUM_EXECUTIONS;
         StoredData.initMean = initSum / NUM_EXECUTIONS;
-        variance = computeVariance(StoredData.mean);
-        initVariance = computeVariance(StoredData.initMean);
+        double variance = computeVariance(StoredData.mean);
+        double initVariance = computeVariance(StoredData.initMean);
         StoredData.stdDev = Math.sqrt(variance);
         StoredData.initStdDev = Math.sqrt(initVariance);
         StoredData.custMean = sumCust / NUM_EXECUTIONS;
@@ -638,54 +636,4 @@ public class GeneticAlgorithm {
         distance = Math.sqrt(distance);
         return distance;
     }
-
-
-//		// An excel file name. You can create a file name with a full path
-//		// information.
-//		String filename = "EncuestasCIS.xlsx";
-//		// Create an ArrayList to store the data read from excel sheet.
-//		List sheetData = new ArrayList();
-//		FileInputStream fis = null;
-//		try {
-//			// Create a FileInputStream that will be use to read the excel file.
-//			fis = new FileInputStream(filename);
-//
-//			// Create an excel workbook from the file system.
-//			XSSFWorkbook workbook = new XSSFWorkbook(fis);
-//
-//			// Get the first sheet on the workbook.
-//			XSSFSheet sheet = workbook.getSheetAt(0);
-//
-//			/*
-//			 * When we have a sheet object in hand we can iterator on each
-//			 * sheet's rows and on each row's cells. We store the data read on
-//			 * an ArrayList so that we can printed the content of the excel to
-//			 * the console.
-//			 */
-//			Iterator rows = sheet.rowIterator();
-//			while (rows.hasNext()) {
-//				XSSFRow row = (XSSFRow) rows.next();
-//				Iterator cells = row.cellIterator();
-//				List data = new ArrayList();
-//				while (cells.hasNext()) {
-//					XSSFCell cell = (XSSFCell) cells.next();
-//					// System.out.println("A�adiendo Celda: " +
-//					// cell.toString());
-//					data.add(cell);
-//				}
-//				sheetData.add(data);
-//			}
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} finally {
-//			if (fis != null) {
-//				try {
-//					fis.close();
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		}
-
-
 }

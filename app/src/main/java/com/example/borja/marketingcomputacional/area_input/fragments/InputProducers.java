@@ -161,7 +161,7 @@ public class InputProducers extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                } else {
+                } else if (StoredData.Algorithm == StoredData.MINIMAX){
                     try {
                         StoredData.Minimax = new Minimax();
                         StoredData.Minimax.start(getApplicationContext());

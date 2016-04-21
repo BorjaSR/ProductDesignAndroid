@@ -46,6 +46,8 @@ public class StoredData {
 
     public static boolean isAttributesLinked = false;
 
+    public static int Number_Products = 1;
+
     public static Typeface roboto_light(Context context){
         return Typeface.createFromAsset(context.getAssets(), "Roboto-Light.ttf");
     }

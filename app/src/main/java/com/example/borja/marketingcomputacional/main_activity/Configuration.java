@@ -112,7 +112,8 @@ public class Configuration extends AppCompatActivity implements View.OnClickList
                         if (StoredData.Algorithm == StoredData.GENETIC) {
                             StoredData.GeneticAlgorithm = new GeneticAlgorithm();
                             StoredData.GeneticAlgorithm.start(getApplicationContext());
-                        } else {
+
+                        } else if (StoredData.Algorithm == StoredData.MINIMAX){
                             StoredData.Minimax = new Minimax();
                             StoredData.Minimax.start(getApplicationContext());
                         }

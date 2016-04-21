@@ -24,15 +24,21 @@ public class DashboardMenu extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.dashboard_menu);
+
+        if (StoredData.Algorithm == StoredData.GENETIC)
+            setTitle("Configuración Genético");
+        else if (StoredData.Algorithm == StoredData.MINIMAX)
+            setTitle("Configuración Minimax");
+
         LinearLayout percent_init_cust_mean_value_container = (LinearLayout) findViewById(R.id.percent_init_cust_mean_value_container);
 
-        ImageView view_attributes = (ImageView)findViewById(R.id.view_attributes);
+        ImageView view_attributes = (ImageView) findViewById(R.id.view_attributes);
 //        view_attributes.setTypeface(StoredData.roboto_regular(getApplicationContext()));
 
-        ImageView view_profiles = (ImageView)findViewById(R.id.view_profiles);
+        ImageView view_profiles = (ImageView) findViewById(R.id.view_profiles);
 //        view_profiles.setTypeface(StoredData.roboto_regular(getApplicationContext()));
 
-        ImageView view_producers = (ImageView)findViewById(R.id.view_producers);
+        ImageView view_producers = (ImageView) findViewById(R.id.view_producers);
 //        view_producers.setTypeface(StoredData.roboto_regular(getApplicationContext()));
 
         view_attributes.setOnClickListener(new View.OnClickListener() {
@@ -72,17 +78,16 @@ public class DashboardMenu extends AppCompatActivity {
         TextView price = (TextView) findViewById(R.id.price_value);
 
 
-
         std_dev.setText(StoredData.stdDev + "");
         init_std_dev.setText(StoredData.initStdDev + "");
         cust_mean.setText(StoredData.custMean + "");
         percent_cust.setText(StoredData.percCust + "");
 
-        if(StoredData.Fitness == StoredData.Customers){
+        if (StoredData.Fitness == StoredData.Customers) {
             mean.setText(StoredData.mean + "");
             init_mean.setText(StoredData.initMean + "");
             percent_init_cust.setText(StoredData.initPercCust + "");
-        }else if(StoredData.Fitness == StoredData.Benefits){
+        } else if (StoredData.Fitness == StoredData.Benefits) {
             mean.setText(StoredData.mean + " €");
             init_mean.setText(StoredData.initMean + " €");
             TextView percent_cust_mean_value_text = (TextView) findViewById(R.id.percent_cust_mean_value_text);
@@ -90,11 +95,7 @@ public class DashboardMenu extends AppCompatActivity {
             percent_init_cust_mean_value_container.setVisibility(View.GONE);
         }
 
-        if(StoredData.Algorithm == StoredData.GENETIC){
-            price.setVisibility(View.VISIBLE);
-            price.setText(StoredData.My_price + " €");
-        }else{
-            price.setVisibility(View.GONE);
-        }
+        price.setVisibility(View.VISIBLE);
+        price.setText(StoredData.My_price + " €");
     }
 }
