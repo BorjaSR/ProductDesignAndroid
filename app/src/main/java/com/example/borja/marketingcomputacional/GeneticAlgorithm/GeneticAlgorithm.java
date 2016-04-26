@@ -150,20 +150,33 @@ public class GeneticAlgorithm {
         }
 
         StoredData.mean = sum / NUM_EXECUTIONS;
+        StoredData.meanString = sum / NUM_EXECUTIONS + "";
+
         StoredData.initMean = initSum / NUM_EXECUTIONS;
+        StoredData.initMeanString = initSum / NUM_EXECUTIONS + "";
+
         double variance = computeVariance(StoredData.mean);
         double initVariance = computeVariance(StoredData.initMean);
+
         StoredData.stdDev = Math.sqrt(variance);
+        StoredData.stdDevString = Math.sqrt(variance) + "";
+
         StoredData.initStdDev = Math.sqrt(initVariance);
+        StoredData.initStdDevString = Math.sqrt(initVariance) + "";
+
         StoredData.custMean = sumCust / NUM_EXECUTIONS;
         if (StoredData.Fitness == StoredData.Customers) {
             StoredData.percCust = 100 * StoredData.mean / StoredData.custMean;
+            StoredData.percCustString = 100 * StoredData.mean / StoredData.custMean + "";
             StoredData.initPercCust = 100 * StoredData.initMean / StoredData.custMean;
+            StoredData.initPercCustString = 100 * StoredData.initMean / StoredData.custMean + "";
         } else if (StoredData.Fitness == StoredData.Benefits) {
             StoredData.percCust = (100 * StoredData.mean) / StoredData.initMean;
+            StoredData.percCustString = (100 * StoredData.mean) / StoredData.initMean + "";
         }
 
         StoredData.My_price = price / NUM_EXECUTIONS;
+        StoredData.My_priceString = price / NUM_EXECUTIONS + "";
 
 		/*MOSTRARLO*/
     }
@@ -345,7 +358,7 @@ public class GeneticAlgorithm {
                     }
                     k++;
                 }
-                /*TODO: When there exists ties we loose some voters because of decimals (undecided voters)*/
+                /* When there exists ties we loose some voters because of decimals (undecided voters)*/
                 if (isTheFavourite) {
                     if ((j == CustomerProfiles.get(i).getSubProfiles().size()) && ((CustomerProfiles.get(i).getNumberCustomers() % RESP_PER_GROUP) != 0)) {
                         wsc += (CustomerProfiles.get(i).getNumberCustomers() % RESP_PER_GROUP) / numTies;
@@ -487,7 +500,7 @@ public class GeneticAlgorithm {
     }
 
     /**
-     * M�todo que dado un padre y una madre los cruza para obtener un hijo.
+     * Metodo que dado un padre y una madre los cruza para obtener un hijo.
      * Para cada posici�n del array eligiremos aleatoriamente si el hijo heredar�
      * esa posici�n del padre o de la madre.
      */
@@ -551,7 +564,7 @@ public class GeneticAlgorithm {
 
 
     /**
-     * M�todo que dada la poblaci�n original y una nueva poblaci�n elige la siguente
+     * Metodo que dada la poblaci�n original y una nueva poblaci�n elige la siguente
      * ' generaci�n de individuos. Actualizo la mejor soluci�n encontrada en caso de mejorarla.
      */
     private ArrayList<Product> tournament(ArrayList<Product> newPopu, ArrayList<Integer> newFitness) {

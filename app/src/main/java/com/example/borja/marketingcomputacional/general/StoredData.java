@@ -32,14 +32,21 @@ public class StoredData {
 
 //    FINAL DATA
     public static double mean = -1;
+    public static String meanString = "";
     public static double initMean = -1;
+    public static String initMeanString = "";
     public static double stdDev = -1;
+    public static String stdDevString = "";
     public static double initStdDev = -1;
+    public static String initStdDevString = "";
     public static int custMean = -1;
     public static double percCust = -1;
+    public static String percCustString = "";
     public static double initPercCust = -1;
+    public static String initPercCustString = "";
     public static int Algorithm;
     public static int My_price;
+    public static String My_priceString;
 
     public static int Customers = 0;
     public static int Benefits = 1;

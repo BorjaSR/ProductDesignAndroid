@@ -100,7 +100,7 @@ public class Configuration extends AppCompatActivity implements View.OnClickList
                     StoredData.number_Products = 1;
 
                 } else if (variant.equals(many_products)) {
-                    StoredData.number_Products = 2;
+                    StoredData.number_Products = 3;
                     StoredData.Fitness = StoredData.Customers;
                     StoredData.isAttributesLinked = false;
 
@@ -133,7 +133,7 @@ public class Configuration extends AppCompatActivity implements View.OnClickList
                             StoredData.Minimax.start(getApplicationContext());
                         }
                     } catch (Exception e) {
-                        Toast.makeText(this, "Error al generar los datos", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
                 } else if (input_txt.equals(write)) {

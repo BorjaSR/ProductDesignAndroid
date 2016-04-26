@@ -78,24 +78,24 @@ public class DashboardMenu extends AppCompatActivity {
         TextView price = (TextView) findViewById(R.id.price_value);
 
 
-        std_dev.setText(StoredData.stdDev + "");
-        init_std_dev.setText(StoredData.initStdDev + "");
+        std_dev.setText(StoredData.stdDevString);
+        init_std_dev.setText(StoredData.initStdDevString);
         cust_mean.setText(StoredData.custMean + "");
-        percent_cust.setText(StoredData.percCust + "");
+        percent_cust.setText(StoredData.percCustString);
 
         if (StoredData.Fitness == StoredData.Customers) {
-            mean.setText(StoredData.mean + "");
-            init_mean.setText(StoredData.initMean + "");
-            percent_init_cust.setText(StoredData.initPercCust + "");
+            mean.setText(StoredData.meanString);
+            init_mean.setText(StoredData.initMeanString);
+            percent_init_cust.setText(StoredData.initPercCustString);
         } else if (StoredData.Fitness == StoredData.Benefits) {
-            mean.setText(StoredData.mean + " €");
-            init_mean.setText(StoredData.initMean + " €");
+            mean.setText(StoredData.meanString + " €");
+            init_mean.setText(StoredData.initMeanString + " €");
             TextView percent_cust_mean_value_text = (TextView) findViewById(R.id.percent_cust_mean_value_text);
             percent_cust_mean_value_text.setText("% of increased benefits: ");
             percent_init_cust_mean_value_container.setVisibility(View.GONE);
         }
 
         price.setVisibility(View.VISIBLE);
-        price.setText(StoredData.My_price + " €");
+        price.setText(StoredData.My_priceString + " €");
     }
 }

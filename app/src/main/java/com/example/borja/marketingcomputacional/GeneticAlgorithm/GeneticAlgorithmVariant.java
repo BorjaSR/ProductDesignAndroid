@@ -22,15 +22,6 @@ public class GeneticAlgorithmVariant {
                                                  * % of attributes known for all
 												 * producers
 												 */
-    static final double SPECIAL_ATTRIBUTES = 33; /* 33
-                                                 * % of special attributes known
-												 * for some producers
-
-												 						 */
-    static final double MUT_PROB_CUSTOMER_PROFILE = 33; /*  * % of mutated
-                                                         * attributes in a
-														 * customer profile
-														 */
     static final int CROSSOVER_PROB = 80; /* % of crossover */
     static final int MUTATION_PROB = 1; /* % of mutation */
     static final int NUM_GENERATIONS = 100; /* number of generations */
@@ -44,18 +35,13 @@ public class GeneticAlgorithmVariant {
 
     static final int MY_PRODUCER = 0;  //The index of my producer
 
-    // static final String SOURCE = "D:\Pablo\EncuestasCIS.xlsx";
-    static final int SHEET_AGE_STUDIES = 1;
-    static final int SHEET_POLITICAL_PARTIES = 2;
-    static final String EOF = "EOF";
-
     private static ArrayList<Attribute> TotalAttributes = new ArrayList<>();
     private static ArrayList<Producer> Producers = new ArrayList<>();
 
     /* GA VARIABLES */
-    private ArrayList<Integer> BestWSC; /* Stores the best wsc found */
-    private ArrayList<Product> Population;   //Private mPopu As List(Of List(Of Integer))
-    private ArrayList<Integer> Fitness; /* * mFitness(i) = wsc of mPopu(i) */
+    private ArrayList<Integer> BestWSC = new ArrayList<>(); /* Stores the best wsc found */
+    private ArrayList<Product> Population = new ArrayList<>();  //Private mPopu As List(Of List(Of Integer))
+    private ArrayList<Integer> Fitness = new ArrayList<>(); /* * mFitness(i) = wsc of mPopu(i) */
 
     /* STATISTICAL VARIABLES */
     private ArrayList<ArrayList<Integer>> Results = new ArrayList<>();
@@ -135,13 +121,13 @@ public class GeneticAlgorithmVariant {
 
         ArrayList<Double> sum = new ArrayList<>();
         ArrayList<Double> initSum = new ArrayList<>();
-        ArrayList<Integer> price = new ArrayList<>();
+        ArrayList<Integer> prices = new ArrayList<>();
         int sumCust = 0;
 
-        for (int i = 0; i < StoredData.number_Products; i++){
+        for (int i = 0; i < StoredData.number_Products; i++) {
             sum.add((double) 0);
             initSum.add((double) 0);
-            price.add(0);
+            prices.add(0);
         }
 
         Results = new ArrayList<>();
@@ -165,24 +151,87 @@ public class GeneticAlgorithmVariant {
             for (int k = 0; k < StoredData.number_Products; k++) {
                 auxSum.add(sum.get(k) + Results.get(i).get(k));
                 auxinitSum.add(initSum.get(k) + Initial_Results.get(i).get(k));
-                auxprice.add(price.get(k) + Prices.get(i).get(k));
+                auxprice.add(prices.get(k) + Prices.get(i).get(k));
             }
 
             sum = auxSum;
             initSum = auxinitSum;
-            price = auxprice;
+            prices = auxprice;
 
             sumCust += wscSum;
         }
 
-        //TODO preparar para mostar muchos datos
+        String meanTXT = "";
+        String initMeanTXT = "";
+        String stdDevTXT = "";
+        String initStdDevTXT = "";
+        String percCustTXT = "";
+        String initPercCustTXT = "";
+        String priceTXT = "";
+
+        StoredData.custMean = sumCust / NUM_EXECUTIONS;
+
+        for (int i = 0; i < StoredData.number_Products; i++) {
+
+            double mean = sum.get(i) / NUM_EXECUTIONS;
+            double initMean = initSum.get(i) / NUM_EXECUTIONS;
+            double variance = computeVariance(mean);
+            double initVariance = computeVariance(initMean);
+            double stdDev = Math.sqrt(variance);
+            double initStdDev = Math.sqrt(initVariance);
+            double percCust;
+            double initPercCust = -1;
+            if (StoredData.Fitness == StoredData.Customers) {
+                percCust = 100 * mean / StoredData.custMean;
+                initPercCust = 100 * initMean / StoredData.custMean;
+            } else {
+                percCust = 100 * mean / initMean;
+            }
+            double priceDoub = prices.get(i) / NUM_EXECUTIONS;
+
+            if (i == 0)
+                meanTXT += mean;
+            else
+                meanTXT += ", " + mean;
+
+            if (i == 0)
+                initMeanTXT += initMean;
+            else
+                initMeanTXT += ", " + initMean;
+
+            if (i == 0)
+                stdDevTXT += stdDev;
+            else
+                stdDevTXT += ", " + stdDev;
+
+            if (i == 0)
+                initStdDevTXT += initStdDev;
+            else
+                initStdDevTXT += ", " + initStdDev;
+
+            if (i == 0)
+                percCustTXT += percCust;
+            else
+                percCustTXT += ", " + percCust;
+
+            if (StoredData.Fitness == StoredData.Customers)
+                if (i == 0)
+                    initPercCustTXT += initPercCust;
+                else
+                    initPercCustTXT += ", " + initPercCust;
+
+            if (i == 0)
+                priceTXT += priceDoub;
+            else
+                priceTXT += ", " + priceDoub;
+        }
+
         StoredData.mean = sum.get(0) / NUM_EXECUTIONS;
         StoredData.initMean = initSum.get(0) / NUM_EXECUTIONS;
         double variance = computeVariance(StoredData.mean);
         double initVariance = computeVariance(StoredData.initMean);
         StoredData.stdDev = Math.sqrt(variance);
         StoredData.initStdDev = Math.sqrt(initVariance);
-        StoredData.custMean = sumCust / NUM_EXECUTIONS;
         if (StoredData.Fitness == StoredData.Customers) {
             StoredData.percCust = 100 * StoredData.mean / StoredData.custMean;
             StoredData.initPercCust = 100 * StoredData.initMean / StoredData.custMean;
@@ -190,7 +239,17 @@ public class GeneticAlgorithmVariant {
             StoredData.percCust = (100 * StoredData.mean) / StoredData.initMean;
         }
 
-        StoredData.My_price = price.get(0) / NUM_EXECUTIONS;
+        StoredData.My_price = prices.get(0) / NUM_EXECUTIONS;
+
+
+
+        StoredData.meanString = meanTXT;
+        StoredData.initMeanString = initMeanTXT;
+        StoredData.stdDevString = stdDevTXT;
+        StoredData.initStdDevString = initStdDevTXT;
+        StoredData.percCustString = percCustTXT;
+        StoredData.initPercCustString = initPercCustTXT;
+        StoredData.My_priceString = priceTXT;
 
 		/*MOSTRARLO*/
     }
@@ -301,6 +360,7 @@ public class GeneticAlgorithmVariant {
     private void createInitPopu() throws Exception {
         Population = new ArrayList<>();
         Fitness = new ArrayList<>();
+        BestWSC = new ArrayList<>();
 
         for (int i = 0; i < Producers.get(MY_PRODUCER).getProducts().size(); i++) {
             Population.add((Producers.get(MY_PRODUCER).getProducts().get(i)).clone());
@@ -310,9 +370,15 @@ public class GeneticAlgorithmVariant {
             else
                 Fitness.add(computeBenefits(Population.get(i), MY_PRODUCER));
         }
-        BestWSC = Fitness;
 
-        Initial_Results.add(BestWSC);
+        for (int t = 0; t < Fitness.size(); t++)
+            BestWSC.add(Fitness.get(t));
+
+        ArrayList<Integer> aux = new ArrayList<>();
+        for (int q = 0; q < BestWSC.size(); q++)
+            aux.add(BestWSC.get(q));
+
+        Initial_Results.add(aux);
 
         for (int i = Producers.get(MY_PRODUCER).getProducts().size(); i < NUM_POPULATION; i++) {
 
@@ -326,10 +392,11 @@ public class GeneticAlgorithmVariant {
             else
                 Fitness.add(computeBenefits(Population.get(i), MY_PRODUCER));
 
-            if (isBetweenBest(Fitness.get(i)) != -1) {
-                BestWSC.remove(isBetweenBest(Fitness.get(i)));
+            int worstIndex = isBetweenBest(Fitness.get(i));
+            if (worstIndex != -1) {
+                BestWSC.remove(worstIndex);
                 BestWSC.add(Fitness.get(i));
-                Producers.get(MY_PRODUCER).getProducts().remove(isBetweenBest(Fitness.get(i)));
+                Producers.get(MY_PRODUCER).getProducts().remove(worstIndex);
                 Producers.get(MY_PRODUCER).getProducts().add(Population.get(i));
             }
         }
@@ -384,14 +451,14 @@ public class GeneticAlgorithmVariant {
 
                             else if (score == meScore)
                                 numTies += 1;
-                        }else{
+                        } else {
                             count++;
                         }
                         p++;
                     }
                     k++;
                 }
-                /*TODO: When there exists ties we loose some voters because of decimals (undecided voters)*/
+                /* When there exists ties we loose some voters because of decimals (undecided voters)*/
                 if (isTheFavourite) {
                     if ((j == CustomerProfiles.get(i).getSubProfiles().size()) && ((CustomerProfiles.get(i).getNumberCustomers() % RESP_PER_GROUP) != 0)) {
                         wsc += (CustomerProfiles.get(i).getNumberCustomers() % RESP_PER_GROUP) / numTies;
@@ -532,7 +599,7 @@ public class GeneticAlgorithmVariant {
     }
 
     /**
-     * M�todo que dado un padre y una madre los cruza para obtener un hijo.
+     * Metodo que dado un padre y una madre los cruza para obtener un hijo.
      * Para cada posici�n del array eligiremos aleatoriamente si el hijo heredar�
      * esa posici�n del padre o de la madre.
      */
@@ -596,7 +663,7 @@ public class GeneticAlgorithmVariant {
 
 
     /**
-     * M�todo que dada la poblaci�n original y una nueva poblaci�n elige la siguente
+     * Metodo que dada la poblaci�n original y una nueva poblaci�n elige la siguente
      * ' generaci�n de individuos. Actualizo la mejor soluci�n encontrada en caso de mejorarla.
      */
     private ArrayList<Product> tournament(ArrayList<Product> newPopu, ArrayList<Integer> newFitness) {
@@ -611,11 +678,12 @@ public class GeneticAlgorithmVariant {
                 nextGeneration.add((newPopu.get(i)).clone());
                 Fitness.set(i, newFitness.get(i));// We update the fitness of the new individual
 
-                if (isBetweenBest(newFitness.get(i)) != -1) {
-                    BestWSC.remove(isBetweenBest(newFitness.get(i)));
-                    BestWSC.add(newFitness.get(i));
-                    Producers.get(MY_PRODUCER).getProducts().remove(isBetweenBest(newFitness.get(i)));
-                    Producers.get(MY_PRODUCER).getProducts().add(newPopu.get(i));
+                int worstIndex = isBetweenBest(Fitness.get(i));
+                if (worstIndex != -1) {
+                    BestWSC.remove(worstIndex);
+                    BestWSC.add(Fitness.get(i));
+                    Producers.get(MY_PRODUCER).getProducts().remove(worstIndex);
+                    Producers.get(MY_PRODUCER).getProducts().add((newPopu.get(i)).clone());
                 }
             }
         }

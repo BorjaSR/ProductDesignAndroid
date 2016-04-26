@@ -83,21 +83,33 @@ public class Minimax {
         }
 
         StoredData.mean = sum / NUM_EXEC;
+        StoredData.meanString = sum / NUM_EXEC + "";
+
         StoredData.initMean = initSum / NUM_EXEC;
+        StoredData.initMeanString = initSum / NUM_EXEC + "";
+
         double variance = computeVariance(StoredData.mean);
         double initVariance = computeVariance(StoredData.initMean);
-        StoredData.stdDev = Math.sqrt(variance);
-        StoredData.initStdDev = Math.sqrt(initVariance);
-        StoredData.custMean = sumCust / NUM_EXEC;
 
+        StoredData.stdDev = Math.sqrt(variance);
+        StoredData.stdDevString = Math.sqrt(variance) + "";
+
+        StoredData.initStdDev = Math.sqrt(initVariance);
+        StoredData.initStdDevString = Math.sqrt(initVariance) + "";
+
+        StoredData.custMean = sumCust / NUM_EXEC;
         if (StoredData.Fitness == StoredData.Customers) {
             StoredData.percCust = 100 * StoredData.mean / StoredData.custMean;
+            StoredData.percCustString = 100 * StoredData.mean / StoredData.custMean + "";
             StoredData.initPercCust = 100 * StoredData.initMean / StoredData.custMean;
+            StoredData.initPercCustString = 100 * StoredData.initMean / StoredData.custMean + "";
         } else if (StoredData.Fitness == StoredData.Benefits) {
             StoredData.percCust = (100 * StoredData.mean) / StoredData.initMean;
+            StoredData.percCustString = (100 * StoredData.mean) / StoredData.initMean + "";
         }
 
         StoredData.My_price = price / NUM_EXEC;
+        StoredData.My_priceString = price / NUM_EXEC + "";
     }
 
     public void playPDG() throws Exception {
@@ -315,7 +327,7 @@ public class Minimax {
                 }
                 k++;
             }
-                /*TODO: When there exists ties we loose some voters because of decimals (undecided voters)*/
+                /* When there exists ties we loose some voters because of decimals (undecided voters)*/
             if (isTheFavourite)
                 wsc += CustomerProfiles.get(i).getNumberCustomers() / numTies;
         }
@@ -377,7 +389,6 @@ public class Minimax {
             }
 
             Producers.get(i).getCustomersGathered().add(wsc);
-            //TODO write results
         }
     }
 
