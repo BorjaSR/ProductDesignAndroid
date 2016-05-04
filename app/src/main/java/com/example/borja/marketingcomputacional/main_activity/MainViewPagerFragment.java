@@ -49,8 +49,8 @@ public class MainViewPagerFragment extends Fragment {
                 image_viewer.setImageResource(R.drawable.minimax);
                 break;
             case 2:
-                title_viewer.setText("PSO");
-                image_viewer.setImageResource(R.drawable.minimax);
+                title_viewer.setText("Particle Swarm Optimization");
+                image_viewer.setImageResource(R.drawable.pso);
                 break;
         }
     }
