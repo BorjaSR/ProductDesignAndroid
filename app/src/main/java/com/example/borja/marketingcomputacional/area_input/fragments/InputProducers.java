@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.borja.marketingcomputacional.ParticleSwarmOptimization.ParticleSwarmOptimization;
 import com.example.borja.marketingcomputacional.general.Attribute;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm;
 import com.example.borja.marketingcomputacional.general.Producer;
@@ -168,6 +169,9 @@ public class InputProducers extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                }else if (StoredData.Algorithm == StoredData.MINIMAX) {
+                    StoredData.ParticleSwarmOptimization = new ParticleSwarmOptimization();
+                    StoredData.ParticleSwarmOptimization.start(getApplicationContext());
                 }
             }
         });

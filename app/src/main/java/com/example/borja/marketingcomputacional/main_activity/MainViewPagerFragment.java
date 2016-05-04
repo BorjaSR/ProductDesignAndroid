@@ -48,6 +48,10 @@ public class MainViewPagerFragment extends Fragment {
                 title_viewer.setText("Minimax");
                 image_viewer.setImageResource(R.drawable.minimax);
                 break;
+            case 2:
+                title_viewer.setText("PSO");
+                image_viewer.setImageResource(R.drawable.minimax);
+                break;
         }
     }
 

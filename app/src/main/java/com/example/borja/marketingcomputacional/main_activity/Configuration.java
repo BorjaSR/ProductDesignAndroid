@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithmVariant;
 import com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax;
+import com.example.borja.marketingcomputacional.ParticleSwarmOptimization.ParticleSwarmOptimization;
 import com.example.borja.marketingcomputacional.R;
 import com.example.borja.marketingcomputacional.area_input.fragments.InputAttributes;
 import com.example.borja.marketingcomputacional.area_input.fragments.InputRandom;
@@ -60,9 +61,14 @@ public class Configuration extends AppCompatActivity implements View.OnClickList
 
         List<String> variant_valors = new ArrayList<>();
         variant_valors.add(Without);
-        variant_valors.add(linkedAttributes);
-        variant_valors.add(benefits);
-        variant_valors.add(many_products);
+
+        if(StoredData.Algorithm == StoredData.GENETIC || StoredData.Algorithm == StoredData.MINIMAX){
+            variant_valors.add(linkedAttributes);
+            variant_valors.add(benefits);
+        }
+
+        if (StoredData.Algorithm == StoredData.GENETIC)
+            variant_valors.add(many_products);
 
         ArrayAdapter<String> variant_adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.initial_spinner_simple_item, variant_valors);
         variant_adapter.setDropDownViewResource(R.layout.initial_spinner_simple_dropdown_item);
@@ -104,12 +110,11 @@ public class Configuration extends AppCompatActivity implements View.OnClickList
                     StoredData.Fitness = StoredData.Customers;
                     StoredData.isAttributesLinked = false;
 
-                }else{
+                } else {
                     StoredData.Fitness = StoredData.Customers;
                     StoredData.isAttributesLinked = false;
                     StoredData.number_Products = 1;
                 }
-
 
 
                 String input_txt = input_spinner.getSelectedItem().toString();
@@ -123,14 +128,18 @@ public class Configuration extends AppCompatActivity implements View.OnClickList
                             if (variant.equals(many_products)) {
                                 StoredData.GeneticAlgorithmVariant = new GeneticAlgorithmVariant();
                                 StoredData.GeneticAlgorithmVariant.start(getApplicationContext());
-                            }else {
+                            } else {
                                 StoredData.GeneticAlgorithm = new GeneticAlgorithm();
                                 StoredData.GeneticAlgorithm.start(getApplicationContext());
                             }
 
-                        } else if (StoredData.Algorithm == StoredData.MINIMAX){
+                        } else if (StoredData.Algorithm == StoredData.MINIMAX) {
                             StoredData.Minimax = new Minimax();
                             StoredData.Minimax.start(getApplicationContext());
+
+                        } else if (StoredData.Algorithm == StoredData.PSO) {
+                            StoredData.ParticleSwarmOptimization = new ParticleSwarmOptimization();
+                            StoredData.ParticleSwarmOptimization.start(getApplicationContext());
                         }
                     } catch (Exception e) {
                         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();

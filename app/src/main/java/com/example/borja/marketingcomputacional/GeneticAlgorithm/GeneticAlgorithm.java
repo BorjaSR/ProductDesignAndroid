@@ -49,6 +49,7 @@ public class GeneticAlgorithm {
 
     private static ArrayList<Attribute> TotalAttributes = new ArrayList<>();
     private static ArrayList<Producer> Producers = new ArrayList<>();
+    private static ArrayList<CustomerProfile> CustomerProfiles = new ArrayList<>();
 
     /* GA VARIABLES */
     private int BestWSC; /* Stores the best wsc found */
@@ -61,7 +62,6 @@ public class GeneticAlgorithm {
     private ArrayList<Integer> Prices = new ArrayList<>();
     private int wscSum;
 
-    private static ArrayList<CustomerProfile> CustomerProfiles = new ArrayList<>();
 
     /***************************************
      * " AUXILIARY EXCEL METHODS " * @throws Exception

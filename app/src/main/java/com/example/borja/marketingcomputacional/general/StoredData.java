@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.SubProfile;
+import com.example.borja.marketingcomputacional.ParticleSwarmOptimization.ParticleSwarmOptimization;
 
 import java.util.ArrayList;
 
@@ -15,9 +16,12 @@ public class StoredData {
 
     public static final int GENETIC = 0;
     public static final int MINIMAX = 1;
+    public static final int PSO = 2;
+
     public static com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm GeneticAlgorithm;
     public static com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithmVariant GeneticAlgorithmVariant;
     public static com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax Minimax;
+    public static com.example.borja.marketingcomputacional.ParticleSwarmOptimization.ParticleSwarmOptimization ParticleSwarmOptimization;
 
 //    INPUT DATA
     public static ArrayList<Attribute> Atributos;

@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         final ImageView first_circle = (ImageView) findViewById(R.id.first_circle);
         final ImageView second_circle = (ImageView) findViewById(R.id.second_circle);
+        final ImageView third_circle = (ImageView) findViewById(R.id.third_circle);
 
         texto_carga = (TextView) findViewById(R.id.texto_carga);
         Typeface font = Typeface.createFromAsset(getAssets(), "Roboto-Regular.ttf");
@@ -60,10 +61,17 @@ public class MainActivity extends AppCompatActivity {
                     case 0:
                         first_circle.setImageResource(R.drawable.circle_white);
                         second_circle.setImageResource(R.drawable.circle_black);
+                        third_circle.setImageResource(R.drawable.circle_black);
                         break;
                     case 1:
                         first_circle.setImageResource(R.drawable.circle_black);
                         second_circle.setImageResource(R.drawable.circle_white);
+                        third_circle.setImageResource(R.drawable.circle_black);
+                        break;
+                    case 2:
+                        first_circle.setImageResource(R.drawable.circle_black);
+                        second_circle.setImageResource(R.drawable.circle_black);
+                        third_circle.setImageResource(R.drawable.circle_white);
                         break;
                 }
             }
@@ -113,6 +121,10 @@ public class MainActivity extends AppCompatActivity {
 //                                }
 //                            }
 //                        }, 0);
+                        break;
+                    case 2:// PSO
+                        StoredData.Algorithm = StoredData.PSO;
+                        container_carga.setVisibility(View.VISIBLE);
                         break;
                 }
 
@@ -183,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
     }
 
