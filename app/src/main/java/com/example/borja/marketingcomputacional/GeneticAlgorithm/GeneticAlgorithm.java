@@ -69,7 +69,6 @@ public class GeneticAlgorithm {
 
     public void start(final Context context) throws Exception {
 
-//        solvePD();
         statisticsPD();
 
         Intent dashboard_menu = new Intent(context, DashboardMenu.class);
@@ -81,12 +80,6 @@ public class GeneticAlgorithm {
     /***************************************
      * " PRIVATE METHODS "
      ***************************************/
-
-    private void solvePD() throws Exception {
-
-        generateInput();
-        solvePD_GA();
-    }
 
     /**
      * Generating the input data

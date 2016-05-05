@@ -60,6 +60,10 @@ public class StoredData {
 
     public static int number_Products = 1;
 
+
+    public static final double VEL_LOW = -2;
+    public static final double VEL_HIGH = 2;
+
     public static Typeface roboto_light(Context context){
         return Typeface.createFromAsset(context.getAssets(), "Roboto-Light.ttf");
     }

@@ -30,6 +30,7 @@ public class GeneticAlgorithmVariant {
                                              * profile in groups of
 											 * RESP_PER_GROUP respondents
 											 */
+
     static final int NEAR_CUST_PROFS = 4;
     static final int NUM_EXECUTIONS = 1; /* number of executions */
 
@@ -394,10 +395,12 @@ public class GeneticAlgorithmVariant {
 
             int worstIndex = isBetweenBest(Fitness.get(i));
             if (worstIndex != -1) {
-                BestWSC.remove(worstIndex);
-                BestWSC.add(Fitness.get(i));
-                Producers.get(MY_PRODUCER).getProducts().remove(worstIndex);
-                Producers.get(MY_PRODUCER).getProducts().add(Population.get(i));
+//                BestWSC.remove(worstIndex);
+//                BestWSC.add(Fitness.get(i));
+//                Producers.get(MY_PRODUCER).getProducts().remove(worstIndex);
+//                Producers.get(MY_PRODUCER).getProducts().add(Population.get(i));
+                BestWSC.set(worstIndex, Fitness.get(i));
+                Producers.get(MY_PRODUCER).getProducts().set(worstIndex, Population.get(i));
             }
         }
     }
