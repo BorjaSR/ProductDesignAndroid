@@ -29,7 +29,7 @@ public class ParticleSwarmOptimization {
     static final double KNOWN_ATTRIBUTES = 100;
     private static final int MY_BEST_PRODUCT = 0;
 
-    private int MAX_ITERATION = 30;
+    private int MAX_ITERATION = 60;
     private int SWARM_SIZE = 20;
 
     double W_UPPERBOUND = 1;
@@ -321,6 +321,9 @@ public class ParticleSwarmOptimization {
     }
 
     private void solvePSO() {
+
+        ProductBestWSC = new ArrayList<>();
+        ParticleBestWSC = new ArrayList<>();
 
         createInitSwarm();
 

@@ -61,13 +61,10 @@ public class Configuration extends AppCompatActivity implements View.OnClickList
 
         List<String> variant_valors = new ArrayList<>();
         variant_valors.add(Without);
+        variant_valors.add(linkedAttributes);
+        variant_valors.add(benefits);
 
-        if(StoredData.Algorithm == StoredData.GENETIC || StoredData.Algorithm == StoredData.MINIMAX){
-            variant_valors.add(linkedAttributes);
-            variant_valors.add(benefits);
-        }
-
-        if (StoredData.Algorithm == StoredData.GENETIC)
+        if (StoredData.Algorithm == StoredData.GENETIC || StoredData.Algorithm == StoredData.PSO)
             variant_valors.add(many_products);
 
         ArrayAdapter<String> variant_adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.initial_spinner_simple_item, variant_valors);

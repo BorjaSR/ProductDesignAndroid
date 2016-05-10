@@ -62,6 +62,49 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/linked_attribute_variant_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Añade a continuación los atributos enlazados para este perfil"
+            android:textSize="15dp"
+            android:textColor="@color/black"
+            android:padding="10dp"/>
+
+        <LinearLayout
+            android:id="@+id/list_linked_attributes_container"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/generar_button"
+            android:layout_margin="10dp">
+
+            <TextView
+                android:id="@+id/add_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="Añadir enlace"
+                android:textSize="15dp"
+                android:textColor="@color/white"
+                android:background="?android:selectableItemBackground"
+                />
+        </LinearLayout>
+
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

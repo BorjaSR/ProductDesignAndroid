@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -32,6 +33,8 @@ public class InputCustomerProfiles extends AppCompatActivity {
 
     static final int RESP_PER_GROUP = 20;
     private boolean isgenerated = false;
+    private String POSITIVE = "Positiva";
+    private String NEGATIVE = "Negativa";
 
     @TargetApi(Build.VERSION_CODES.M)
     @Override
@@ -54,7 +57,7 @@ public class InputCustomerProfiles extends AppCompatActivity {
 
                     list_input_cust.removeAllViews();
                     for (int i = 0; i < num_customers; i++) {
-                        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         View input_cust_view = inflater.inflate(R.layout.customer_item_input, list_input_cust, false);
 
                         TextView name = (TextView) input_cust_view.findViewById(R.id.customer_name_input);
@@ -96,6 +99,83 @@ public class InputCustomerProfiles extends AppCompatActivity {
                             }
 
                             list_customer_attributes_content.addView(customer_attribute_item_input);
+                        }
+
+
+                        //Linked attributes Variant
+                        LinearLayout linked_attribute_variant_container = (LinearLayout) input_cust_view.findViewById(R.id.linked_attribute_variant_container);
+                        if(StoredData.isAttributesLinked){
+                            linked_attribute_variant_container.setVisibility(View.VISIBLE);
+                            TextView add_link = (TextView) linked_attribute_variant_container.findViewById(R.id.add_link);
+
+                            final LinearLayout list_linked_attributes_container = (LinearLayout) linked_attribute_variant_container.findViewById(R.id.list_linked_attributes_container);
+                            add_link.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                    View input_linked_attribute_view = inflater.inflate(R.layout.input_linked_attribute, list_linked_attributes_container, false);
+
+                                    List<String> valors = new ArrayList<>();
+                                    for (int p = 0; p < StoredData.Atributos.size(); p++)
+                                        valors.add((p + 1) + "");
+
+                                    ArrayAdapter<String> spinner_adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.spinner_simple_item, valors);
+                                    Spinner spinner_link_atrr_1 = (Spinner) input_linked_attribute_view.findViewById(R.id.spinner_link_atrr_1);
+                                    Spinner spinner_link_atrr_2 = (Spinner) input_linked_attribute_view.findViewById(R.id.spinner_link_atrr_2);
+                                    final Spinner spinner_link_val_1 = (Spinner) input_linked_attribute_view.findViewById(R.id.spinner_link_val_1);
+                                    final Spinner spinner_link_val_2 = (Spinner) input_linked_attribute_view.findViewById(R.id.spinner_link_val_2);
+                                    spinner_link_atrr_1.setAdapter(spinner_adapter);
+                                    spinner_link_atrr_2.setAdapter(spinner_adapter);
+
+                                    spinner_link_atrr_1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                        @Override
+                                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                                            List<String> valors = new ArrayList<>();
+                                            for (int p = 0; p < StoredData.Atributos.get(position).getMAX(); p++)
+                                                valors.add((p + 1) + "");
+
+                                            ArrayAdapter<String> spinner_adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.spinner_simple_item, valors);
+                                            spinner_link_val_1.setAdapter(spinner_adapter);
+                                        }
+
+                                        @Override
+                                        public void onNothingSelected(AdapterView<?> parent) {
+
+                                        }
+                                    });
+                                    spinner_link_atrr_2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                        @Override
+                                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                                            List<String> valors = new ArrayList<>();
+                                            for (int p = 0; p < StoredData.Atributos.get(position).getMAX(); p++)
+                                                valors.add((p + 1) + "");
+
+                                            ArrayAdapter<String> spinner_adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.spinner_simple_item, valors);
+                                            spinner_link_val_2.setAdapter(spinner_adapter);
+                                        }
+
+                                        @Override
+                                        public void onNothingSelected(AdapterView<?> parent) {
+
+                                        }
+                                    });
+
+                                    List<String> sign_valors = new ArrayList<>();
+                                    sign_valors.add(POSITIVE);
+                                    sign_valors.add(NEGATIVE);
+                                    ArrayAdapter<String> sign_adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.spinner_simple_item, sign_valors);
+                                    Spinner sign_spinner = (Spinner) input_linked_attribute_view.findViewById(R.id.sign);
+                                    sign_spinner.setAdapter(sign_adapter);
+
+                                    list_linked_attributes_container.addView(input_linked_attribute_view);
+                                }
+                            });
+
+
+                        }else{
+                            linked_attribute_variant_container.setVisibility(View.GONE);
                         }
 
                         isgenerated = true;
