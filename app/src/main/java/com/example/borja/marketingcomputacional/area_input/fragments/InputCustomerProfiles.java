@@ -20,6 +20,7 @@ import com.example.borja.marketingcomputacional.general.Attribute;
 import com.example.borja.marketingcomputacional.general.CustomerProfile;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.SubProfile;
 import com.example.borja.marketingcomputacional.R;
+import com.example.borja.marketingcomputacional.general.LinkedAttribute;
 import com.example.borja.marketingcomputacional.general.StoredData;
 
 import java.util.ArrayList;
@@ -104,7 +105,7 @@ public class InputCustomerProfiles extends AppCompatActivity {
 
                         //Linked attributes Variant
                         LinearLayout linked_attribute_variant_container = (LinearLayout) input_cust_view.findViewById(R.id.linked_attribute_variant_container);
-                        if(StoredData.isAttributesLinked){
+                        if (StoredData.isAttributesLinked) {
                             linked_attribute_variant_container.setVisibility(View.VISIBLE);
                             TextView add_link = (TextView) linked_attribute_variant_container.findViewById(R.id.add_link);
 
@@ -174,7 +175,7 @@ public class InputCustomerProfiles extends AppCompatActivity {
                             });
 
 
-                        }else{
+                        } else {
                             linked_attribute_variant_container.setVisibility(View.GONE);
                         }
 
@@ -196,13 +197,15 @@ public class InputCustomerProfiles extends AppCompatActivity {
                     boolean malformed = false;
                     ArrayList<CustomerProfile> custProfiles = new ArrayList<CustomerProfile>();
                     int num_customers = Integer.parseInt(num_cust.getText().toString());
-                    for(int i = 0; i < num_customers; i++){
-                        EditText num_people = (EditText)list_input_cust.getChildAt(i).findViewById(R.id.number_people_profile);
+                    for (int i = 0; i < num_customers; i++) {
+                        CustomerProfile profile = new CustomerProfile();
+
+                        EditText num_people = (EditText) list_input_cust.getChildAt(i).findViewById(R.id.number_people_profile);
 
                         ArrayList<Attribute> attrs = new ArrayList<>();
                         LinearLayout list_customer_attributes_content = (LinearLayout) list_input_cust.getChildAt(i).findViewById(R.id.list_customer_attributes_content);
                         for (int j = 0; j < StoredData.Atributos.size(); j++) {
-                            LinearLayout list_valorations_content = (LinearLayout)list_customer_attributes_content.getChildAt(j).findViewById(R.id.list_valorations_content);
+                            LinearLayout list_valorations_content = (LinearLayout) list_customer_attributes_content.getChildAt(j).findViewById(R.id.list_valorations_content);
 
 
                             Attribute attr = new Attribute(StoredData.Atributos.get(j).getName(), StoredData.Atributos.get(j).getMIN(), StoredData.Atributos.get(j).getMAX());
@@ -216,18 +219,60 @@ public class InputCustomerProfiles extends AppCompatActivity {
                             attrs.add(attr);
                         }
 
-                        if(num_people.getText().toString().length() == 0){
+                        ArrayList<LinkedAttribute> linkedAttributes = new ArrayList<>();
+                        if (StoredData.isAttributesLinked) {
+                            final LinearLayout list_linked_attributes_container = (LinearLayout) list_input_cust.getChildAt(i).findViewById(R.id.list_linked_attributes_container);
+                            for (int k = 0; k < list_linked_attributes_container.getChildCount(); k++) {
+                                LinearLayout input_linked_attribute_view = (LinearLayout) list_linked_attributes_container.getChildAt(k);
+                                LinkedAttribute link = new LinkedAttribute();
+
+                                Spinner spinner_link_atrr_1 = (Spinner) input_linked_attribute_view.findViewById(R.id.spinner_link_atrr_1);
+                                Spinner spinner_link_atrr_2 = (Spinner) input_linked_attribute_view.findViewById(R.id.spinner_link_atrr_2);
+                                Spinner spinner_link_val_1 = (Spinner) input_linked_attribute_view.findViewById(R.id.spinner_link_val_1);
+                                Spinner spinner_link_val_2 = (Spinner) input_linked_attribute_view.findViewById(R.id.spinner_link_val_2);
+
+                                link.setAttribute1(StoredData.Atributos.get(Integer.parseInt(spinner_link_atrr_1.getSelectedItem().toString()) - 1));
+                                link.setAttribute2(StoredData.Atributos.get(Integer.parseInt(spinner_link_atrr_2.getSelectedItem().toString()) - 1));
+                                link.setValue1(Integer.parseInt(spinner_link_val_1.getSelectedItem().toString()));
+                                link.setValue2(Integer.parseInt(spinner_link_val_2.getSelectedItem().toString()));
+
+                                EditText modification_link = (EditText) input_linked_attribute_view.findViewById(R.id.modification_link);
+                                if (modification_link.getText().toString().length() == 0) {
+                                    malformed = true;
+                                    break;
+                                } else if (Integer.parseInt(modification_link.getText().toString()) < 1) {
+                                    malformed = true;
+                                    break;
+                                } else {
+
+                                    Spinner sign_spinner = (Spinner) input_linked_attribute_view.findViewById(R.id.sign);
+                                    if (sign_spinner.getSelectedItem().equals(POSITIVE))
+                                        link.setScoreModification(Integer.parseInt(modification_link.getText().toString()));
+                                    else
+                                        link.setScoreModification(-1 * Integer.parseInt(modification_link.getText().toString()));
+
+                                    linkedAttributes.add(link);
+                                }
+                            }
+
+                        }
+
+                        if (num_people.getText().toString().length() == 0) {
                             malformed = true;
                             break;
-                        }else if(Integer.parseInt(num_people.getText().toString()) < 1){
+                        } else if (Integer.parseInt(num_people.getText().toString()) < 1) {
                             malformed = true;
                             break;
-                        }else{
-                            custProfiles.add(new CustomerProfile(Integer.parseInt(num_people.getText().toString()), attrs));
+                        } else {
+                            profile.setScoreAttributes(attrs);
+                            profile.setNumberCustomers(Integer.parseInt(num_people.getText().toString()));
+                            profile.setLinkedAttributes(linkedAttributes);
+
+                            custProfiles.add(profile);
                         }
                     }
 
-                    if(!malformed){
+                    if (!malformed) {
                         StoredData.Profiles = custProfiles;
                         try {
                             divideCustomerProfile();
@@ -238,7 +283,7 @@ public class InputCustomerProfiles extends AppCompatActivity {
                         Intent input_customers = new Intent(getApplicationContext(), InputProducers.class);
                         input_customers.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         getApplicationContext().startActivity(input_customers);
-                    }else
+                    } else
                         Toast.makeText(getApplicationContext(), "Debes rellenar bien los campos para continuar", Toast.LENGTH_SHORT).show();
                 } else
                     Toast.makeText(getApplicationContext(), "Debes generar algun atributo para continuar", Toast.LENGTH_SHORT).show();

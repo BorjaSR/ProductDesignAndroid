@@ -169,7 +169,7 @@ public class InputProducers extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }else if (StoredData.Algorithm == StoredData.MINIMAX) {
+                }else if (StoredData.Algorithm == StoredData.PSO) {
                     StoredData.ParticleSwarmOptimization = new ParticleSwarmOptimization();
                     StoredData.ParticleSwarmOptimization.start(getApplicationContext());
                 }

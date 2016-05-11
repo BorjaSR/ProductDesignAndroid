@@ -12,6 +12,9 @@ public class CustomerProfile {
 	private ArrayList<SubProfile> subProfiles;
 	private ArrayList<LinkedAttribute> linkedAttributes;
 
+	public CustomerProfile() {
+	}
+
 	public CustomerProfile(ArrayList<Attribute> scoreAttributes) {
 		super();
 		this.scoreAttributes = scoreAttributes;
