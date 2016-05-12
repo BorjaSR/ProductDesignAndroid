@@ -243,7 +243,6 @@ public class GeneticAlgorithmVariant {
         StoredData.My_price = prices.get(0) / NUM_EXECUTIONS;
 
 
-
         StoredData.meanString = meanTXT;
         StoredData.initMeanString = initMeanTXT;
         StoredData.stdDevString = stdDevTXT;
@@ -495,7 +494,6 @@ public class GeneticAlgorithmVariant {
         int score = 0;
         for (int i = 0; i < TotalAttributes.size(); i++) {
             score += scoreAttribute(TotalAttributes.get(i).getMAX(), subprofile.getValueChosen().get(TotalAttributes.get(i)), product.getAttributeValue().get(TotalAttributes.get(i)));
-            // score += scoreAttribute(mAttributes(i), mCustProfAux(custProfInd)(custSubProfInd)(i), product(i))
         }
         return score;
     }
@@ -507,41 +505,85 @@ public class GeneticAlgorithmVariant {
     private int scoreAttribute(int numOfValsOfAttr, int valOfAttrCust, int valOfAttrProd) throws Exception {
         int score = 0;
         switch (numOfValsOfAttr) {
-            case 2: {
+            case 1:
+                score = 10;
+                break;
+
+            case 2:
                 if (valOfAttrCust == valOfAttrProd) score = 10;
                 else score = 0;
-            }
-            break;
-            case 3: {
+                break;
+
+            case 3:
                 if (valOfAttrCust == valOfAttrProd) score = 10;
                 else if (Math.abs(valOfAttrCust - valOfAttrProd) == 1) score = 5;
                 else score = 0;
-            }
-            break;
-            case 4: {
+                break;
+
+            case 4:
                 if (valOfAttrCust == valOfAttrProd) score = 10;
                 else if (Math.abs(valOfAttrCust - valOfAttrProd) == 1) score = 6;
                 else if (Math.abs(valOfAttrCust - valOfAttrProd) == 2) score = 2;
                 else score = 0;
-            }
-            break;
-            case 5: {
+                break;
+
+            case 5:
                 if (valOfAttrCust == valOfAttrProd) score = 10;
                 else if (Math.abs(valOfAttrCust - valOfAttrProd) == 1) score = 6;
                 else if (Math.abs(valOfAttrCust - valOfAttrProd) == 2) score = 2;
                 else if (Math.abs(valOfAttrCust - valOfAttrProd) == 3) score = 1;
                 else score = 0;
-            }
-            break;
-            case 11: {
+                break;
+
+            case 6:
+                if (valOfAttrCust == valOfAttrProd) score = 10;
+                else if (Math.abs(valOfAttrCust - valOfAttrProd) == 1) score = 6;
+                else if (Math.abs(valOfAttrCust - valOfAttrProd) == 2) score = 2;
+                else if (Math.abs(valOfAttrCust - valOfAttrProd) == 3) score = 1;
+                else score = 0;
+                break;
+
+            case 7:
+                if (valOfAttrCust == valOfAttrProd) score = 10;
+                else if (Math.abs(valOfAttrCust - valOfAttrProd) == 1) score = 6;
+                else if (Math.abs(valOfAttrCust - valOfAttrProd) == 2) score = 2;
+                else if (Math.abs(valOfAttrCust - valOfAttrProd) == 3) score = 1;
+                else score = 0;
+                break;
+
+            case 8:
+                if (valOfAttrCust == valOfAttrProd) score = 10;
+                else if (Math.abs(valOfAttrCust - valOfAttrProd) == 1) score = 6;
+                else if (Math.abs(valOfAttrCust - valOfAttrProd) == 2) score = 2;
+                else if (Math.abs(valOfAttrCust - valOfAttrProd) == 3) score = 1;
+                else score = 0;
+                break;
+
+            case 9:
+                if (valOfAttrCust == valOfAttrProd) score = 10;
+                else if (Math.abs(valOfAttrCust - valOfAttrProd) == 1) score = 6;
+                else if (Math.abs(valOfAttrCust - valOfAttrProd) == 2) score = 2;
+                else if (Math.abs(valOfAttrCust - valOfAttrProd) == 3) score = 1;
+                else score = 0;
+                break;
+
+            case 10:
+                if (valOfAttrCust == valOfAttrProd) score = 10;
+                else if (Math.abs(valOfAttrCust - valOfAttrProd) == 1) score = 8;
+                else if (Math.abs(valOfAttrCust - valOfAttrProd) == 2) score = 5;
+                else if (Math.abs(valOfAttrCust - valOfAttrProd) == 3) score = 1;
+                else score = 0;
+                break;
+
+            case 11:
                 if (valOfAttrCust == valOfAttrProd) score = 10;
                 else if (Math.abs(valOfAttrCust - valOfAttrProd) == 1) score = 8;
                 else if (Math.abs(valOfAttrCust - valOfAttrProd) == 2) score = 6;
                 else if (Math.abs(valOfAttrCust - valOfAttrProd) == 3) score = 4;
                 else if (Math.abs(valOfAttrCust - valOfAttrProd) == 4) score = 2;
                 else score = 0;
-            }
-            break;
+                break;
+
             default:
                 throw new Exception("Error in scoreAttribute() function: " +
                         "Number of values of the attribute unexpected");

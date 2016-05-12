@@ -378,7 +378,7 @@ public class ParticleSwarmOptimization {
                 }
             }
 
-            //TODO Update Fitness
+
             updateFitness();
         }
 

@@ -18,7 +18,7 @@ public class StoredData {
     public static final int MINIMAX = 1;
     public static final int PSO = 2;
 
-    public static com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm GeneticAlgorithm;
+//    public static com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm GeneticAlgorithm;
     public static com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithmVariant GeneticAlgorithmVariant;
     public static com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax Minimax;
     public static com.example.borja.marketingcomputacional.ParticleSwarmOptimization.ParticleSwarmOptimization ParticleSwarmOptimization;

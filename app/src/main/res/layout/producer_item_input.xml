@@ -34,7 +34,6 @@
 
 
         <include layout="@layout/producer_attribute_item_input"/>
-        <!--<include layout="@layout/producer_attribute_item_input"/>-->
     </LinearLayout>
 
     <LinearLayout

@@ -13,10 +13,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithmVariant;
 import com.example.borja.marketingcomputacional.ParticleSwarmOptimization.ParticleSwarmOptimization;
 import com.example.borja.marketingcomputacional.general.Attribute;
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm;
 import com.example.borja.marketingcomputacional.general.Producer;
 import com.example.borja.marketingcomputacional.general.Product;
 import com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax;
@@ -43,67 +44,90 @@ public class InputProducers extends AppCompatActivity {
 
         final TextView generate_producers = (TextView) findViewById(R.id.generate_producers);
         final EditText number_input_producers = (EditText) findViewById(R.id.number_input_producers);
+        final EditText number_input_products = (EditText) findViewById(R.id.number_input_products);
         final LinearLayout input_producers_list = (LinearLayout) findViewById(R.id.input_producers_list);
+
+        final LinearLayout number_of_products_container = (LinearLayout) findViewById(R.id.number_of_products_container);
+        if (StoredData.number_Products == 1) {
+            number_of_products_container.setVisibility(View.GONE);
+            number_input_products.setText("1");
+        } else
+            number_of_products_container.setVisibility(View.VISIBLE);
+
         final LinearLayout how_much_prod = (LinearLayout) findViewById(R.id.how_much_prod);
 
 
         generate_producers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (number_input_producers.getText().toString().length() > 0) {
-                    how_much_prod.setVisibility(View.GONE);
-                    int num_producers = Integer.parseInt(number_input_producers.getText().toString());
+                if (number_input_producers.getText().toString().length() > 0 && number_input_products.getText().toString().length() > 0) {
+                    if (Integer.parseInt(number_input_producers.getText().toString()) > 1 && Integer.parseInt(number_input_products.getText().toString()) > 0) {
+                        how_much_prod.setVisibility(View.GONE);
+                        int num_producers = Integer.parseInt(number_input_producers.getText().toString());
+                        StoredData.number_Products = Integer.parseInt(number_input_products.getText().toString());
 
-                    input_producers_list.removeAllViews();
-                    for (int i = 0; i < num_producers; i++) {
-                        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        View input_cust_view = inflater.inflate(R.layout.producer_item_input, input_producers_list, false);
+                        input_producers_list.removeAllViews();
+                        for (int i = 0; i < num_producers; i++) {
+                            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                            View input_cust_view = inflater.inflate(R.layout.producer_item_input, input_producers_list, false);
 
-                        TextView name = (TextView) input_cust_view.findViewById(R.id.producer_name_input);
-                        name.setText("Productor " + (i + 1));
-
-
-                        final LinearLayout list_producer_attributes_content = (LinearLayout) input_cust_view.findViewById(R.id.list_producer_attributes_content);
-                        list_producer_attributes_content.removeAllViews();
-
-                        for (int j = 0; j < StoredData.Atributos.size(); j++) {
-                            View producer_attribute_item_input = inflater.inflate(R.layout.producer_attribute_item_input, list_producer_attributes_content, false);
-
-                            TextView punt = (TextView) producer_attribute_item_input.findViewById(R.id.wich_value);
-                            punt.setText("¿Que valor toma el atributo " + (j + 1) + "?");
+                            TextView name = (TextView) input_cust_view.findViewById(R.id.producer_name_input);
+                            name.setText("Productor " + (i + 1));
 
 
-                            Attribute attr = StoredData.Atributos.get(j);
-                            Spinner value_for_attribute = (Spinner) producer_attribute_item_input.findViewById(R.id.value_for_attribute);
+                            final LinearLayout list_producer_attributes_content = (LinearLayout) input_cust_view.findViewById(R.id.list_producer_attributes_content);
+                            list_producer_attributes_content.removeAllViews();
 
-                            List<String> valors = new ArrayList<>();
-                            for (int p = 0; p < attr.getMAX(); p++)
-                                valors.add((p + 1) + "");
+                            for (int j = 0; j < StoredData.Atributos.size(); j++) {
+                                View producer_attribute_item_input = inflater.inflate(R.layout.producer_attribute_item_input, list_producer_attributes_content, false);
 
-                            ArrayAdapter<String> spinner_adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.spinner_simple_item, valors);
-                            //Añadimos el layout para el menú y se lo damos al spinner
-                            spinner_adapter.setDropDownViewResource(R.layout.spinner_simple_dropdown_item);
-                            value_for_attribute.setAdapter(spinner_adapter);
+                                Attribute attr = StoredData.Atributos.get(j);
 
+                                final LinearLayout product_attr_by_product_container = (LinearLayout) producer_attribute_item_input.findViewById(R.id.product_attr_by_product_container);
+                                product_attr_by_product_container.removeAllViews();
+                                for (int l = 0; l < StoredData.number_Products; l++) {
+                                    View producer_attr_by_product = inflater.inflate(R.layout.producer_attr_by_product, product_attr_by_product_container, false);
 
-                            final LinearLayout list_valorations_content = (LinearLayout) producer_attribute_item_input.findViewById(R.id.list_valorations_content);
-                            list_valorations_content.removeAllViews();
+                                    TextView punt = (TextView) producer_attr_by_product.findViewById(R.id.wich_value);
+                                    punt.setText("¿Que valor toma el atributo " + (j + 1) + " para el producto " + (l + 1) + "?");
 
-                            for (int k = 0; k < attr.getMAX(); k++) {
-                                View available_values_input = inflater.inflate(R.layout.available_values_input, list_valorations_content, false);
+                                    Spinner value_for_attribute = (Spinner) producer_attr_by_product.findViewById(R.id.value_for_attribute);
 
-                                TextView valor_input = (TextView) available_values_input.findViewById(R.id.valor_input);
-                                valor_input.setText("Valor " + (k + 1));
+                                    List<String> valors = new ArrayList<>();
+                                    for (int p = 0; p < attr.getMAX(); p++)
+                                        valors.add((p + 1) + "");
 
-                                list_valorations_content.addView(available_values_input);
+                                    ArrayAdapter<String> spinner_adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.spinner_simple_item, valors);
+                                    //Añadimos el layout para el menú y se lo damos al spinner
+                                    spinner_adapter.setDropDownViewResource(R.layout.spinner_simple_dropdown_item);
+                                    value_for_attribute.setAdapter(spinner_adapter);
+
+                                    product_attr_by_product_container.addView(producer_attr_by_product);
+                                }
+
+                                final LinearLayout list_valorations_content = (LinearLayout) producer_attribute_item_input.findViewById(R.id.list_valorations_content);
+                                list_valorations_content.removeAllViews();
+
+                                for (int k = 0; k < attr.getMAX(); k++) {
+                                    View available_values_input = inflater.inflate(R.layout.available_values_input, list_valorations_content, false);
+
+                                    TextView valor_input = (TextView) available_values_input.findViewById(R.id.valor_input);
+                                    valor_input.setText("Valor " + (k + 1));
+
+                                    list_valorations_content.addView(available_values_input);
+                                }
+
+                                list_producer_attributes_content.addView(producer_attribute_item_input);
                             }
 
-                            list_producer_attributes_content.addView(producer_attribute_item_input);
+                            isgenerated = true;
+                            input_producers_list.addView(input_cust_view);
                         }
-
-                        isgenerated = true;
-                        input_producers_list.addView(input_cust_view);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Algun campo tiene un numero demasiado pequeño", Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    Toast.makeText(getApplicationContext(), "Debes introducir algo valido", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -115,28 +139,40 @@ public class InputProducers extends AppCompatActivity {
 
                 ArrayList<Producer> producers = new ArrayList<>();
                 int num_producers = Integer.parseInt(number_input_producers.getText().toString());
-                for (int i = 0; i < num_producers; i++){
+                for (int i = 0; i < num_producers; i++) {
 
                     ArrayList<Attribute> available_attrs = new ArrayList<>();
-                    Product product = new Product();
+//                    Product product = new Product();
 
-                    HashMap<Attribute, Integer> attr_value = new HashMap<>();
+                    ArrayList<Product> Products = new ArrayList<>();
+                    ArrayList<HashMap<Attribute, Integer>> attributeValue_ALL_PRODUCTS = new ArrayList<>();
+
+                    for (int l = 0; l < StoredData.number_Products; l++) {
+                        Products.add(new Product());
+                        attributeValue_ALL_PRODUCTS.add(new HashMap<Attribute, Integer>());
+                    }
 
                     LinearLayout list_customer_attributes_content = (LinearLayout) input_producers_list.getChildAt(i).findViewById(R.id.list_producer_attributes_content);
                     for (int j = 0; j < StoredData.Atributos.size(); j++) {
 
-                        Spinner valor = (Spinner) list_customer_attributes_content.getChildAt(j).findViewById(R.id.value_for_attribute);
-                        attr_value.put(StoredData.Atributos.get(j), Integer.parseInt(valor.getSelectedItem().toString()));
+                        LinearLayout product_attr_by_product_container = (LinearLayout) list_customer_attributes_content.getChildAt(j).findViewById(R.id.product_attr_by_product_container);
+                        for (int l = 0; l < StoredData.number_Products; l++) {
+
+                            Spinner valor = (Spinner) product_attr_by_product_container.getChildAt(l).findViewById(R.id.value_for_attribute);
+                            attributeValue_ALL_PRODUCTS.get(l).put(StoredData.Atributos.get(j), Integer.parseInt(valor.getSelectedItem().toString()));
+//                            attr_value.put(StoredData.Atributos.get(j), Integer.parseInt(valor.getSelectedItem().toString()));
+
+                        }
 
                         Attribute attr = new Attribute(StoredData.Atributos.get(j).getName(), StoredData.Atributos.get(j).getMIN(), StoredData.Atributos.get(j).getMAX());
 
-                        ArrayList<Boolean> availableValues = new ArrayList<Boolean>();
+                        ArrayList<Boolean> availableValues = new ArrayList<>();
 
-                        LinearLayout list_valorations_content = (LinearLayout)list_customer_attributes_content.getChildAt(j).findViewById(R.id.list_valorations_content);
+                        LinearLayout list_valorations_content = (LinearLayout) list_customer_attributes_content.getChildAt(j).findViewById(R.id.list_valorations_content);
                         for (int k = 0; k < attr.getMAX(); k++) {
                             CheckBox check = (CheckBox) list_valorations_content.getChildAt(k).findViewById(R.id.available_value);
 
-                            if(check.isChecked())
+                            if (check.isChecked())
                                 availableValues.add(true);
                             else
                                 availableValues.add(false);
@@ -146,32 +182,65 @@ public class InputProducers extends AppCompatActivity {
                         available_attrs.add(attr);
                     }
 
-                    product.setAttributeValue(attr_value);
-                    Producer producer = new Producer(available_attrs, product);
+                    Producer producer = new Producer();
                     producer.setName("Productor " + (i + 1));
-                    producers.add(new Producer(available_attrs, product));
+                    producer.setAvailableAttribute(available_attrs);
 
+                    if (StoredData.number_Products == 1) {
+                        Products.get(0).setAttributeValue(attributeValue_ALL_PRODUCTS.get(0));
+                        producer.setProduct(Products.get(0));
+                        if(StoredData.Algorithm == StoredData.PSO){
+                            Products.get(0).setVelocity(new HashMap<Attribute, Double>());
+                            for (int w = 0; w < StoredData.Atributos.size(); w++) {
+                                double velocity = (((StoredData.VEL_HIGH - StoredData.VEL_LOW) * Math.random()) + StoredData.VEL_LOW);
+                                Products.get(0).getVelocity().put(StoredData.Atributos.get(w), velocity);
+                            }
+                        }
+
+                    } else {
+                        ArrayList<Product> products = new ArrayList<>();
+                        for (int q = 0; q < StoredData.number_Products; q++) {
+                            Products.get(q).setAttributeValue(attributeValue_ALL_PRODUCTS.get(q));
+                            products.add(Products.get(q));
+                            if(StoredData.Algorithm == StoredData.PSO){
+                                Products.get(q).setVelocity(new HashMap<Attribute, Double>());
+                                for (int w = q; w < StoredData.Atributos.size(); w++) {
+                                    double velocity = (((StoredData.VEL_HIGH - StoredData.VEL_LOW) * Math.random()) + StoredData.VEL_LOW);
+                                    Products.get(q).getVelocity().put(StoredData.Atributos.get(w), velocity);
+                                }
+                            }
+                        }
+                        producer.setProduct(products.get(0));
+                        producer.setProducts(products);
+                    }
+                    producers.add(producer);
                 }
 
                 StoredData.Producers = producers;
 
                 if (StoredData.Algorithm == StoredData.GENETIC) {
                     try {
-                        StoredData.GeneticAlgorithm = new GeneticAlgorithm();
-                        StoredData.GeneticAlgorithm.start(getApplicationContext());
+                        StoredData.GeneticAlgorithmVariant = new GeneticAlgorithmVariant();
+                        StoredData.GeneticAlgorithmVariant.start(getApplicationContext());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                } else if (StoredData.Algorithm == StoredData.MINIMAX){
+                } else if (StoredData.Algorithm == StoredData.MINIMAX) {
                     try {
                         StoredData.Minimax = new Minimax();
                         StoredData.Minimax.start(getApplicationContext());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }else if (StoredData.Algorithm == StoredData.PSO) {
-                    StoredData.ParticleSwarmOptimization = new ParticleSwarmOptimization();
-                    StoredData.ParticleSwarmOptimization.start(getApplicationContext());
+                } else if (StoredData.Algorithm == StoredData.PSO) {
+                    try {
+                        StoredData.ParticleSwarmOptimization = new ParticleSwarmOptimization();
+                        StoredData.ParticleSwarmOptimization.start(getApplicationContext());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        StoredData.ParticleSwarmOptimization = new ParticleSwarmOptimization();
+                        StoredData.ParticleSwarmOptimization.start(getApplicationContext());
+                    }
                 }
             }
         });
