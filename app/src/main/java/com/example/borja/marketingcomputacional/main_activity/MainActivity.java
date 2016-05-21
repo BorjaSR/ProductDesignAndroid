@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         final ImageView first_circle = (ImageView) findViewById(R.id.first_circle);
         final ImageView second_circle = (ImageView) findViewById(R.id.second_circle);
         final ImageView third_circle = (ImageView) findViewById(R.id.third_circle);
+        final ImageView fourth_circle = (ImageView) findViewById(R.id.fourth_circle);
 
         texto_carga = (TextView) findViewById(R.id.texto_carga);
         Typeface font = Typeface.createFromAsset(getAssets(), "Roboto-Regular.ttf");
@@ -62,16 +63,25 @@ public class MainActivity extends AppCompatActivity {
                         first_circle.setImageResource(R.drawable.circle_white);
                         second_circle.setImageResource(R.drawable.circle_black);
                         third_circle.setImageResource(R.drawable.circle_black);
+                        fourth_circle.setImageResource(R.drawable.circle_black);
                         break;
                     case 1:
                         first_circle.setImageResource(R.drawable.circle_black);
                         second_circle.setImageResource(R.drawable.circle_white);
                         third_circle.setImageResource(R.drawable.circle_black);
+                        fourth_circle.setImageResource(R.drawable.circle_black);
                         break;
                     case 2:
                         first_circle.setImageResource(R.drawable.circle_black);
                         second_circle.setImageResource(R.drawable.circle_black);
                         third_circle.setImageResource(R.drawable.circle_white);
+                        fourth_circle.setImageResource(R.drawable.circle_black);
+                        break;
+                    case 3:
+                        first_circle.setImageResource(R.drawable.circle_black);
+                        second_circle.setImageResource(R.drawable.circle_black);
+                        third_circle.setImageResource(R.drawable.circle_black);
+                        fourth_circle.setImageResource(R.drawable.circle_white);
                         break;
                 }
             }
@@ -93,37 +103,17 @@ public class MainActivity extends AppCompatActivity {
                     case 0: //GENETICO CLIENTES
                         StoredData.Algorithm = StoredData.GENETIC;
                         container_carga.setVisibility(View.VISIBLE);
-//                        handler.postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                Intent select_input = new Intent(getApplicationContext(), Configuration.class);
-//                                select_input.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                                getApplicationContext().startActivity(select_input);
-//                            }
-//                        }, 0);
                         break;
                     case 1:// MINIMAX
                         StoredData.Algorithm = StoredData.MINIMAX;
                         container_carga.setVisibility(View.VISIBLE);
-//                        handler.postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                InputRandom input = new InputRandom();
-//                                try {
-//                                    input.generate();
-//
-//                                    StoredData.Minimax = new Minimax();
-//                                    StoredData.Minimax.start(getApplicationContext());
-//                                } catch (Exception e) {
-//                                    e.printStackTrace();
-//                                    Snackbar.make(mainPager, e.getMessage(), Snackbar.LENGTH_SHORT)
-//                                            .setAction("Action", null).show();
-//                                }
-//                            }
-//                        }, 0);
                         break;
                     case 2:// PSO
                         StoredData.Algorithm = StoredData.PSO;
+                        container_carga.setVisibility(View.VISIBLE);
+                        break;
+                    case 3:// PSO
+                        StoredData.Algorithm = StoredData.SA;
                         container_carga.setVisibility(View.VISIBLE);
                         break;
                 }
@@ -139,16 +129,6 @@ public class MainActivity extends AppCompatActivity {
                 }, 0);
             }
         });
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_SHORT)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
     }
 
     @Override
@@ -195,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
     }
 

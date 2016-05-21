@@ -52,6 +52,10 @@ public class MainViewPagerFragment extends Fragment {
                 title_viewer.setText("Particle Swarm Optimization");
                 image_viewer.setImageResource(R.drawable.pso);
                 break;
+            case 3:
+                title_viewer.setText("Simulated Annealing");
+                image_viewer.setImageResource(R.drawable.sim_ann);
+                break;
         }
     }
 

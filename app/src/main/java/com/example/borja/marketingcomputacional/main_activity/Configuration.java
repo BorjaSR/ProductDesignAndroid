@@ -18,6 +18,7 @@ import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorith
 import com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax;
 import com.example.borja.marketingcomputacional.ParticleSwarmOptimization.ParticleSwarmOptimization;
 import com.example.borja.marketingcomputacional.R;
+import com.example.borja.marketingcomputacional.SimulatedAnnealing.SimulatedAnnealing;
 import com.example.borja.marketingcomputacional.area_input.fragments.InputAttributes;
 import com.example.borja.marketingcomputacional.area_input.fragments.InputRandom;
 import com.example.borja.marketingcomputacional.general.StoredData;
@@ -73,7 +74,7 @@ public class Configuration extends AppCompatActivity implements View.OnClickList
         List<String> input_valors = new ArrayList<>();
         input_valors.add(random);
         input_valors.add(write);
-        input_valors.add(file);
+//        input_valors.add(file);
 
         ArrayAdapter<String> input_adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.initial_spinner_simple_item, input_valors);
         input_adapter.setDropDownViewResource(R.layout.initial_spinner_simple_dropdown_item);
@@ -130,6 +131,10 @@ public class Configuration extends AppCompatActivity implements View.OnClickList
                         } else if (StoredData.Algorithm == StoredData.PSO) {
                             StoredData.ParticleSwarmOptimization = new ParticleSwarmOptimization();
                             StoredData.ParticleSwarmOptimization.start(getApplicationContext());
+
+                        } else if (StoredData.Algorithm == StoredData.SA) {
+                            StoredData.SimulatedAnnealing = new SimulatedAnnealing();
+                            StoredData.SimulatedAnnealing.start(getApplicationContext());
                         }
                     } catch (Exception e) {
                         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
