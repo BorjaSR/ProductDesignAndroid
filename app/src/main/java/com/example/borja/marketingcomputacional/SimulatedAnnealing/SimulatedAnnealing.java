@@ -26,7 +26,8 @@ public class SimulatedAnnealing {
     static final int MY_PRODUCER = 0;  //The index of my producer
     static final int RESP_PER_GROUP = 20; // We divide the respondents of each
 
-    private double TEMPERATURE = 1000;
+    private final double Start_TEMP = 1000;
+    private double TEMPERATURE = Start_TEMP;
     private double coolingRate = 0.003;
 
     private int CHANGE_ATTRIBUTE_PROB = 40;
@@ -192,23 +193,26 @@ public class SimulatedAnnealing {
 
         ArrayList<Integer> initial = new ArrayList<>();
         for (int i = 0; i < Producers.get(MY_PRODUCER).getProducts().size(); i++) {
-            initial.add(computeWSC(Producers.get(MY_PRODUCER).getProducts().get(i), MY_PRODUCER, i));
+            if (StoredData.Fitness == StoredData.Customers)
+                initial.add(computeWSC(Producers.get(MY_PRODUCER).getProducts().get(i), MY_PRODUCER, i));
+            else
+                initial.add(computeBenefits(Producers.get(MY_PRODUCER).getProducts().get(i), MY_PRODUCER, i));
         }
         Initial_Results.add(initial);
 
 
         for (int i = 0; i < Producers.get(MY_PRODUCER).getProducts().size(); i++) {
+            Product BestProductFound = Producers.get(MY_PRODUCER).getProducts().get(i).clone();
             while (TEMPERATURE > 1) {
 
                 Log.d("Temperature", TEMPERATURE + "");
                 Product originProduct = Producers.get(MY_PRODUCER).getProducts().get(i);
                 HashMap<Attribute, Integer> AUXattributeValue = new HashMap<>();
-                for(int q = 0; q < TotalAttributes.size(); q++){
+                for (int q = 0; q < TotalAttributes.size(); q++) {
                     AUXattributeValue.put(TotalAttributes.get(q), originProduct.getAttributeValue().get(TotalAttributes.get(q)));
                 }
                 Product new_product = new Product(AUXattributeValue);
                 new_product.setPrice(originProduct.getPrice());
-
 
 
                 //CHANGE SOME ATTRIBUTES
@@ -219,24 +223,44 @@ public class SimulatedAnnealing {
                     }
                 }
 
-                int old_energy = computeWSC(Producers.get(MY_PRODUCER).getProducts().get(i), MY_PRODUCER, i);
-                int new_energy = computeWSC(new_product, MY_PRODUCER, i);
+                int old_energy;
+                int new_energy;
+                if (StoredData.Fitness == StoredData.Customers){
+                    old_energy = computeWSC(Producers.get(MY_PRODUCER).getProducts().get(i), MY_PRODUCER, i);
+                    new_energy = computeWSC(new_product, MY_PRODUCER, i);
+                }else{
+                    old_energy = computeBenefits(Producers.get(MY_PRODUCER).getProducts().get(i), MY_PRODUCER, i);
+                    new_energy = computeBenefits(new_product, MY_PRODUCER, i);
+                }
 
                 //CALCULATE THE ACCEPTED FUNCTION
-                if (acceptanceProbability(old_energy, new_energy) > Math.random())
+                if (acceptanceProbability(old_energy, new_energy) > Math.random()) {
                     Producers.get(MY_PRODUCER).getProducts().set(i, new_product);
-//                if(new_energy > old_energy)
-//                    Producers.get(MY_PRODUCER).getProducts().set(i, new_product);
+
+                    //ACTUALIZE THE BEST
+                    if (StoredData.Fitness == StoredData.Customers) {
+                        if (computeWSC(Producers.get(MY_PRODUCER).getProducts().get(i), MY_PRODUCER, i) > computeWSC(BestProductFound, MY_PRODUCER, i))
+                            BestProductFound = Producers.get(MY_PRODUCER).getProducts().get(i);
+                    }else{
+                        if (computeBenefits(Producers.get(MY_PRODUCER).getProducts().get(i), MY_PRODUCER, i) > computeBenefits(BestProductFound, MY_PRODUCER, i))
+                            BestProductFound = Producers.get(MY_PRODUCER).getProducts().get(i);
+                    }
+                }
 
                 // Cool system
                 TEMPERATURE *= 1 - coolingRate;
             }
+            Producers.get(MY_PRODUCER).getProducts().set(i, BestProductFound);
+            TEMPERATURE = Start_TEMP;
         }
 
 
         ArrayList<Integer> result = new ArrayList<>();
         for (int i = 0; i < Producers.get(MY_PRODUCER).getProducts().size(); i++) {
-            result.add(computeWSC(Producers.get(MY_PRODUCER).getProducts().get(i), MY_PRODUCER, i));
+            if (StoredData.Fitness == StoredData.Customers)
+                result.add(computeWSC(Producers.get(MY_PRODUCER).getProducts().get(i), MY_PRODUCER, i));
+            else
+                result.add(computeBenefits(Producers.get(MY_PRODUCER).getProducts().get(i), MY_PRODUCER, i));
         }
         Results.add(result);
         showWSC();
@@ -254,7 +278,7 @@ public class SimulatedAnnealing {
     private double acceptanceProbability(int OLD_fitness, int NEW_fitness) {
         double ret;
         if (NEW_fitness > OLD_fitness)
-            ret =  1;
+            ret = 1;
         else
             ret = Math.exp((NEW_fitness - OLD_fitness) / TEMPERATURE);
 

@@ -48,8 +48,6 @@ public class ParticleSwarmOptimization {
 
     private ArrayList<Integer> ParticleBestWSC = new ArrayList<>(); /* Stores the best wsc found */
     private ArrayList<Product> ProductBestWSC = new ArrayList<>(); /* Stores the best wsc found */
-    private Product BestProduct = new Product(); /* Stores the best wsc found */
-
 
     /* STATISTICAL VARIABLES */
     private ArrayList<ArrayList<Integer>> Results = new ArrayList<>();
