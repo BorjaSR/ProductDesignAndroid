@@ -135,7 +135,7 @@ public class GeneticAlgorithmVariant {
         Initial_Results = new ArrayList<>();
         Prices = new ArrayList<>();
 
-        if (Producers.size() == 0) generateInput();
+        generateInput();
 
         for (int i = 0; i < NUM_EXECUTIONS; i++) {
             if (i != 0) /*We reset myPP and create a new product as the first product*/ {
