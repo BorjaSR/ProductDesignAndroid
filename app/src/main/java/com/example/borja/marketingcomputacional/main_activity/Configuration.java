@@ -14,11 +14,11 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithmVariant;
+import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm;
 import com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax;
 import com.example.borja.marketingcomputacional.ParticleSwarmOptimization.ParticleSwarmOptimization;
 import com.example.borja.marketingcomputacional.R;
-import com.example.borja.marketingcomputacional.SimulatedAnnealing.SimulatedAnnealing;
+import com.example.borja.marketingcomputacional.SimulatedAnnealing.SimulatedAnnealingProblem;
 import com.example.borja.marketingcomputacional.area_input.fragments.InputAttributes;
 import com.example.borja.marketingcomputacional.area_input.fragments.InputRandom;
 import com.example.borja.marketingcomputacional.general.StoredData;
@@ -121,21 +121,18 @@ public class Configuration extends AppCompatActivity implements View.OnClickList
                         input.generate();
 
                         if (StoredData.Algorithm == StoredData.GENETIC) {
-                            StoredData.GeneticAlgorithmVariant = new GeneticAlgorithmVariant();
-                            StoredData.GeneticAlgorithmVariant.start(getApplicationContext());
+                            GeneticAlgorithm.getInstance().start(getApplicationContext());
 
                         } else if (StoredData.Algorithm == StoredData.MINIMAX) {
-                            StoredData.Minimax = new Minimax();
-                            StoredData.Minimax.start(getApplicationContext());
+                            Minimax.getInstance().start(getApplicationContext());
 
                         } else if (StoredData.Algorithm == StoredData.PSO) {
-                            StoredData.ParticleSwarmOptimization = new ParticleSwarmOptimization();
-                            StoredData.ParticleSwarmOptimization.start(getApplicationContext());
+                            ParticleSwarmOptimization.getInstance().start(getApplicationContext());
 
                         } else if (StoredData.Algorithm == StoredData.SA) {
-                            StoredData.SimulatedAnnealing = new SimulatedAnnealing();
-                            StoredData.SimulatedAnnealing.start(getApplicationContext());
+                            SimulatedAnnealingProblem.getInstance().start(getApplicationContext());
                         }
+
                     } catch (Exception e) {
                         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }

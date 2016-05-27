@@ -2,7 +2,6 @@ package com.example.borja.marketingcomputacional.SimulatedAnnealing;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.SubProfile;
 import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardMenu;
@@ -19,8 +18,9 @@ import java.util.HashMap;
 /**
  * Created by Borja on 21/05/2016.
  */
-public class SimulatedAnnealing {
+public class SimulatedAnnealingProblem extends SimulatedAnnealingAlgorithm {
 
+    private static SimulatedAnnealingProblem SAInstance = null;
 
     static final int NUM_EXECUTIONS = 1; /* number of executions */
     static final int MY_PRODUCER = 0;  //The index of my producer
@@ -42,6 +42,14 @@ public class SimulatedAnnealing {
     private ArrayList<ArrayList<Integer>> Initial_Results = new ArrayList<>();
     private ArrayList<ArrayList<Integer>> Prices = new ArrayList<>();
     private int wscSum;
+
+    public static SimulatedAnnealingProblem getInstance() {
+
+        if (SAInstance == null)
+            SAInstance = new SimulatedAnnealingProblem();
+
+        return SAInstance;
+    }
 
 
     public void start(Context context) {
@@ -81,7 +89,7 @@ public class SimulatedAnnealing {
                 Producers.get(MY_PRODUCER).setProducts(products);
             }
 
-            solveSA();
+            solveSAProblem();
 
             ArrayList<Double> auxSum = new ArrayList<>();
             ArrayList<Double> auxinitSum = new ArrayList<>();
@@ -189,7 +197,9 @@ public class SimulatedAnnealing {
         StoredData.My_priceString = priceTXT;
     }
 
-    private void solveSA() {
+    private int productIndex = 0;
+
+    private void solveSAProblem() {
 
         ArrayList<Integer> initial = new ArrayList<>();
         for (int i = 0; i < Producers.get(MY_PRODUCER).getProducts().size(); i++) {
@@ -201,57 +211,11 @@ public class SimulatedAnnealing {
         Initial_Results.add(initial);
 
 
+        //Apply the SA Algorithm for each Product of our Producer
         for (int i = 0; i < Producers.get(MY_PRODUCER).getProducts().size(); i++) {
-            Product BestProductFound = Producers.get(MY_PRODUCER).getProducts().get(i).clone();
-            while (TEMPERATURE > 1) {
-
-                Log.d("Temperature", TEMPERATURE + "");
-                Product originProduct = Producers.get(MY_PRODUCER).getProducts().get(i);
-                HashMap<Attribute, Integer> AUXattributeValue = new HashMap<>();
-                for (int q = 0; q < TotalAttributes.size(); q++) {
-                    AUXattributeValue.put(TotalAttributes.get(q), originProduct.getAttributeValue().get(TotalAttributes.get(q)));
-                }
-                Product new_product = new Product(AUXattributeValue);
-                new_product.setPrice(originProduct.getPrice());
-
-
-                //CHANGE SOME ATTRIBUTES
-                for (int j = 0; j < TotalAttributes.size(); j++) {
-                    if ((Math.random() * 100) < CHANGE_ATTRIBUTE_PROB) {
-                        int new_attr_value = (int) (Math.random() * TotalAttributes.get(j).getMAX());
-                        new_product.getAttributeValue().put(TotalAttributes.get(j), new_attr_value);
-                    }
-                }
-
-                int old_energy;
-                int new_energy;
-                if (StoredData.Fitness == StoredData.Customers){
-                    old_energy = computeWSC(Producers.get(MY_PRODUCER).getProducts().get(i), MY_PRODUCER, i);
-                    new_energy = computeWSC(new_product, MY_PRODUCER, i);
-                }else{
-                    old_energy = computeBenefits(Producers.get(MY_PRODUCER).getProducts().get(i), MY_PRODUCER, i);
-                    new_energy = computeBenefits(new_product, MY_PRODUCER, i);
-                }
-
-                //CALCULATE THE ACCEPTED FUNCTION
-                if (acceptanceProbability(old_energy, new_energy) > Math.random()) {
-                    Producers.get(MY_PRODUCER).getProducts().set(i, new_product);
-
-                    //ACTUALIZE THE BEST
-                    if (StoredData.Fitness == StoredData.Customers) {
-                        if (computeWSC(Producers.get(MY_PRODUCER).getProducts().get(i), MY_PRODUCER, i) > computeWSC(BestProductFound, MY_PRODUCER, i))
-                            BestProductFound = Producers.get(MY_PRODUCER).getProducts().get(i);
-                    }else{
-                        if (computeBenefits(Producers.get(MY_PRODUCER).getProducts().get(i), MY_PRODUCER, i) > computeBenefits(BestProductFound, MY_PRODUCER, i))
-                            BestProductFound = Producers.get(MY_PRODUCER).getProducts().get(i);
-                    }
-                }
-
-                // Cool system
-                TEMPERATURE *= 1 - coolingRate;
-            }
-            Producers.get(MY_PRODUCER).getProducts().set(i, BestProductFound);
-            TEMPERATURE = Start_TEMP;
+            productIndex = i;
+            Product better_product = (Product) solve_SA(Producers.get(MY_PRODUCER).getProducts().get(i).clone());
+            Producers.get(MY_PRODUCER).getProducts().set(i, better_product);
         }
 
 
@@ -275,14 +239,39 @@ public class SimulatedAnnealing {
         Prices.add(prices);
     }
 
-    private double acceptanceProbability(int OLD_fitness, int NEW_fitness) {
-        double ret;
-        if (NEW_fitness > OLD_fitness)
-            ret = 1;
-        else
-            ret = Math.exp((NEW_fitness - OLD_fitness) / TEMPERATURE);
+    @Override
+    public Object changeObject(Object currency_product) {
 
-        return ret;
+        Product originProduct = (Product) currency_product;
+        HashMap<Attribute, Integer> AUXattributeValue = new HashMap<>();
+        for (int q = 0; q < TotalAttributes.size(); q++) {
+            AUXattributeValue.put(TotalAttributes.get(q), originProduct.getAttributeValue().get(TotalAttributes.get(q)));
+        }
+        Product new_product = new Product(AUXattributeValue);
+        new_product.setPrice(originProduct.getPrice());
+
+
+        //CHANGE SOME ATTRIBUTES
+        for (int j = 0; j < TotalAttributes.size(); j++) {
+            if ((Math.random() * 100) < CHANGE_ATTRIBUTE_PROB) {
+                int new_attr_value = (int) (Math.random() * TotalAttributes.get(j).getMAX());
+                new_product.getAttributeValue().put(TotalAttributes.get(j), new_attr_value);
+            }
+        }
+
+        return new_product;
+    }
+
+
+    @Override
+    public int getFitness(Object origin) {
+        Product p = (Product) origin;
+
+        if (StoredData.Fitness == StoredData.Customers) {
+            return computeWSC(p, MY_PRODUCER, productIndex);
+        } else {
+            return computeBenefits(p, MY_PRODUCER, productIndex);
+        }
     }
 
     private void generateInput() {

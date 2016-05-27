@@ -19,6 +19,8 @@ import java.util.HashMap;
  */
 public class Minimax {
 
+    private static Minimax MMProblem;
+
     private int MY_PRODUCER = 0;
 
     private int MAX_DEPTH_0 = 3; //Maximun depth of the minimax //depth 8 in initial
@@ -51,6 +53,13 @@ public class Minimax {
     /************************
      * INITIAL METHOD
      **********************/
+
+    public static Minimax getInstance(){
+        if(MMProblem == null)
+            MMProblem = new Minimax();
+
+        return MMProblem;
+    }
 
     public void start(Context context) throws Exception {
 

@@ -23,6 +23,8 @@ import java.util.Random;
 
 public class ParticleSwarmOptimization {
 
+    private static ParticleSwarmOptimization PSOproblem = null;
+
     static final int NUM_EXECUTIONS = 1; /* number of executions */
     static final int MY_PRODUCER = 0;  //The index of my producer
     static final int RESP_PER_GROUP = 20; // We divide the respondents of each
@@ -55,6 +57,12 @@ public class ParticleSwarmOptimization {
     private ArrayList<ArrayList<Integer>> Prices = new ArrayList<>();
     private int wscSum;
 
+    public static ParticleSwarmOptimization getInstance(){
+        if(PSOproblem == null)
+            PSOproblem = new ParticleSwarmOptimization();
+
+        return PSOproblem;
+    }
 
     public void start(Context context) {
 

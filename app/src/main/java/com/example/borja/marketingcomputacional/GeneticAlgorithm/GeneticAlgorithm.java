@@ -11,24 +11,19 @@ import com.example.borja.marketingcomputacional.general.Producer;
 import com.example.borja.marketingcomputacional.general.Product;
 import com.example.borja.marketingcomputacional.general.StoredData;
 
-import java.util.HashMap;
+import java.io.FileReader;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GeneticAlgorithm {
+
+    private static GeneticAlgorithm GAProblem = null;
 
     static final double KNOWN_ATTRIBUTES = 100; /* 100
                                                  * % of attributes known for all
 												 * producers
 												 */
-    static final double SPECIAL_ATTRIBUTES = 33; /* 33
-                                                 * % of special attributes known
-												 * for some producers
-
-												 						 */
-    static final double MUT_PROB_CUSTOMER_PROFILE = 33; /*  * % of mutated
-                                                         * attributes in a
-														 * customer profile
-														 */
     static final int CROSSOVER_PROB = 80; /* % of crossover */
     static final int MUTATION_PROB = 1; /* % of mutation */
     static final int NUM_GENERATIONS = 100; /* number of generations */
@@ -37,38 +32,42 @@ public class GeneticAlgorithm {
                                              * profile in groups of
 											 * RESP_PER_GROUP respondents
 											 */
+
     static final int NEAR_CUST_PROFS = 4;
     static final int NUM_EXECUTIONS = 1; /* number of executions */
 
     static final int MY_PRODUCER = 0;  //The index of my producer
 
-    // static final String SOURCE = "D:\Pablo\EncuestasCIS.xlsx";
-    static final int SHEET_AGE_STUDIES = 1;
-    static final int SHEET_POLITICAL_PARTIES = 2;
-    static final String EOF = "EOF";
-
     private static ArrayList<Attribute> TotalAttributes = new ArrayList<>();
     private static ArrayList<Producer> Producers = new ArrayList<>();
-    private static ArrayList<CustomerProfile> CustomerProfiles = new ArrayList<>();
 
     /* GA VARIABLES */
-    private int BestWSC; /* Stores the best wsc found */
-    private ArrayList<Product> Population;   //Private mPopu As List(Of List(Of Integer))
-    private ArrayList<Integer> Fitness; /* * mFitness(i) = wsc of mPopu(i) */
+    private ArrayList<Integer> BestWSC = new ArrayList<>(); /* Stores the best wsc found */
+    private ArrayList<Product> Population = new ArrayList<>();  //Private mPopu As List(Of List(Of Integer))
+    private ArrayList<Integer> Fitness = new ArrayList<>(); /* * mFitness(i) = wsc of mPopu(i) */
 
     /* STATISTICAL VARIABLES */
-    private ArrayList<Integer> Results = new ArrayList<>();
-    private ArrayList<Integer> Initial_Results = new ArrayList<>();
-    private ArrayList<Integer> Prices = new ArrayList<>();
+    private ArrayList<ArrayList<Integer>> Results = new ArrayList<>();
+    private ArrayList<ArrayList<Integer>> Initial_Results = new ArrayList<>();
+    private ArrayList<ArrayList<Integer>> Prices = new ArrayList<>();
     private int wscSum;
 
+    private static ArrayList<CustomerProfile> CustomerProfiles = new ArrayList<>();
 
     /***************************************
      * " AUXILIARY EXCEL METHODS " * @throws Exception
      ***************************************/
 
+    public static GeneticAlgorithm getInstance(){
+        if(GAProblem == null)
+            GAProblem = new GeneticAlgorithm();
+
+        return GAProblem;
+    }
+
     public void start(final Context context) throws Exception {
 
+//        solvePD();
         statisticsPD();
 
         Intent dashboard_menu = new Intent(context, DashboardMenu.class);
@@ -80,6 +79,12 @@ public class GeneticAlgorithm {
     /***************************************
      * " PRIVATE METHODS "
      ***************************************/
+
+    private void solvePD() throws Exception {
+
+        generateInput();
+        solvePD_GA();
+    }
 
     /**
      * Generating the input data
@@ -110,9 +115,13 @@ public class GeneticAlgorithm {
         Results.add(BestWSC);
         showWSC();
 
-        int price_MyProduct = calculatePrice(Producers.get(MY_PRODUCER).getProduct());
-        Producers.get(MY_PRODUCER).getProduct().setPrice(price_MyProduct);
-        Prices.add(price_MyProduct);
+        ArrayList<Integer> prices = new ArrayList<>();
+        for (int i = 0; i < Producers.get(MY_PRODUCER).getProducts().size(); i++) {
+            int price_MyProduct = calculatePrice(Producers.get(MY_PRODUCER).getProducts().get(i));
+            Producers.get(MY_PRODUCER).getProducts().get(i).setPrice(price_MyProduct);
+            prices.add(price_MyProduct);
+        }
+        Prices.add(prices);
     }
 
     /**
@@ -120,56 +129,136 @@ public class GeneticAlgorithm {
      */
     private void statisticsPD() throws Exception {
 
-        double sum = 0; /*sum of customers achieved*/
-        double initSum = 0; /*sum of initial customers*/
-        int sumCust = 0; /*sum of the total number of customers*/
-        int price = 0;
+        ArrayList<Double> sum = new ArrayList<>();
+        ArrayList<Double> initSum = new ArrayList<>();
+        ArrayList<Integer> prices = new ArrayList<>();
+        int sumCust = 0;
+
+        for (int i = 0; i < StoredData.number_Products; i++) {
+            sum.add((double) 0);
+            initSum.add((double) 0);
+            prices.add(0);
+        }
 
         Results = new ArrayList<>();
         Initial_Results = new ArrayList<>();
         Prices = new ArrayList<>();
 
-        if (Producers.size() == 0) generateInput();
+        generateInput();
 
         for (int i = 0; i < NUM_EXECUTIONS; i++) {
             if (i != 0) /*We reset myPP and create a new product as the first product*/ {
-                Producers.get(MY_PRODUCER).setProduct(createNearProduct(Producers.get(MY_PRODUCER).getAvailableAttribute(), (int) (CustomerProfiles.size() * Math.random())));
+                ArrayList<Product> products = new ArrayList<>();
+                for (int k = 0; k < StoredData.number_Products; k++)
+                    products.add(createNearProduct(Producers.get(MY_PRODUCER).getAvailableAttribute(), (int) (CustomerProfiles.size() * Math.random())));
+                Producers.get(MY_PRODUCER).setProducts(products);
             }
             solvePD_GA();
-            sum += Results.get(i);
-            initSum += Initial_Results.get(i);
+
+            ArrayList<Double> auxSum = new ArrayList<>();
+            ArrayList<Double> auxinitSum = new ArrayList<>();
+            ArrayList<Integer> auxprice = new ArrayList<>();
+            for (int k = 0; k < StoredData.number_Products; k++) {
+                auxSum.add(sum.get(k) + Results.get(i).get(k));
+                auxinitSum.add(initSum.get(k) + Initial_Results.get(i).get(k));
+                auxprice.add(prices.get(k) + Prices.get(i).get(k));
+            }
+
+            sum = auxSum;
+            initSum = auxinitSum;
+            prices = auxprice;
+
             sumCust += wscSum;
-            price += Prices.get(i);
         }
 
-        StoredData.mean = sum / NUM_EXECUTIONS;
-        StoredData.meanString = sum / NUM_EXECUTIONS + "";
-
-        StoredData.initMean = initSum / NUM_EXECUTIONS;
-        StoredData.initMeanString = initSum / NUM_EXECUTIONS + "";
-
-        double variance = computeVariance(StoredData.mean);
-        double initVariance = computeVariance(StoredData.initMean);
-
-        StoredData.stdDev = Math.sqrt(variance);
-        StoredData.stdDevString = Math.sqrt(variance) + "";
-
-        StoredData.initStdDev = Math.sqrt(initVariance);
-        StoredData.initStdDevString = Math.sqrt(initVariance) + "";
+        String meanTXT = "";
+        String initMeanTXT = "";
+        String stdDevTXT = "";
+        String initStdDevTXT = "";
+        String percCustTXT = "";
+        String initPercCustTXT = "";
+        String priceTXT = "";
 
         StoredData.custMean = sumCust / NUM_EXECUTIONS;
-        if (StoredData.Fitness == StoredData.Customers) {
-            StoredData.percCust = 100 * StoredData.mean / StoredData.custMean;
-            StoredData.percCustString = 100 * StoredData.mean / StoredData.custMean + "";
-            StoredData.initPercCust = 100 * StoredData.initMean / StoredData.custMean;
-            StoredData.initPercCustString = 100 * StoredData.initMean / StoredData.custMean + "";
-        } else if (StoredData.Fitness == StoredData.Benefits) {
-            StoredData.percCust = (100 * StoredData.mean) / StoredData.initMean;
-            StoredData.percCustString = (100 * StoredData.mean) / StoredData.initMean + "";
+
+        for (int i = 0; i < StoredData.number_Products; i++) {
+
+            double mean = sum.get(i) / NUM_EXECUTIONS;
+            double initMean = initSum.get(i) / NUM_EXECUTIONS;
+            double variance = computeVariance(mean);
+            double initVariance = computeVariance(initMean);
+            double stdDev = Math.sqrt(variance);
+            double initStdDev = Math.sqrt(initVariance);
+            double percCust;
+            double initPercCust = -1;
+            if (StoredData.Fitness == StoredData.Customers) {
+                percCust = 100 * mean / StoredData.custMean;
+                initPercCust = 100 * initMean / StoredData.custMean;
+            } else {
+                percCust = 100 * mean / initMean;
+            }
+            double priceDoub = prices.get(i) / NUM_EXECUTIONS;
+
+            if (i == 0)
+                meanTXT += mean;
+            else
+                meanTXT += ", " + mean;
+
+            if (i == 0)
+                initMeanTXT += initMean;
+            else
+                initMeanTXT += ", " + initMean;
+
+            if (i == 0)
+                stdDevTXT += stdDev;
+            else
+                stdDevTXT += ", " + stdDev;
+
+            if (i == 0)
+                initStdDevTXT += initStdDev;
+            else
+                initStdDevTXT += ", " + initStdDev;
+
+            if (i == 0)
+                percCustTXT += percCust;
+            else
+                percCustTXT += ", " + percCust;
+
+            if (StoredData.Fitness == StoredData.Customers)
+                if (i == 0)
+                    initPercCustTXT += initPercCust;
+                else
+                    initPercCustTXT += ", " + initPercCust;
+
+            if (i == 0)
+                priceTXT += priceDoub;
+            else
+                priceTXT += ", " + priceDoub;
         }
 
-        StoredData.My_price = price / NUM_EXECUTIONS;
-        StoredData.My_priceString = price / NUM_EXECUTIONS + "";
+        StoredData.mean = sum.get(0) / NUM_EXECUTIONS;
+        StoredData.initMean = initSum.get(0) / NUM_EXECUTIONS;
+        double variance = computeVariance(StoredData.mean);
+        double initVariance = computeVariance(StoredData.initMean);
+        StoredData.stdDev = Math.sqrt(variance);
+        StoredData.initStdDev = Math.sqrt(initVariance);
+        if (StoredData.Fitness == StoredData.Customers) {
+            StoredData.percCust = 100 * StoredData.mean / StoredData.custMean;
+            StoredData.initPercCust = 100 * StoredData.initMean / StoredData.custMean;
+        } else if (StoredData.Fitness == StoredData.Benefits) {
+            StoredData.percCust = (100 * StoredData.mean) / StoredData.initMean;
+        }
+
+        StoredData.My_price = prices.get(0) / NUM_EXECUTIONS;
+
+
+        StoredData.meanString = meanTXT;
+        StoredData.initMeanString = initMeanTXT;
+        StoredData.stdDevString = stdDevTXT;
+        StoredData.initStdDevString = initStdDevTXT;
+        StoredData.percCustString = percCustTXT;
+        StoredData.initPercCustString = initPercCustTXT;
+        StoredData.My_priceString = priceTXT;
 
 		/*MOSTRARLO*/
     }
@@ -280,18 +369,27 @@ public class GeneticAlgorithm {
     private void createInitPopu() throws Exception {
         Population = new ArrayList<>();
         Fitness = new ArrayList<>();
+        BestWSC = new ArrayList<>();
 
-        Population.add((Producers.get(MY_PRODUCER).getProduct()).clone());
-//        mPopu.get(0).setFitness(computeWSC(mPopu.get(0), 0));
-        if (StoredData.Fitness == StoredData.Customers)
-            Fitness.add(computeWSC(Population.get(MY_PRODUCER), MY_PRODUCER));
-        else
-            Fitness.add(computeBenefits(Population.get(MY_PRODUCER), MY_PRODUCER));
+        for (int i = 0; i < Producers.get(MY_PRODUCER).getProducts().size(); i++) {
+            Population.add((Producers.get(MY_PRODUCER).getProducts().get(i)).clone());
 
-        BestWSC = Fitness.get(MY_PRODUCER);
-        Initial_Results.add(BestWSC);
+            if (StoredData.Fitness == StoredData.Customers)
+                Fitness.add(computeWSC(Population.get(i), MY_PRODUCER));
+            else
+                Fitness.add(computeBenefits(Population.get(i), MY_PRODUCER));
+        }
 
-        for (int i = 1; i < NUM_POPULATION; i++) {
+        for (int t = 0; t < Fitness.size(); t++)
+            BestWSC.add(Fitness.get(t));
+
+        ArrayList<Integer> aux = new ArrayList<>();
+        for (int q = 0; q < BestWSC.size(); q++)
+            aux.add(BestWSC.get(q));
+
+        Initial_Results.add(aux);
+
+        for (int i = Producers.get(MY_PRODUCER).getProducts().size(); i < NUM_POPULATION; i++) {
 
             if (i % 2 == 0) /*We create a random product*/
                 Population.add(createRndProduct(Producers.get(MY_PRODUCER).getAvailableAttribute()));
@@ -303,11 +401,24 @@ public class GeneticAlgorithm {
             else
                 Fitness.add(computeBenefits(Population.get(i), MY_PRODUCER));
 
-            if (Fitness.get(i) > BestWSC) {
-                BestWSC = Fitness.get(i);
-                Producers.get(MY_PRODUCER).setProduct(Population.get(i).clone());
+            int worstIndex = isBetweenBest(Fitness.get(i));
+            if (worstIndex != -1) {
+//                BestWSC.remove(worstIndex);
+//                BestWSC.add(Fitness.get(i));
+//                Producers.get(MY_PRODUCER).getProducts().remove(worstIndex);
+//                Producers.get(MY_PRODUCER).getProducts().add(Population.get(i));
+                BestWSC.set(worstIndex, Fitness.get(i));
+                Producers.get(MY_PRODUCER).getProducts().set(worstIndex, Population.get(i));
             }
         }
+    }
+
+    private int isBetweenBest(int fitness) {
+        for (int i = 0; i < BestWSC.size(); i++) {
+            if (fitness > BestWSC.get(i))
+                return i;
+        }
+        return -1;
     }
 
     private Integer computeBenefits(Product product, int myProducer) throws Exception {
@@ -323,7 +434,8 @@ public class GeneticAlgorithm {
     private int computeWSC(Product product, int prodInd) throws Exception {
         int wsc = 0;
         boolean isTheFavourite;
-        int meScore, score, k, numTies;
+        int meScore, score, k, p, numTies;
+        int count = 0;
 
         for (int i = 0; i < CustomerProfiles.size(); i++) {
             for (int j = 0; j < CustomerProfiles.get(i).getSubProfiles().size(); j++) {
@@ -331,23 +443,29 @@ public class GeneticAlgorithm {
                 numTies = 1;
                 meScore = scoreProduct(CustomerProfiles.get(i).getSubProfiles().get(j), product);
 
-                if(StoredData.isAttributesLinked)
+                if (StoredData.isAttributesLinked)
                     meScore += scoreLinkedAttributes(CustomerProfiles.get(i).getLinkedAttributes(), product);
 
                 k = 0;
                 while (isTheFavourite && k < Producers.size()) {
-                    if (k != prodInd) {
+                    p = 0;
+                    while (isTheFavourite && p < Producers.get(k).getProducts().size()) {
+                        if (Producers.get(k).getProducts().get(p) != product) {
 
-                        score = scoreProduct(CustomerProfiles.get(i).getSubProfiles().get(j), Producers.get(k).getProduct());
+                            score = scoreProduct(CustomerProfiles.get(i).getSubProfiles().get(j), Producers.get(k).getProducts().get(p));
 
-                        if(StoredData.isAttributesLinked)
-                            score += scoreLinkedAttributes(CustomerProfiles.get(i).getLinkedAttributes(), product);
+                            if (StoredData.isAttributesLinked)
+                                score += scoreLinkedAttributes(CustomerProfiles.get(i).getLinkedAttributes(), product);
 
-                        if (score > meScore)
-                            isTheFavourite = false;
+                            if (score > meScore)
+                                isTheFavourite = false;
 
-                        else if (score == meScore)
-                            numTies += 1;
+                            else if (score == meScore)
+                                numTies += 1;
+                        } else {
+                            count++;
+                        }
+                        p++;
                     }
                     k++;
                 }
@@ -359,7 +477,6 @@ public class GeneticAlgorithm {
                         wsc += RESP_PER_GROUP / numTies;
                     }
                 }
-
             }
         }
 
@@ -368,12 +485,12 @@ public class GeneticAlgorithm {
 
     private int scoreLinkedAttributes(ArrayList<LinkedAttribute> linkedAttributes, Product product) {
         int modifyScore = 0;
-            for(int i = 0; i < linkedAttributes.size(); i++){
-                LinkedAttribute link = linkedAttributes.get(i);
-                if(product.getAttributeValue().get(link.getAttribute1()) == link.getValue1() && product.getAttributeValue().get(link.getAttribute2()) == link.getValue2()){
-                    modifyScore += link.getScoreModification();
-                }
+        for (int i = 0; i < linkedAttributes.size(); i++) {
+            LinkedAttribute link = linkedAttributes.get(i);
+            if (product.getAttributeValue().get(link.getAttribute1()) == link.getValue1() && product.getAttributeValue().get(link.getAttribute2()) == link.getValue2()) {
+                modifyScore += link.getScoreModification();
             }
+        }
         return modifyScore;
     }
 
@@ -386,10 +503,10 @@ public class GeneticAlgorithm {
         int score = 0;
         for (int i = 0; i < TotalAttributes.size(); i++) {
             score += scoreAttribute(TotalAttributes.get(i).getMAX(), subprofile.getValueChosen().get(TotalAttributes.get(i)), product.getAttributeValue().get(TotalAttributes.get(i)));
-            // score += scoreAttribute(mAttributes(i), mCustProfAux(custProfInd)(custSubProfInd)(i), product(i))
         }
         return score;
     }
+
     /**
      * Computing the score of an attribute for a product given the
      * ' number of values
@@ -483,6 +600,7 @@ public class GeneticAlgorithm {
         return score;
     }
 
+
     /**
      * Creating a new population
      */
@@ -541,7 +659,7 @@ public class GeneticAlgorithm {
      */
     private Product breed(int father, int mother) {
         Product son = new Product();
-		/*Random value in range [0,100)*/
+        /*Random value in range [0,100)*/
         int crossover = (int) (100 * Math.random());
         int rndVal;
 
@@ -580,7 +698,7 @@ public class GeneticAlgorithm {
         int attrVal = 0;
 
         for (int j = 0; j < TotalAttributes.size(); j++) {
-			/*Random value in range [0,100)*/
+            /*Random value in range [0,100)*/
             double mutation = 100 * Math.random();
             if (mutation <= MUTATION_PROB) {
                 boolean attrFound = false;
@@ -614,9 +732,12 @@ public class GeneticAlgorithm {
                 nextGeneration.add((newPopu.get(i)).clone());
                 Fitness.set(i, newFitness.get(i));// We update the fitness of the new individual
 
-                if (newFitness.get(i) > BestWSC) {
-                    BestWSC = newFitness.get(i);
-                    Producers.get(0).setProduct(newPopu.get(i));
+                int worstIndex = isBetweenBest(Fitness.get(i));
+                if (worstIndex != -1) {
+                    BestWSC.remove(worstIndex);
+                    BestWSC.add(Fitness.get(i));
+                    Producers.get(MY_PRODUCER).getProducts().remove(worstIndex);
+                    Producers.get(MY_PRODUCER).getProducts().add((newPopu.get(i)).clone());
                 }
             }
         }
@@ -635,8 +756,10 @@ public class GeneticAlgorithm {
         wscSum = 0;
 
         for (int i = 0; i < Producers.size(); i++) {
-            wsc = computeWSC(Producers.get(i).getProduct(), i);
-            wscSum += wsc;
+            for (int j = 0; j < Producers.get(i).getProducts().size(); j++) {
+                wsc = computeWSC(Producers.get(i).getProducts().get(j), i);
+                wscSum += wsc;
+            }
         }
     }
 
@@ -646,10 +769,10 @@ public class GeneticAlgorithm {
     /**
      * Computing the variance
      */
-    private double computeVariance(double mean) {
+    private double computeVariance(double mean) {//TODO me fijo solo en el primero
         double sqrSum = 0;
         for (int i = 0; i < NUM_EXECUTIONS; i++) {
-            sqrSum += Math.pow(Results.get(i) - mean, 2);
+            sqrSum += Math.pow(Results.get(i).get(0) - mean, 2);
         }
         return (sqrSum / NUM_EXECUTIONS);
     }
@@ -658,11 +781,11 @@ public class GeneticAlgorithm {
      * " AUXILIARY METHODS TO CALCULATE THE PRICE"
      ***************************************/
 
-    private int calculatePrice(Product product) {
+    private int calculatePrice(Product product) {//TODO me fijo solo en el primero
         int price_MyProduct = 0;
 
         for (int i = 1; i < Producers.size(); i++) {
-            Product prod_competence = Producers.get(i).getProduct();
+            Product prod_competence = Producers.get(i).getProducts().get(0);
             double distance_product = getDistanceTo(product, prod_competence);
 
             if (distance_product == 0) {
