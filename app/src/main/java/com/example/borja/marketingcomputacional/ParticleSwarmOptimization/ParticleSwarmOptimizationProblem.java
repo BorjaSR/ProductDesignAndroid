@@ -2,7 +2,6 @@ package com.example.borja.marketingcomputacional.ParticleSwarmOptimization;
 
 import android.content.Context;
 import android.content.Intent;
-import android.provider.Telephony;
 
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.SubProfile;
 import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardMenu;
@@ -17,27 +16,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+
 /**
- * Created by Borja on 04/05/2016.
+ * Created by Borja on 28/05/2016.
  */
+public class ParticleSwarmOptimizationProblem extends ParticleSwarmOptimizationAlgorithm{
+    /**
+     * Created by Borja on 04/05/2016.
+     */
 
-public class ParticleSwarmOptimization {
-
-    private static ParticleSwarmOptimization PSOproblem = null;
+    private static ParticleSwarmOptimizationProblem PSOproblem = null;
 
     static final int NUM_EXECUTIONS = 1; /* number of executions */
     static final int MY_PRODUCER = 0;  //The index of my producer
     static final int RESP_PER_GROUP = 20; // We divide the respondents of each
     static final double KNOWN_ATTRIBUTES = 100;
-    private static final int MY_BEST_PRODUCT = 0;
-
-    private int MAX_ITERATION = 60;
     private int SWARM_SIZE = 20;
 
-    double W_UPPERBOUND = 1;
-    double W_LOWERBOUND = 0;
-    double C1 = 2.0;
-    double C2 = 2.0;
 
     private static ArrayList<Attribute> TotalAttributes = new ArrayList<>();
     private static ArrayList<Producer> Producers = new ArrayList<>();
@@ -48,18 +43,15 @@ public class ParticleSwarmOptimization {
     private ArrayList<Product> Population = new ArrayList<>();  //Private mPopu As List(Of List(Of Integer))
     private ArrayList<Integer> Fitness = new ArrayList<>(); /* * mFitness(i) = wsc of mPopu(i) */
 
-    private ArrayList<Integer> ParticleBestWSC = new ArrayList<>(); /* Stores the best wsc found */
-    private ArrayList<Product> ProductBestWSC = new ArrayList<>(); /* Stores the best wsc found */
-
     /* STATISTICAL VARIABLES */
     private ArrayList<ArrayList<Integer>> Results = new ArrayList<>();
     private ArrayList<ArrayList<Integer>> Initial_Results = new ArrayList<>();
     private ArrayList<ArrayList<Integer>> Prices = new ArrayList<>();
     private int wscSum;
 
-    public static ParticleSwarmOptimization getInstance(){
-        if(PSOproblem == null)
-            PSOproblem = new ParticleSwarmOptimization();
+    public static ParticleSwarmOptimizationProblem getInstance(){
+        if (PSOproblem == null)
+            PSOproblem = new ParticleSwarmOptimizationProblem();
 
         return PSOproblem;
     }
@@ -243,15 +235,6 @@ public class ParticleSwarmOptimization {
             product.getAttributeValue().put(TotalAttributes.get(i), attrVal);
         }
 
-        //IF WE NEED THE VELOCTY FOR PSO
-        if (StoredData.Algorithm == StoredData.PSO) {
-            product.setVelocity(new HashMap<Attribute, Double>());
-            for (int i = 0; i < TotalAttributes.size(); i++) {
-                double velocity = (((StoredData.VEL_HIGH - StoredData.VEL_LOW) * Math.random()) - StoredData.VEL_LOW);
-                product.getVelocity().put(TotalAttributes.get(i), velocity);
-            }
-        }
-
         product.setPrice(calculatePrice(product));
         return product;
     }
@@ -272,15 +255,6 @@ public class ParticleSwarmOptimization {
         for (int i = 0; i < TotalAttributes.size(); i++) {
             attrVal = chooseAttribute(i, custProfsInd, availableAttribute);
             product.getAttributeValue().put(TotalAttributes.get(i), attrVal);
-        }
-
-        //IF WE NEED THE VELOCTY FOR PSO
-        if (StoredData.Algorithm == StoredData.PSO) {
-            product.setVelocity(new HashMap<Attribute, Double>());
-            for (int i = 0; i < TotalAttributes.size(); i++) {
-                Double velocity = (((StoredData.VEL_HIGH - StoredData.VEL_LOW) * Math.random()) + StoredData.VEL_LOW);
-                product.getVelocity().put(TotalAttributes.get(i), velocity);
-            }
         }
 
         product.setPrice(calculatePrice(product));
@@ -327,65 +301,21 @@ public class ParticleSwarmOptimization {
     }
 
     private void solvePSO() {
+        Population = new ArrayList<>();
+        ArrayList<Object> finalPupolation = solvePSOAlgorithm();
 
-        ProductBestWSC = new ArrayList<>();
-        ParticleBestWSC = new ArrayList<>();
-
-        createInitSwarm();
-
-        for (int i = 0; i < SWARM_SIZE; i++) {
-            ParticleBestWSC.add(Fitness.get(i));
-            ProductBestWSC.add(Population.get(i));
+        for(int i = 0; i < finalPupolation.size(); i++) {
+            Population.add((Product) finalPupolation.get(i));
+            Fitness.set(i, getFitness(Population.get(i)));
         }
 
-        double w;
-        for (int i = 0; i < MAX_ITERATION; i++) {
-
-            // STEP 1 - UPDATE PARTICLE'S BEST
-            for (int j = 0; j < SWARM_SIZE; j++) {
-                if (Fitness.get(j) > ParticleBestWSC.get(j)) {
-                    ParticleBestWSC.set(j, Fitness.get(j));
-                    ProductBestWSC.set(j, Population.get(j));
-                }
+        // STEP 2 - UPDATE GENERAL BEST
+        for(int j = 0; j < Fitness.size(); j++){
+            int worstIndex = isBetweenBest(Fitness.get(j));
+            if(worstIndex != -1){
+                BestWSC.set(worstIndex, Fitness.get(j));
+                Producers.get(MY_PRODUCER).getProducts().set(worstIndex, Population.get(j));
             }
-
-            // STEP 2 - UPDATE GENERAL BEST
-            for(int j = 0; j < Fitness.size(); j++){
-                int worstIndex = isBetweenBest(Fitness.get(j));
-                if(worstIndex != -1){
-                    BestWSC.set(worstIndex, Fitness.get(j));
-                    Producers.get(MY_PRODUCER).getProducts().set(worstIndex, Population.get(i));
-                }
-            }
-
-            w = W_UPPERBOUND - (((double) i) / MAX_ITERATION) * (W_UPPERBOUND - W_LOWERBOUND);
-
-            for(int k = 0; k < SWARM_SIZE; k++){
-
-                Random generator = new Random();
-
-                double r1 = generator.nextDouble();
-                double r2 = generator.nextDouble();
-
-                Product product = Population.get(k);
-
-                for(int p = 0; p < TotalAttributes.size(); p++){
-
-                    //STEP 3 - UPDATE VELOCITY
-                    double vel = (w * product.getVelocity().get(TotalAttributes.get(p))) +
-                            (r1 * C1) * (ProductBestWSC.get(k).getAttributeValue().get(TotalAttributes.get(p)) - product.getAttributeValue().get(TotalAttributes.get(p))) +
-                            (r2 * C2) * (Producers.get(MY_PRODUCER).getProducts().get(MY_BEST_PRODUCT).getAttributeValue().get(TotalAttributes.get(p)) - product.getAttributeValue().get(TotalAttributes.get(p)));
-
-                    product.getVelocity().put(TotalAttributes.get(p), vel);
-
-
-                    //STEP 4 - UPDATE LOCATION
-                    product.getAttributeValue().put(TotalAttributes.get(p), (int) (product.getAttributeValue().get(TotalAttributes.get(p)) + product.getVelocity().get(TotalAttributes.get(p))));
-                }
-            }
-
-
-            updateFitness();
         }
 
         Results.add(BestWSC);
@@ -401,24 +331,15 @@ public class ParticleSwarmOptimization {
 
     }
 
-    private void updateFitness() {
-        for(int i = 0; i < Population.size(); i++){
-
-            int ParticleFitness = 0;
-
-            if (StoredData.Fitness == StoredData.Customers)
-                ParticleFitness = computeWSC(Population.get(i), MY_PRODUCER);
-            else
-                ParticleFitness = computeBenefits(Population.get(i), MY_PRODUCER);
-
-            if(ParticleFitness > Fitness.get(i)){
-                Fitness.set(i, ParticleFitness);
-            }
-        }
+    @Override
+    protected int getDimensions() {
+        return TotalAttributes.size();
     }
 
-    private void createInitSwarm() {
-        Population = new ArrayList<>();
+    @Override
+    public ArrayList<Object> createInitSwarm() {
+
+        ArrayList<Object> Population = new ArrayList<>();
         Fitness = new ArrayList<>();
         BestWSC = new ArrayList<>();
 
@@ -426,9 +347,9 @@ public class ParticleSwarmOptimization {
             Population.add((Producers.get(MY_PRODUCER).getProducts().get(i)).clone());
 
             if (StoredData.Fitness == StoredData.Customers)
-                Fitness.add(computeWSC(Population.get(i), MY_PRODUCER));
+                Fitness.add(computeWSC((Product) Population.get(i), MY_PRODUCER));
             else
-                Fitness.add(computeBenefits(Population.get(i), MY_PRODUCER));
+                Fitness.add(computeBenefits((Product) Population.get(i), MY_PRODUCER));
         }
 
         for (int t = 0; t < Fitness.size(); t++)
@@ -450,17 +371,37 @@ public class ParticleSwarmOptimization {
 
 
             if (StoredData.Fitness == StoredData.Customers)
-                Fitness.add(computeWSC(Population.get(i), MY_PRODUCER));
+                Fitness.add(computeWSC((Product) Population.get(i), MY_PRODUCER));
             else
-                Fitness.add(computeBenefits(Population.get(i), MY_PRODUCER));
+                Fitness.add(computeBenefits((Product) Population.get(i), MY_PRODUCER));
 
 
             int worstIndex = isBetweenBest(Fitness.get(i));
             if (worstIndex != -1) {
                 BestWSC.set(worstIndex, Fitness.get(i));
-                Producers.get(MY_PRODUCER).getProducts().set(worstIndex, Population.get(i));
+                Producers.get(MY_PRODUCER).getProducts().set(worstIndex, (Product) Population.get(i));
             }
         }
+
+        return Population;
+    }
+
+    @Override
+    protected Integer getLocationValue(Object obj, int dimen) {
+        return ((Product) obj).getAttributeValue().get(TotalAttributes.get(dimen));
+    }
+
+    @Override
+    protected void updateLocation(Object obj, int dimen, int new_value_for_location) {
+        ((Product) obj).getAttributeValue().put(TotalAttributes.get(dimen), new_value_for_location);
+    }
+
+    @Override
+    protected Integer getFitness(Object object) {
+        if (StoredData.Fitness == StoredData.Customers)
+            return computeWSC((Product) object, MY_PRODUCER);
+        else
+            return computeBenefits((Product) object, MY_PRODUCER);
     }
 
     private int isBetweenBest(int fitness) {

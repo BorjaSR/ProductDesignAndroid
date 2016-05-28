@@ -333,14 +333,6 @@ public class InputRandom {
 
         product.setAttributeValue(attrValues);
 
-        if(StoredData.Algorithm == StoredData.PSO){
-            product.setVelocity(new HashMap<Attribute, Double>());
-            for (int i = 0; i < TotalAttributes.size(); i++) {
-                double velocity = (((StoredData.VEL_HIGH - StoredData.VEL_LOW) * Math.random()) + StoredData.VEL_LOW);
-                product.getVelocity().put(TotalAttributes.get(i), velocity);
-            }
-        }
-
         product.setPrice((int) (Math.random() * 400) + 100);
         return product;
     }

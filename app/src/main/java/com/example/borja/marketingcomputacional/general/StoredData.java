@@ -20,8 +20,6 @@ public class StoredData {
     public static final int SA = 3;
 
     public static GeneticAlgorithm GeneticAlgorithm;
-    public static com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax Minimax;
-    public static com.example.borja.marketingcomputacional.ParticleSwarmOptimization.ParticleSwarmOptimization ParticleSwarmOptimization;
 
 //    INPUT DATA
     public static ArrayList<Attribute> Atributos;

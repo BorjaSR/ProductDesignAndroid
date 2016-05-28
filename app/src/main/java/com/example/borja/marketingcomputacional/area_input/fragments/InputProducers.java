@@ -16,7 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithm;
-import com.example.borja.marketingcomputacional.ParticleSwarmOptimization.ParticleSwarmOptimization;
+import com.example.borja.marketingcomputacional.ParticleSwarmOptimization.ParticleSwarmOptimizationProblem;
+import com.example.borja.marketingcomputacional.SimulatedAnnealing.SimulatedAnnealingProblem;
 import com.example.borja.marketingcomputacional.general.Attribute;
 import com.example.borja.marketingcomputacional.general.Producer;
 import com.example.borja.marketingcomputacional.general.Product;
@@ -160,8 +161,6 @@ public class InputProducers extends AppCompatActivity {
 
                             Spinner valor = (Spinner) product_attr_by_product_container.getChildAt(l).findViewById(R.id.value_for_attribute);
                             attributeValue_ALL_PRODUCTS.get(l).put(StoredData.Atributos.get(j), Integer.parseInt(valor.getSelectedItem().toString()));
-//                            attr_value.put(StoredData.Atributos.get(j), Integer.parseInt(valor.getSelectedItem().toString()));
-
                         }
 
                         Attribute attr = new Attribute(StoredData.Atributos.get(j).getName(), StoredData.Atributos.get(j).getMIN(), StoredData.Atributos.get(j).getMAX());
@@ -189,26 +188,12 @@ public class InputProducers extends AppCompatActivity {
                     if (StoredData.number_Products == 1) {
                         Products.get(0).setAttributeValue(attributeValue_ALL_PRODUCTS.get(0));
                         producer.setProduct(Products.get(0));
-                        if(StoredData.Algorithm == StoredData.PSO){
-                            Products.get(0).setVelocity(new HashMap<Attribute, Double>());
-                            for (int w = 0; w < StoredData.Atributos.size(); w++) {
-                                double velocity = (((StoredData.VEL_HIGH - StoredData.VEL_LOW) * Math.random()) + StoredData.VEL_LOW);
-                                Products.get(0).getVelocity().put(StoredData.Atributos.get(w), velocity);
-                            }
-                        }
 
                     } else {
                         ArrayList<Product> products = new ArrayList<>();
                         for (int q = 0; q < StoredData.number_Products; q++) {
                             Products.get(q).setAttributeValue(attributeValue_ALL_PRODUCTS.get(q));
                             products.add(Products.get(q));
-                            if(StoredData.Algorithm == StoredData.PSO){
-                                Products.get(q).setVelocity(new HashMap<Attribute, Double>());
-                                for (int w = q; w < StoredData.Atributos.size(); w++) {
-                                    double velocity = (((StoredData.VEL_HIGH - StoredData.VEL_LOW) * Math.random()) + StoredData.VEL_LOW);
-                                    Products.get(q).getVelocity().put(StoredData.Atributos.get(w), velocity);
-                                }
-                            }
                         }
                         producer.setProduct(products.get(0));
                         producer.setProducts(products);
@@ -218,30 +203,28 @@ public class InputProducers extends AppCompatActivity {
 
                 StoredData.Producers = producers;
 
-                if (StoredData.Algorithm == StoredData.GENETIC) {
-                    try {
-                        StoredData.GeneticAlgorithm = new GeneticAlgorithm();
-                        StoredData.GeneticAlgorithm.start(getApplicationContext());
-                    } catch (Exception e) {
-                        e.printStackTrace();
+
+                try {
+                    if (StoredData.Algorithm == StoredData.GENETIC) {
+                        GeneticAlgorithm.getInstance().start(getApplicationContext());
+
+                    } else if (StoredData.Algorithm == StoredData.MINIMAX) {
+                        Minimax.getInstance().start(getApplicationContext());
+
+                    } else if (StoredData.Algorithm == StoredData.PSO) {
+                        try {
+                            ParticleSwarmOptimizationProblem.getInstance().start(getApplicationContext());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            ParticleSwarmOptimizationProblem.getInstance().start(getApplicationContext());
+                        }
+                    } else if (StoredData.Algorithm == StoredData.SA) {
+                        SimulatedAnnealingProblem.getInstance().start(getApplicationContext());
                     }
-                } else if (StoredData.Algorithm == StoredData.MINIMAX) {
-                    try {
-                        StoredData.Minimax = new Minimax();
-                        StoredData.Minimax.start(getApplicationContext());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else if (StoredData.Algorithm == StoredData.PSO) {
-                    try {
-                        StoredData.ParticleSwarmOptimization = new ParticleSwarmOptimization();
-                        StoredData.ParticleSwarmOptimization.start(getApplicationContext());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        StoredData.ParticleSwarmOptimization = new ParticleSwarmOptimization();
-                        StoredData.ParticleSwarmOptimization.start(getApplicationContext());
-                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+
             }
         });
     }

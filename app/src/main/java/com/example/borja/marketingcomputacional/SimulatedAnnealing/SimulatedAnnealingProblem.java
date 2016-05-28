@@ -299,15 +299,6 @@ public class SimulatedAnnealingProblem extends SimulatedAnnealingAlgorithm {
             product.getAttributeValue().put(TotalAttributes.get(i), attrVal);
         }
 
-        //IF WE NEED THE VELOCTY FOR PSO
-        if (StoredData.Algorithm == StoredData.PSO) {
-            product.setVelocity(new HashMap<Attribute, Double>());
-            for (int i = 0; i < TotalAttributes.size(); i++) {
-                Double velocity = (((StoredData.VEL_HIGH - StoredData.VEL_LOW) * Math.random()) + StoredData.VEL_LOW);
-                product.getVelocity().put(TotalAttributes.get(i), velocity);
-            }
-        }
-
         product.setPrice(calculatePrice(product));
         return product;
     }
