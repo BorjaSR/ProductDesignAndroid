@@ -6,7 +6,6 @@ public class Product implements Cloneable{
 	
 	private HashMap<Attribute, Integer> attributeValue;
 	private int Price;
-	private int Fitness;
 	
 	public Product() {
 		super();
@@ -25,14 +24,6 @@ public class Product implements Cloneable{
 		attributeValue = product;
 	}
 
-	public int getFitness() {
-		return Fitness;
-	}
-
-	public void setFitness(int fitness) {
-		Fitness = fitness;
-	}
-
 	public int getPrice() {
 		return Price;
 	}
@@ -45,7 +36,6 @@ public class Product implements Cloneable{
 	public Product clone(){
 		Product product = new Product(this.attributeValue);
 		product.setPrice(this.Price);
-//		product.setFitness(this.Fitness);
 		return product;
 	}
 }
