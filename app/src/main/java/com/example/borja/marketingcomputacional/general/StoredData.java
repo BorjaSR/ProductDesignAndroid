@@ -3,7 +3,6 @@ package com.example.borja.marketingcomputacional.general;
 import android.content.Context;
 import android.graphics.Typeface;
 
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithmOLD;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.SubProfile;
 
 import java.util.ArrayList;
@@ -18,8 +17,6 @@ public class StoredData {
     public static final int MINIMAX = 1;
     public static final int PSO = 2;
     public static final int SA = 3;
-
-    public static GeneticAlgorithmOLD GeneticAlgorithm;
 
 //    INPUT DATA
     public static ArrayList<Attribute> Atributos;

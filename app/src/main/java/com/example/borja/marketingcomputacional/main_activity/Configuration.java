@@ -14,7 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithmOLD;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticProblem;
 import com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax;
 import com.example.borja.marketingcomputacional.ParticleSwarmOptimization.ParticleSwarmOptimizationProblem;
@@ -123,7 +122,6 @@ public class Configuration extends AppCompatActivity implements View.OnClickList
 
                         if (StoredData.Algorithm == StoredData.GENETIC) {
                             GeneticProblem.getInstance().start(getApplicationContext());
-//                            GeneticAlgorithmOLD.getInstance().start(getApplicationContext());
 
                         } else if (StoredData.Algorithm == StoredData.MINIMAX) {
                             Minimax.getInstance().start(getApplicationContext());

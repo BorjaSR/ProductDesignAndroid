@@ -15,7 +15,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithmOLD;
+import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticProblem;
 import com.example.borja.marketingcomputacional.ParticleSwarmOptimization.ParticleSwarmOptimizationProblem;
 import com.example.borja.marketingcomputacional.SimulatedAnnealing.SimulatedAnnealingProblem;
 import com.example.borja.marketingcomputacional.general.Attribute;
@@ -206,7 +206,7 @@ public class InputProducers extends AppCompatActivity {
 
                 try {
                     if (StoredData.Algorithm == StoredData.GENETIC) {
-                        GeneticAlgorithmOLD.getInstance().start(getApplicationContext());
+                        GeneticProblem.getInstance().start(getApplicationContext());
 
                     } else if (StoredData.Algorithm == StoredData.MINIMAX) {
                         Minimax.getInstance().start(getApplicationContext());
