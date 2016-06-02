@@ -20,7 +20,7 @@ import java.util.HashMap;
 public class GeneticProblem extends GeneticAlgorithm {
 
 
-    private static GeneticAlgorithmOLD GAProblem = null;
+    private static GeneticProblem GAProblem = null;
 
     static final double KNOWN_ATTRIBUTES = 100; /* 100
                                                  * % of attributes known for all
@@ -60,9 +60,9 @@ public class GeneticProblem extends GeneticAlgorithm {
      * " AUXILIARY EXCEL METHODS " * @throws Exception
      ***************************************/
 
-    public static GeneticAlgorithmOLD getInstance(){
+    public static GeneticProblem getInstance(){
         if(GAProblem == null)
-            GAProblem = new GeneticAlgorithmOLD();
+            GAProblem = new GeneticProblem();
 
         return GAProblem;
     }
@@ -277,8 +277,6 @@ public class GeneticProblem extends GeneticAlgorithm {
         for (int i = limit; i < TotalAttributes.size(); i++) {
             boolean attrFound = false;
             while (!attrFound) {
-//                attrVal =  TotalAttributes.get(i).getScoreValues().get((int) (Math.random() * TotalAttributes.get(i).getScoreValues().size()));
-
                 attrVal = (int) (TotalAttributes.get(i).getMAX() * Math.random());
 
                 if (availableAttribute.get(i).getAvailableValues().get(attrVal))
@@ -355,54 +353,6 @@ public class GeneticProblem extends GeneticAlgorithm {
 
     /*************************************** " AUXILIARY METHODS SOLVEPD_GA()" ***************************************/
 
-    /**
-     * Creating the initial population
-     *
-     * @throws Exception
-     */
-    private void createInitPopu() throws Exception {
-        Population = new ArrayList<>();
-        Fitness = new ArrayList<>();
-        BestWSC = new ArrayList<>();
-
-        for (int i = 0; i < Producers.get(MY_PRODUCER).getProducts().size(); i++) {
-            Population.add((Producers.get(MY_PRODUCER).getProducts().get(i)).clone());
-
-            if (StoredData.Fitness == StoredData.Customers)
-                Fitness.add(computeWSC(Population.get(i), MY_PRODUCER));
-            else
-                Fitness.add(computeBenefits(Population.get(i), MY_PRODUCER));
-        }
-
-        for (int t = 0; t < Fitness.size(); t++)
-            BestWSC.add(Fitness.get(t));
-
-        ArrayList<Integer> aux = new ArrayList<>();
-        for (int q = 0; q < BestWSC.size(); q++)
-            aux.add(BestWSC.get(q));
-
-        Initial_Results.add(aux);
-
-        for (int i = Producers.get(MY_PRODUCER).getProducts().size(); i < NUM_POPULATION; i++) {
-
-            if (i % 2 == 0) /*We create a random product*/
-                Population.add(createRndProduct(Producers.get(MY_PRODUCER).getAvailableAttribute()));
-            else /*We create a near product*/
-                Population.add(createNearProduct(Producers.get(MY_PRODUCER).getAvailableAttribute(), (int) (CustomerProfiles.size() * Math.random())));  /////////??verificar//////////
-
-            if (StoredData.Fitness == StoredData.Customers)
-                Fitness.add(computeWSC(Population.get(i), MY_PRODUCER));
-            else
-                Fitness.add(computeBenefits(Population.get(i), MY_PRODUCER));
-
-            int worstIndex = isBetweenBest(Fitness.get(i));
-            if (worstIndex != -1) {
-                BestWSC.set(worstIndex, Fitness.get(i));
-                Producers.get(MY_PRODUCER).getProducts().set(worstIndex, Population.get(i));
-            }
-        }
-    }
-
     @Override
     public ArrayList<Object> createInitPopulation() throws Exception {
         ArrayList<Object> Population = new ArrayList<>();
@@ -445,6 +395,7 @@ public class GeneticProblem extends GeneticAlgorithm {
                 Producers.get(MY_PRODUCER).getProducts().set(worstIndex, (Product) Population.get(i));
             }
         }
+
         return Population;
     }
 
@@ -470,7 +421,6 @@ public class GeneticProblem extends GeneticAlgorithm {
         int wsc = 0;
         boolean isTheFavourite;
         int meScore, score, k, p, numTies;
-        int count = 0;
 
         for (int i = 0; i < CustomerProfiles.size(); i++) {
             for (int j = 0; j < CustomerProfiles.get(i).getSubProfiles().size(); j++) {
@@ -497,8 +447,6 @@ public class GeneticProblem extends GeneticAlgorithm {
 
                             else if (score == meScore)
                                 numTies += 1;
-                        } else {
-                            count++;
                         }
                         p++;
                     }
@@ -635,60 +583,8 @@ public class GeneticProblem extends GeneticAlgorithm {
         return score;
     }
 
-
-    /**
-     * Creating a new population
-     */
-    private ArrayList<Product> createNewPopu(ArrayList<Integer> fitness) throws Exception {
-        int fitnessSum = computeFitnessSum();
-        ArrayList<Product> newPopu = new ArrayList<>();
-        int father, mother;
-        Product son;
-
-        for (int i = 0; i < NUM_POPULATION; i++) {
-            father = chooseFather(fitnessSum);
-            mother = chooseFather(fitnessSum);
-            son = mutate(breedOLD(father, mother));
-
-            newPopu.add(son);
-
-            if (StoredData.Fitness == StoredData.Customers)
-                fitness.add(computeWSC(newPopu.get(i), MY_PRODUCER));
-            else
-                fitness.add(computeBenefits(newPopu.get(i), MY_PRODUCER));
-
-        }
-
-        return newPopu;
-    }
-
-    /**
-     * Computing the sum of the fitness of all the population
-     */
-    private int computeFitnessSum() {
-        int sum = 0;
-        for (int i = 0; i < Fitness.size() - 1; i++) {
-            sum += Fitness.get(i);
-        }
-        return sum;
-    }
-
-    /**
-     * Chosing the father in a random way taking into account the fitness
-     */
-    private int chooseFather(double fitnessSum) {
-        int fatherPos = 0;
-        double rndVal = fitnessSum * Math.random();
-        double accumulator = Fitness.get(fatherPos);
-        while (rndVal > accumulator) {
-            fatherPos += 1;
-            accumulator += Fitness.get(fatherPos);
-        }
-        return fatherPos;
-    }
-
     @Override
-    protected Object breed(int father, int mother) {
+    protected Object breed(Object father, Object mother) {
         Product son = new Product();
         /*Random value in range [0,100)*/
         int crossover = (int) (100 * Math.random());
@@ -700,55 +596,21 @@ public class GeneticProblem extends GeneticAlgorithm {
 
                 rndVal = (int) (2 * Math.random()); /*Generamos aleatoriamente un 0 (padre) o un 1 (madre).*/
                 if (rndVal == 0)
-                    crossover_attributeValue.put(TotalAttributes.get(i), Population.get(father).getAttributeValue().get(TotalAttributes.get(i)));
+                    crossover_attributeValue.put(TotalAttributes.get(i), ((Product) father).getAttributeValue().get(TotalAttributes.get(i)));
                 else
-                    crossover_attributeValue.put(TotalAttributes.get(i), Population.get(mother).getAttributeValue().get(TotalAttributes.get(i)));
+                    crossover_attributeValue.put(TotalAttributes.get(i), ((Product) mother).getAttributeValue().get(TotalAttributes.get(i)));
             }
             son.setAttributeValue(crossover_attributeValue);
         } else {//El hijo seria completamente igual a la madre o al padre
             rndVal = (int) (2 * Math.random()); /*Generamos aleatoriamente un 0 (padre) o un 1 (madre).*/
 
             if (rndVal == 0)
-                son = Population.get(father).clone();
+                son = ((Product) father).clone();
             else
-                son = Population.get(mother).clone();
+                son = ((Product) mother).clone();
         }
         return son;
     }
-
-    /**
-     * Metodo que dado un padre y una madre los cruza para obtener un hijo.
-     * Para cada posici�n del array eligiremos aleatoriamente si el hijo heredar�
-     * esa posici�n del padre o de la madre.
-     */
-    private Product breedOLD(int father, int mother) {
-        Product son = new Product();
-        /*Random value in range [0,100)*/
-        int crossover = (int) (100 * Math.random());
-        int rndVal;
-
-        if (crossover <= CROSSOVER_PROB) {//El hijo sera una mezcla de la madre y el padre
-            HashMap<Attribute, Integer> crossover_attributeValue = new HashMap<>();
-            for (int i = 0; i < TotalAttributes.size(); i++) { //With son
-
-                rndVal = (int) (2 * Math.random()); /*Generamos aleatoriamente un 0 (padre) o un 1 (madre).*/
-                if (rndVal == 0)
-                    crossover_attributeValue.put(TotalAttributes.get(i), Population.get(father).getAttributeValue().get(TotalAttributes.get(i)));
-                else
-                    crossover_attributeValue.put(TotalAttributes.get(i), Population.get(mother).getAttributeValue().get(TotalAttributes.get(i)));
-            }
-            son.setAttributeValue(crossover_attributeValue);
-        } else {//El hijo seria completamente igual a la madre o al padre
-            rndVal = (int) (2 * Math.random()); /*Generamos aleatoriamente un 0 (padre) o un 1 (madre).*/
-
-            if (rndVal == 0)
-                son = Population.get(father).clone();
-            else
-                son = Population.get(mother).clone();
-        }
-        return son;
-    }
-
 
     @Override
     protected Object mutate(Object indiv) {
@@ -772,65 +634,6 @@ public class GeneticProblem extends GeneticAlgorithm {
         mutant.setPrice(calculatePrice(mutant));
         return mutant;
     }
-
-    /**
-     * Method that creates an individual parameter passed mutating individual.
-     * The mutation is to add / remove a joint solution.
-     *
-     * @throws Exception
-     */
-    private Product mutate(Product indiv) {
-
-        Product mutant = indiv.clone();
-        int attrVal = 0;
-
-        for (int j = 0; j < TotalAttributes.size(); j++) {
-            /*Random value in range [0,100)*/
-            double mutation = 100 * Math.random();
-            if (mutation <= MUTATION_PROB) {
-                boolean attrFound = false;
-                while (!attrFound) {
-                    attrVal = (int) (Math.floor(TotalAttributes.get(j).getMAX() * Math.random()));
-                    if (Producers.get(MY_PRODUCER).getAvailableAttribute().get(j).getAvailableValues().get(attrVal))
-                        attrFound = true;
-                }
-                mutant.getAttributeValue().put(TotalAttributes.get(j), attrVal);
-            }
-        }
-
-        mutant.setPrice(calculatePrice(mutant));
-        return mutant;
-    }
-
-
-    /**
-     * Metodo que dada la poblaci�n original y una nueva poblaci�n elige la siguente
-     * ' generaci�n de individuos. Actualizo la mejor soluci�n encontrada en caso de mejorarla.
-     */
-    private ArrayList<Product> tournament(ArrayList<Product> newPopu, ArrayList<Integer> newFitness) {
-
-        ArrayList<Product> nextGeneration = new ArrayList<>();
-        for (int i = 0; i < NUM_POPULATION; i++) {
-
-            if (Fitness.get(i) >= newFitness.get(i))
-                nextGeneration.add((Population.get(i)).clone());
-            else {
-
-                nextGeneration.add((newPopu.get(i)).clone());
-                Fitness.set(i, newFitness.get(i));// We update the fitness of the new individual
-
-                int worstIndex = isBetweenBest(Fitness.get(i));
-                if (worstIndex != -1) {
-                    BestWSC.remove(worstIndex);
-                    BestWSC.add(Fitness.get(i));
-                    Producers.get(MY_PRODUCER).getProducts().remove(worstIndex);
-                    Producers.get(MY_PRODUCER).getProducts().add((newPopu.get(i)).clone());
-                }
-            }
-        }
-        return nextGeneration;
-    }
-
 
     /**
      * Showing the wsc of the rest of products

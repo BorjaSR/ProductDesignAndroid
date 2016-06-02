@@ -23,6 +23,10 @@ public abstract class GeneticAlgorithm {
 
     public ArrayList<Object> solveGeneticAlgorithm(int number_of_best_individuals) throws Exception {
 
+        Fitness = new ArrayList<>();
+        Best = new ArrayList<>();
+        BestFitness = new ArrayList<>();
+
         Population = createInitPopulation();
 
         for(int i = 0; i < Population.size(); i++)
@@ -82,6 +86,7 @@ public abstract class GeneticAlgorithm {
     }
 
     private ArrayList<Object> createNewPopulation(ArrayList<Integer> newFitness) throws Exception {
+        newFitness.clear();
 
         int fitnessSum = computeFitnessSum();
         ArrayList<Object> newPopu = new ArrayList<>();
@@ -91,7 +96,7 @@ public abstract class GeneticAlgorithm {
         for (int i = 0; i < Population.size(); i++) {
             father = chooseFather(fitnessSum);
             mother = chooseFather(fitnessSum);
-            son = mutate(breed(father, mother));
+            son = mutate(breed(Population.get(father), Population.get(mother)));
 
             newPopu.add(son);
 
@@ -129,7 +134,7 @@ public abstract class GeneticAlgorithm {
 
     protected abstract Object mutate(Object breed);
 
-    protected abstract Object breed(int father, int mother);
+    protected abstract Object breed(Object father, Object mother);
 
     public abstract ArrayList<Object> createInitPopulation() throws Exception;
 
