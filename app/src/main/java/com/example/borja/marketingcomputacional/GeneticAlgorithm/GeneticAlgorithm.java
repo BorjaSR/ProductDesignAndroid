@@ -1,5 +1,7 @@
 package com.example.borja.marketingcomputacional.GeneticAlgorithm;
 
+import android.util.Log;
+
 import com.example.borja.marketingcomputacional.general.StoredData;
 
 import java.util.ArrayList;
@@ -16,21 +18,67 @@ public abstract class GeneticAlgorithm {
     ArrayList<Object> Population = new ArrayList<>();
     ArrayList<Integer> Fitness = new ArrayList<>();
 
-    public ArrayList<Object> solveGeneticAlgorithm() throws Exception {
+    ArrayList<Object> Best = new ArrayList<>();
+    ArrayList<Integer> BestFitness = new ArrayList<>();
+
+    public ArrayList<Object> solveGeneticAlgorithm(int number_of_best_individuals) throws Exception {
 
         Population = createInitPopulation();
 
         for(int i = 0; i < Population.size(); i++)
             Fitness.add(getFitness(Population.get(i)));
 
-
-        ArrayList<Object> NewPopulation = new ArrayList<>();
-        ArrayList<Integer> newFitness = new ArrayList<>();
-        for(int i = 0; i < NUM_GENERATIONS; i++){
-            NewPopulation = createNewPopulation(newFitness);
+        for(int i = 0; i < Fitness.size();i++){
+            if(i < number_of_best_individuals){
+                BestFitness.add(Fitness.get(i));
+                Best.add(Population.get(i));
+            }else {
+                int worstIndex = isBetweenBest(Fitness.get(i));
+                if (worstIndex != -1) {
+                    BestFitness.set(worstIndex, Fitness.get(i));
+                    Best.set(worstIndex, Population.get(i));
+                }
+            }
         }
 
-        return Population;
+        ArrayList<Object> NewPopulation;
+        ArrayList<Integer> newFitness = new ArrayList<>();
+        for(int i = 0; i < NUM_GENERATIONS; i++){
+            Log.d("Generation ", i+1+"");
+            NewPopulation = createNewPopulation(newFitness);
+            Population = tournament(NewPopulation, newFitness);
+        }
+
+        return Best;
+    }
+
+    private ArrayList<Object> tournament(ArrayList<Object> newPopulation, ArrayList<Integer> newFitness) {
+        ArrayList<Object> nextGeneration = new ArrayList<>();
+        for (int i = 0; i < newPopulation.size(); i++) {
+
+            if (Fitness.get(i) >= newFitness.get(i))
+                nextGeneration.add((Population.get(i)));
+            else {
+
+                nextGeneration.add((newPopulation.get(i)));
+                Fitness.set(i, newFitness.get(i));// We update the fitness of the new individual
+
+                int worstIndex = isBetweenBest(Fitness.get(i));
+                if (worstIndex != -1) {
+                    BestFitness.set(worstIndex, Fitness.get(i));
+                    Best.set(worstIndex, newPopulation.get(i));
+                }
+            }
+        }
+        return nextGeneration;
+    }
+
+    private int isBetweenBest(int fitness) {
+        for (int i = 0; i < BestFitness.size(); i++) {
+            if (fitness > BestFitness.get(i))
+                return i;
+        }
+        return -1;
     }
 
     private ArrayList<Object> createNewPopulation(ArrayList<Integer> newFitness) throws Exception {

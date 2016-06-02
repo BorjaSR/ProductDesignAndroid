@@ -237,19 +237,15 @@ public class GeneticProblem extends GeneticAlgorithm {
      */
     private void solvePD_GA() throws Exception {
 
-        ArrayList<Product> newPopu;
-        ArrayList<Integer> newFitness = new ArrayList<>();
+        ArrayList<Object> BestResults = solveGeneticAlgorithm(StoredData.number_Products);
 
-        solveGeneticAlgorithm();
+        for(int i = 0; i < BestResults.size(); i++) {
+            BestWSC.set(i, getFitness(BestResults.get(i)));
+            Producers.get(MY_PRODUCER).getProducts().set(i, (Product) BestResults.get(i));
+        }
 
+        Results.add(BestWSC);
 
-//        createInitPopu();
-//        for (int generation = 0; generation < NUM_GENERATIONS; generation++) {
-//            newPopu = createNewPopu(newFitness);
-//            Population = tournament(newPopu, newFitness);
-//        }
-
-//        Results.add(BestWSC);
         showWSC();
 
         ArrayList<Integer> prices = new ArrayList<>();
@@ -447,55 +443,6 @@ public class GeneticProblem extends GeneticAlgorithm {
             if (worstIndex != -1) {
                 BestWSC.set(worstIndex, Fitness.get(i));
                 Producers.get(MY_PRODUCER).getProducts().set(worstIndex, (Product) Population.get(i));
-            }
-        }
-        return Population;
-    }
-
-    /**
-     * Creating the initial population
-     *
-     * @throws Exception
-     */
-    private ArrayList<Product> createInitPopuNEW() throws Exception {
-        Population = new ArrayList<>();
-        Fitness = new ArrayList<>();
-        BestWSC = new ArrayList<>();
-
-        for (int i = 0; i < Producers.get(MY_PRODUCER).getProducts().size(); i++) {
-            Population.add((Producers.get(MY_PRODUCER).getProducts().get(i)).clone());
-
-            if (StoredData.Fitness == StoredData.Customers)
-                Fitness.add(computeWSC(Population.get(i), MY_PRODUCER));
-            else
-                Fitness.add(computeBenefits(Population.get(i), MY_PRODUCER));
-        }
-
-        for (int t = 0; t < Fitness.size(); t++)
-            BestWSC.add(Fitness.get(t));
-
-        ArrayList<Integer> aux = new ArrayList<>();
-        for (int q = 0; q < BestWSC.size(); q++)
-            aux.add(BestWSC.get(q));
-
-        Initial_Results.add(aux);
-
-        for (int i = Producers.get(MY_PRODUCER).getProducts().size(); i < NUM_POPULATION; i++) {
-
-            if (i % 2 == 0) /*We create a random product*/
-                Population.add(createRndProduct(Producers.get(MY_PRODUCER).getAvailableAttribute()));
-            else /*We create a near product*/
-                Population.add(createNearProduct(Producers.get(MY_PRODUCER).getAvailableAttribute(), (int) (CustomerProfiles.size() * Math.random())));  /////////??verificar//////////
-
-            if (StoredData.Fitness == StoredData.Customers)
-                Fitness.add(computeWSC(Population.get(i), MY_PRODUCER));
-            else
-                Fitness.add(computeBenefits(Population.get(i), MY_PRODUCER));
-
-            int worstIndex = isBetweenBest(Fitness.get(i));
-            if (worstIndex != -1) {
-                BestWSC.set(worstIndex, Fitness.get(i));
-                Producers.get(MY_PRODUCER).getProducts().set(worstIndex, Population.get(i));
             }
         }
         return Population;
