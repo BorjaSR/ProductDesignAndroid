@@ -6,8 +6,8 @@ package com.example.borja.marketingcomputacional.MinimaxAlgorithm;
 public class StrAB {
 
     private int AlphaBeta;
-    private int AttriInd;
-    private int AttrVal;
+    private int Dimension;
+    private int Solution;
 
     public StrAB() {
     }
@@ -20,19 +20,19 @@ public class StrAB {
         AlphaBeta = alphaBeta;
     }
 
-    public int getAttriInd() {
-        return AttriInd;
+    public int getDimension() {
+        return Dimension;
     }
 
-    public void setAttriInd(int attriInd) {
-        AttriInd = attriInd;
+    public void setDimension(int dimension) {
+        Dimension = dimension;
     }
 
-    public int getAttrVal() {
-        return AttrVal;
+    public int getSolution() {
+        return Solution;
     }
 
-    public void setAttrVal(int attrVal) {
-        AttrVal = attrVal;
+    public void setSolution(int solution) {
+        Solution = solution;
     }
 }

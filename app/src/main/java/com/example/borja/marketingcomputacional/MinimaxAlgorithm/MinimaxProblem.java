@@ -2,13 +2,14 @@ package com.example.borja.marketingcomputacional.MinimaxAlgorithm;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
+import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardMenu;
 import com.example.borja.marketingcomputacional.general.Attribute;
 import com.example.borja.marketingcomputacional.general.CustomerProfile;
 import com.example.borja.marketingcomputacional.general.LinkedAttribute;
 import com.example.borja.marketingcomputacional.general.Producer;
 import com.example.borja.marketingcomputacional.general.Product;
-import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardMenu;
 import com.example.borja.marketingcomputacional.general.StoredData;
 
 import java.util.ArrayList;
@@ -16,9 +17,9 @@ import java.util.ArrayList;
 /**
  * Created by Borja on 19/03/2016.
  */
-public class Minimax {
+public class MinimaxProblem extends MinimaxAlgorithm {
 
-    private static Minimax MMProblem;
+    private static MinimaxProblem MMProblem;
 
     private int MY_PRODUCER = 0;
 
@@ -27,10 +28,7 @@ public class Minimax {
 
     private int NUM_EXEC = 1; //5
 
-
     // INPUT VARIABLES
-    private int mNAttrMod; // Number of attributes the producer can modify (D)
-    private int mPrevTurns; // Number of previous turns to compute (tp)
     private int mNTurns; // Number of turns to play (tf)
 
     private int mNAttr; // Number of attributes
@@ -53,9 +51,9 @@ public class Minimax {
      * INITIAL METHOD
      **********************/
 
-    public static Minimax getInstance(){
-        if(MMProblem == null)
-            MMProblem = new Minimax();
+    public static MinimaxProblem getInstance() {
+        if (MMProblem == null)
+            MMProblem = new MinimaxProblem();
 
         return MMProblem;
     }
@@ -125,13 +123,10 @@ public class Minimax {
         playGame();
     }
 
-
     /*******************
      * INPUT METHODS
      ************************/
     public void generateInput() {
-        mNAttrMod = 1;
-        mPrevTurns = 5;
         mNTurns = 5;
         mNAttr = 10;
         mNProd = 2;
@@ -141,7 +136,6 @@ public class Minimax {
             TotalAttributes.add(StoredData.Atributos.get(i));
 
 
-//        for (int i = 0; i < mNAttr; i++)
         CustomerProfiles = StoredData.Profiles;
 
         Producers.clear();
@@ -150,150 +144,24 @@ public class Minimax {
     }
 
     public void playGame() throws Exception {
-        mInitialResults.add(computeWSC(Producers.get(MY_PRODUCER).getProduct(), MY_PRODUCER));
+        if (StoredData.Fitness == StoredData.Benefits)
+            mInitialResults.add(computeBenefits(Producers.get(MY_PRODUCER).getProduct(), MY_PRODUCER));
+        else
+            mInitialResults.add(computeWSC(Producers.get(MY_PRODUCER).getProduct(), MY_PRODUCER));
 
-        for (int i = 0; i < mNTurns; i++) {
-            for (int j = 0; j < Producers.size(); j++) {
-                changeProduct(j);
-                updateCustGathered(i);
-            }
-        }
+        playMinimaxAlgorithm();
 
-        mResults.add(Producers.get(MY_PRODUCER).getNumber_CustomerGathered());
+        if (StoredData.Fitness == StoredData.Benefits)
+            mResults.add(Producers.get(MY_PRODUCER).getNumber_CustomerGathered() * calculatePrice(Producers.get(MY_PRODUCER).getProduct()));
+        else
+            mResults.add(Producers.get(MY_PRODUCER).getNumber_CustomerGathered());
+
         Prices.add(calculatePrice(Producers.get(MY_PRODUCER).getProduct()));
     }
 
     /************************
      * AUXILIARY METHOD PlayGame
      ***********************/
-
-    public void changeProduct(int producerIndex) throws Exception {
-        int depth;
-        Producer producer = Producers.get(producerIndex);
-
-        if (producer == Producers.get(MY_PRODUCER))
-            depth = MAX_DEPTH_0;
-        else
-            depth = MAX_DEPTH_1;
-
-        ArrayList<Product> list_products = new ArrayList<>();
-        for (int i = 0; i < Producers.size(); i++)
-            list_products.add(Producers.get(i).getProduct().clone());
-
-        StrAB ab = alphaBetaInit(list_products, producerIndex, depth, Integer.MIN_VALUE, Integer.MAX_VALUE);
-        producer.getProduct().getAttributeValue().put(TotalAttributes.get(ab.getDimension()), ab.getSolution());
-
-    }
-
-    private StrAB alphaBetaInit(ArrayList<Product> list_products, int producerindex, int depth, int alpha, int beta) throws Exception {
-
-        ArrayList<StrAB> abList = new ArrayList<>();
-        StrAB ab = new StrAB();
-        int nCustGathered;
-        boolean repetedChild = false; // To prune repeated childs
-        Producer producer = Producers.get(producerindex);
-
-        for (int attrInd = 0; attrInd < TotalAttributes.size(); attrInd++) {
-            for (int attrVal = 0; attrVal < TotalAttributes.get(attrInd).getMAX(); attrVal++) {
-                if (producer.getAvailableAttribute().get(attrInd).getAvailableValues().get(attrVal)) {
-                    if (producer.getProduct().getAttributeValue().get(TotalAttributes.get(attrInd)) != attrVal || !repetedChild) {
-
-                        if (producer.getProduct().getAttributeValue().get(TotalAttributes.get(attrInd)) == attrVal)
-                            repetedChild = true;
-
-                        //Computing Childs
-                        ArrayList<Product> childs = new ArrayList<>();
-                        for (int i = 0; i < list_products.size(); i++)
-                            childs.add(list_products.get(i));
-
-                        childs.get(producerindex).getAttributeValue().put(TotalAttributes.get(attrInd), attrVal);
-
-                        if (StoredData.Fitness == StoredData.Benefits)
-                            childs.get(producerindex).setPrice(calculatePrice(childs.get(producerindex)));
-
-                        if (StoredData.Fitness == StoredData.Benefits)
-                            nCustGathered = computeBenefits(childs.get(producerindex), 0);
-                        else
-                            nCustGathered = computeWSC(childs.get(producerindex), 0);
-
-                        ab.setAlphaBeta(alphaBeta(childs, nCustGathered, producerindex, (producerindex + 1) % 2, depth - 1, alpha, beta, false));
-                        ab.setDimension(attrInd);
-                        ab.setSolution(attrVal);
-
-                        abList.add(ab);
-                        alpha = Math.max(alpha, ab.getAlphaBeta());
-                    }
-                }
-            }
-        }
-        return bestMovement(abList, alpha);
-    }
-
-    private int alphaBeta(ArrayList<Product> products, int nCustGathered, int prodInit, int prodIndex, int depth, int alpha, int beta, boolean maximizingPlayer) throws Exception {
-
-        boolean exitFor;
-        int wsc;
-        boolean repeatedChild = false; // To prune repeated  childs
-        Producer producer = Producers.get(prodIndex);
-
-        // It is a terminal node
-        if (depth == 0)
-            return nCustGathered;
-
-        for (int attrInd = 0; attrInd < TotalAttributes.size(); attrInd++) {
-            exitFor = false;
-            for (int attrVal = 0; attrVal < TotalAttributes.get(attrInd).getMAX(); attrVal++) {
-                if (producer.getAvailableAttribute().get(attrInd).getAvailableValues().get(attrVal)) {
-                    if (producer.getProduct().getAttributeValue().get(TotalAttributes.get(attrInd)) != attrVal || !repeatedChild) {
-
-                        if (producer.getProduct().getAttributeValue().get(TotalAttributes.get(attrInd)) == attrVal)
-                            repeatedChild = true;
-
-
-                        //Computing Childs
-                        ArrayList<Product> childs = new ArrayList<>();
-                        for (int i = 0; i < products.size(); i++)
-                            childs.add(products.get(i));
-
-                        childs.get(prodIndex).getAttributeValue().put(TotalAttributes.get(attrInd), attrVal);
-
-                        if (StoredData.Fitness == StoredData.Benefits)
-                            childs.get(prodIndex).setPrice(calculatePrice(childs.get(prodIndex)));
-
-
-                        if (StoredData.Fitness == StoredData.Benefits)
-                            wsc = computeBenefits(childs.get(prodIndex), prodInit);
-                        else
-                            wsc = computeWSC(childs.get(prodIndex), prodInit);
-
-                        if (maximizingPlayer) {
-                            alpha = Math.max(alpha, alphaBeta(childs, nCustGathered + wsc, prodInit, (prodIndex + 1) % 2, depth - 1, alpha, beta, false));
-
-                            if (beta < alpha) {
-                                exitFor = true;
-                                break;
-                            }
-                        } else {
-                            beta = Math.max(beta, alphaBeta(childs, nCustGathered + wsc, prodInit, (prodIndex + 1) % 2, depth - 1, alpha, beta, true));
-
-                            if (beta < alpha) {
-                                exitFor = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            if (exitFor)
-                break;
-        }
-
-        if (maximizingPlayer)
-            return alpha;
-        else
-            return beta;
-    }
-
 
     private Integer computeBenefits(Product product, int myProducer) throws Exception {
         return computeWSC(product, myProducer) * product.getPrice();
@@ -343,7 +211,6 @@ public class Minimax {
         return wsc;
     }
 
-
     private int scoreLinkedAttributes(ArrayList<LinkedAttribute> linkedAttributes, Product product) {
         int modifyScore = 0;
         for (int i = 0; i < linkedAttributes.size(); i++) {
@@ -354,7 +221,6 @@ public class Minimax {
         }
         return modifyScore;
     }
-
 
     /**
      * Computing the score of a product given the customer profile index
@@ -368,36 +234,56 @@ public class Minimax {
         return score;
     }
 
-
-    private StrAB bestMovement(ArrayList<StrAB> abList, int best) {
-        StrAB ab = new StrAB();
-
-        for (int i = 0; i < abList.size(); i++) {
-            if (abList.get(i).getAlphaBeta() == best) {
-                ab.setSolution(abList.get(i).getSolution());
-                ab.setDimension(abList.get(i).getDimension());
-                ab.setAlphaBeta(abList.get(i).getAlphaBeta());
-            }
-        }
-        return ab;
+    @Override
+    protected void setFitnessAcumulated(int i, ArrayList<Integer> customersAcumulated) {
+        Producers.get(i).setCustomersGathered(customersAcumulated);
     }
 
-    private void updateCustGathered(int turn) throws Exception {
+    @Override
+    public Object getObject(int playerIndex) {
+        return Producers.get(playerIndex).getProduct();
+    }
+
+    @Override
+    public Integer getFitness(Object object, int index) throws Exception {
+        if (StoredData.Fitness == StoredData.Benefits)
+            ((Product) object).setPrice(calculatePrice((Product) object));
 
 
-        ArrayList<Product> list_products = new ArrayList<>();
-        for (int i = 0; i < Producers.size(); i++)
-            list_products.add(Producers.get(i).getProduct().clone());
+        if (StoredData.Fitness == StoredData.Benefits)
+            return computeBenefits((Product) object, index);
+        else
+            return computeWSC((Product) object, index);
+    }
 
-        for (int i = 0; i < Producers.size(); i++) {
-            int wsc = computeWSC(Producers.get(i).getProduct(), i);
+    @Override
+    public int getDimens() {
+        return TotalAttributes.size();
+    }
 
-            if (Producers.get(i).getCustomersGathered().size() == mPrevTurns * 2) {
-                Producers.get(i).getCustomersGathered().remove(0);
-            }
+    @Override
+    protected int getSolutionsSpace(int dimen) {
+        return TotalAttributes.get(dimen).getMAX();
+    }
 
-            Producers.get(i).getCustomersGathered().add(wsc);
-        }
+    @Override
+    protected int getSolution(int playerIndex, int dimension) {
+        return Producers.get(playerIndex).getProduct().getAttributeValue().get(TotalAttributes.get(dimension));
+    }
+
+    @Override
+    protected boolean isPosibleToChange(int playerIndex, int dimension, int attrVal) {
+        return Producers.get(playerIndex).getAvailableAttribute().get(dimension).getAvailableValues().get(attrVal);
+    }
+
+    @Override
+    protected void changeChild(Object o, int dimension, int solutionSpaceIndex) {
+        ((Product)o).getAttributeValue().put(TotalAttributes.get(dimension), solutionSpaceIndex);
+    }
+
+    @Override
+    protected void setSolution(int playerIndex, int dimension, int solution) {
+        Producers.get(playerIndex).getProduct().getAttributeValue().put(TotalAttributes.get(dimension), solution);
     }
 
 

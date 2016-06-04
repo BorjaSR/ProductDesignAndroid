@@ -64,6 +64,10 @@ public class Producer {
 		return Number_CG;
 	}
 
+	public int getMedia_Number_CustomerGathered() {
+		return getNumber_CustomerGathered() / CustomersGathered.size();
+	}
+
 	public ArrayList<Product> getProducts() {
 		return products;
 	}

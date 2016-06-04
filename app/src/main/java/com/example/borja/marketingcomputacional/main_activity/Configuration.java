@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticProblem;
 import com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax;
+import com.example.borja.marketingcomputacional.MinimaxAlgorithm.MinimaxProblem;
 import com.example.borja.marketingcomputacional.ParticleSwarmOptimization.ParticleSwarmOptimizationProblem;
 import com.example.borja.marketingcomputacional.R;
 import com.example.borja.marketingcomputacional.SimulatedAnnealing.SimulatedAnnealingProblem;
@@ -124,7 +125,7 @@ public class Configuration extends AppCompatActivity implements View.OnClickList
                             GeneticProblem.getInstance().start(getApplicationContext());
 
                         } else if (StoredData.Algorithm == StoredData.MINIMAX) {
-                            Minimax.getInstance().start(getApplicationContext());
+                            MinimaxProblem.getInstance().start(getApplicationContext());
 
                         } else if (StoredData.Algorithm == StoredData.PSO) {
                             ParticleSwarmOptimizationProblem.getInstance().start(getApplicationContext());
