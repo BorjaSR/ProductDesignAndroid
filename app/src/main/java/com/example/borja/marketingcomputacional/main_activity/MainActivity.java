@@ -17,9 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax;
 import com.example.borja.marketingcomputacional.R;
-import com.example.borja.marketingcomputacional.area_input.fragments.InputRandom;
 import com.example.borja.marketingcomputacional.general.StoredData;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,9 +30,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
-//        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
 
         final ImageView first_circle = (ImageView) findViewById(R.id.first_circle);
         final ImageView second_circle = (ImageView) findViewById(R.id.second_circle);
@@ -183,10 +178,5 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         container_carga.setVisibility(View.INVISIBLE);
-    }
-
-    public static void cambiar_texto_carga(String text) {
-        container_carga.setVisibility(View.VISIBLE);
-        texto_carga.setText(text);
     }
 }

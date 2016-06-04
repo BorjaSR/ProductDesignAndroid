@@ -15,7 +15,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticProblem;
-import com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax;
 import com.example.borja.marketingcomputacional.MinimaxAlgorithm.MinimaxProblem;
 import com.example.borja.marketingcomputacional.ParticleSwarmOptimization.ParticleSwarmOptimizationProblem;
 import com.example.borja.marketingcomputacional.R;

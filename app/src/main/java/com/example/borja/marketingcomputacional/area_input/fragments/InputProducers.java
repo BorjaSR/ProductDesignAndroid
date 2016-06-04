@@ -16,12 +16,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticProblem;
+import com.example.borja.marketingcomputacional.MinimaxAlgorithm.MinimaxProblem;
 import com.example.borja.marketingcomputacional.ParticleSwarmOptimization.ParticleSwarmOptimizationProblem;
 import com.example.borja.marketingcomputacional.SimulatedAnnealing.SimulatedAnnealingProblem;
 import com.example.borja.marketingcomputacional.general.Attribute;
 import com.example.borja.marketingcomputacional.general.Producer;
 import com.example.borja.marketingcomputacional.general.Product;
-import com.example.borja.marketingcomputacional.MinimaxAlgorithm.Minimax;
 import com.example.borja.marketingcomputacional.R;
 import com.example.borja.marketingcomputacional.general.StoredData;
 
@@ -209,7 +209,7 @@ public class InputProducers extends AppCompatActivity {
                         GeneticProblem.getInstance().start(getApplicationContext());
 
                     } else if (StoredData.Algorithm == StoredData.MINIMAX) {
-                        Minimax.getInstance().start(getApplicationContext());
+                        MinimaxProblem.getInstance().start(getApplicationContext());
 
                     } else if (StoredData.Algorithm == StoredData.PSO) {
                         try {
