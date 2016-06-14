@@ -3,6 +3,7 @@ package com.example.borja.marketingcomputacional.MinimaxAlgorithm;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Borja on 04/06/2016.
@@ -21,10 +22,13 @@ public abstract class MinimaxAlgorithm {
 
     private ArrayList<ArrayList<Integer>> mFitnessAcumulated;
 
+    private int BestInitAcumulatedFitness;
+    private HashMap<Integer, Integer> BestAcumulatedFitness;
+
 
     public void playMinimaxAlgorithm() throws Exception {
         mFitnessAcumulated = new ArrayList<>();
-        for(int i = 0; i < mNPlayers; i++)
+        for (int i = 0; i < mNPlayers; i++)
             mFitnessAcumulated.add(new ArrayList<Integer>());
 
         for (int i = 0; i < mNTurns; i++) {
@@ -35,7 +39,6 @@ public abstract class MinimaxAlgorithm {
             }
         }
     }
-
 
 
     /************************
@@ -60,13 +63,17 @@ public abstract class MinimaxAlgorithm {
     }
 
 
-
     private StrAB alphaBetaInit(ArrayList<Object> listObjects, int playerIndex, int depth, int alpha, int beta) throws Exception {
 
         ArrayList<StrAB> abList = new ArrayList<>();
         StrAB ab = new StrAB();
         int acumulatedFitness;
         boolean repetedChild = false; // To prune repeated childs
+
+        BestInitAcumulatedFitness = 0;
+        BestAcumulatedFitness = new HashMap<>();
+        for (int i = 0; i < depth; i++)
+            BestAcumulatedFitness.put(i, 0);
 
         for (int dimension = 0; dimension < getDimens(); dimension++) {
             for (int SolutionSpaceIndex = 0; SolutionSpaceIndex < getSolutionsSpace(dimension); SolutionSpaceIndex++) {
@@ -85,19 +92,22 @@ public abstract class MinimaxAlgorithm {
 
                         acumulatedFitness = getFitness(childs.get(playerIndex), 0);
 
-                        ab.setAlphaBeta(alphaBeta(childs, acumulatedFitness, playerIndex, (playerIndex + 1) % 2, depth - 1, alpha, beta, false));
-                        ab.setDimension(dimension);
-                        ab.setSolution(SolutionSpaceIndex);
+                        if (acumulatedFitness > BestInitAcumulatedFitness) {
+                            BestInitAcumulatedFitness = acumulatedFitness;
 
-                        abList.add(ab);
-                        alpha = Math.max(alpha, ab.getAlphaBeta());
+                            ab.setAlphaBeta(alphaBeta(childs, acumulatedFitness, playerIndex, (playerIndex + 1) % 2, depth - 1, alpha, beta, false));
+                            ab.setDimension(dimension);
+                            ab.setSolution(SolutionSpaceIndex);
+
+                            abList.add(ab);
+                            alpha = Math.max(alpha, ab.getAlphaBeta());
+                        }
                     }
                 }
             }
         }
         return bestMovement(abList, alpha);
     }
-
 
 
     private int alphaBeta(ArrayList<Object> listObjects, int acumulatedFitness, int playerIndex, int prodIndex, int depth, int alpha, int beta, boolean maximizingPlayer) throws Exception {
@@ -129,19 +139,26 @@ public abstract class MinimaxAlgorithm {
 
                         fitness = getFitness(childs.get(playerIndex), 0);
 
-                        if (maximizingPlayer) {
-                            alpha = Math.max(alpha, alphaBeta(childs, acumulatedFitness + fitness, playerIndex, (prodIndex + 1) % 2, depth - 1, alpha, beta, false));
 
-                            if (beta < alpha) {
-                                exitFor = true;
-                                break;
-                            }
-                        } else {
-                            beta = Math.max(beta, alphaBeta(childs, acumulatedFitness + fitness, playerIndex, (prodIndex + 1) % 2, depth - 1, alpha, beta, true));
+                        int NEWacumulatedFitness = acumulatedFitness + fitness;
 
-                            if (beta < alpha) {
-                                exitFor = true;
-                                break;
+                        if (NEWacumulatedFitness > BestAcumulatedFitness.get(depth)) {
+                            BestAcumulatedFitness.put(depth, NEWacumulatedFitness);
+
+                            if (maximizingPlayer) {
+                                alpha = Math.max(alpha, alphaBeta(childs, acumulatedFitness + fitness, playerIndex, (prodIndex + 1) % 2, depth - 1, alpha, beta, false));
+
+                                if (beta < alpha) {
+                                    exitFor = true;
+                                    break;
+                                }
+                            } else {
+                                beta = Math.max(beta, alphaBeta(childs, acumulatedFitness + fitness, playerIndex, (prodIndex + 1) % 2, depth - 1, alpha, beta, true));
+
+                                if (beta < alpha) {
+                                    exitFor = true;
+                                    break;
+                                }
                             }
                         }
                     }
