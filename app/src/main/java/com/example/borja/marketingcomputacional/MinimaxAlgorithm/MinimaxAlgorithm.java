@@ -15,15 +15,15 @@ public abstract class MinimaxAlgorithm {
     private int mNTurns = 5; // Number of turns to play (tf)
     private int mNPlayers = 2; // Number of turns to play (tf)
 
-    private int MAX_DEPTH_0 = 3; //Maximun depth of the minimax //depth 8 in initial
+    private int MAX_DEPTH_0 = 8; //Maximun depth of the minimax //depth 8 in initial
     private int MAX_DEPTH_1 = 2; //Maximun depth of the minimax //depth 2 in initial
 
     private int MY_PLAYER = 0;
 
-    private ArrayList<ArrayList<Integer>> mFitnessAcumulated;
-
     private int BestInitAcumulatedFitness;
     private HashMap<Integer, Integer> BestAcumulatedFitness;
+
+    private ArrayList<ArrayList<Integer>> mFitnessAcumulated;
 
 
     public void playMinimaxAlgorithm() throws Exception {
@@ -101,6 +101,8 @@ public abstract class MinimaxAlgorithm {
 
                             abList.add(ab);
                             alpha = Math.max(alpha, ab.getAlphaBeta());
+                        } else {
+                            Log.e("Minimax", "Poda Init del poco prometedor");
                         }
                     }
                 }
@@ -139,7 +141,6 @@ public abstract class MinimaxAlgorithm {
 
                         fitness = getFitness(childs.get(playerIndex), 0);
 
-
                         int NEWacumulatedFitness = acumulatedFitness + fitness;
 
                         if (NEWacumulatedFitness > BestAcumulatedFitness.get(depth)) {
@@ -160,6 +161,8 @@ public abstract class MinimaxAlgorithm {
                                     break;
                                 }
                             }
+                        } else {
+                            Log.e("Minimax", "Poda del poco prometedor");
                         }
                     }
                 }
