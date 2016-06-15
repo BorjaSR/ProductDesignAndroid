@@ -26,10 +26,6 @@ public class SimulatedAnnealingProblem extends SimulatedAnnealingAlgorithm {
     static final int MY_PRODUCER = 0;  //The index of my producer
     static final int RESP_PER_GROUP = 20; // We divide the respondents of each
 
-    private final double Start_TEMP = 1000;
-    private double TEMPERATURE = Start_TEMP;
-    private double coolingRate = 0.003;
-
     private int CHANGE_ATTRIBUTE_PROB = 40;
 
     private static ArrayList<Attribute> TotalAttributes = new ArrayList<>();
@@ -204,7 +200,7 @@ public class SimulatedAnnealingProblem extends SimulatedAnnealingAlgorithm {
         ArrayList<Integer> initial = new ArrayList<>();
         for (int i = 0; i < Producers.get(MY_PRODUCER).getProducts().size(); i++) {
             if (StoredData.Fitness == StoredData.Customers)
-                initial.add(computeWSC(Producers.get(MY_PRODUCER).getProducts().get(i), MY_PRODUCER, i));
+                initial.add(computeWSC(Producers.get(MY_PRODUCER).getProducts().get(i), i));
             else
                 initial.add(computeBenefits(Producers.get(MY_PRODUCER).getProducts().get(i), MY_PRODUCER, i));
         }
@@ -222,7 +218,7 @@ public class SimulatedAnnealingProblem extends SimulatedAnnealingAlgorithm {
         ArrayList<Integer> result = new ArrayList<>();
         for (int i = 0; i < Producers.get(MY_PRODUCER).getProducts().size(); i++) {
             if (StoredData.Fitness == StoredData.Customers)
-                result.add(computeWSC(Producers.get(MY_PRODUCER).getProducts().get(i), MY_PRODUCER, i));
+                result.add(computeWSC(Producers.get(MY_PRODUCER).getProducts().get(i), i));
             else
                 result.add(computeBenefits(Producers.get(MY_PRODUCER).getProducts().get(i), MY_PRODUCER, i));
         }
@@ -268,7 +264,7 @@ public class SimulatedAnnealingProblem extends SimulatedAnnealingAlgorithm {
         Product p = (Product) origin;
 
         if (StoredData.Fitness == StoredData.Customers) {
-            return computeWSC(p, MY_PRODUCER, productIndex);
+            return computeWSC(p, productIndex);
         } else {
             return computeBenefits(p, MY_PRODUCER, productIndex);
         }
@@ -343,7 +339,7 @@ public class SimulatedAnnealingProblem extends SimulatedAnnealingAlgorithm {
     }
 
     private Integer computeBenefits(Product product, int myProducer, int productIndex) {
-        return computeWSC(product, myProducer, productIndex) * product.getPrice();
+        return computeWSC(product, productIndex) * product.getPrice();
     }
 
     /***
@@ -352,7 +348,7 @@ public class SimulatedAnnealingProblem extends SimulatedAnnealingAlgorithm {
      *
      * @throws Exception
      **/
-    private int computeWSC(Product product, int prodInd, int productIndex) {
+    private int computeWSC(Product product, int productIndex) {
         int wsc = 0;
         boolean isTheFavourite;
         int meScore, score, k, p, numTies;
@@ -528,7 +524,7 @@ public class SimulatedAnnealingProblem extends SimulatedAnnealingAlgorithm {
 
         for (int i = 0; i < Producers.size(); i++) {
             for (int j = 0; j < Producers.get(i).getProducts().size(); j++) {
-                wsc = computeWSC(Producers.get(i).getProducts().get(j), i, j);
+                wsc = computeWSC(Producers.get(i).getProducts().get(j), j);
                 wscSum += wsc;
             }
         }

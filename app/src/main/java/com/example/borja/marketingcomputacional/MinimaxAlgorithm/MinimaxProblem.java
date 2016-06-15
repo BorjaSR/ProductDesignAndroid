@@ -23,9 +23,6 @@ public class MinimaxProblem extends MinimaxAlgorithm {
 
     private int MY_PRODUCER = 0;
 
-    private int MAX_DEPTH_0 = 3; //Maximun depth of the minimax //depth 8 in initial
-    private int MAX_DEPTH_1 = 2; //Maximun depth of the minimax //depth 2 in initial
-
     private int NUM_EXEC = 1; //5
 
     // INPUT VARIABLES
