@@ -1,6 +1,10 @@
 package com.example.borja.marketingcomputacional.Problem;
 
+import android.content.Context;
+import android.content.Intent;
+
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.SubProfile;
+import com.example.borja.marketingcomputacional.area_menu.fragments.DashboardMenu;
 import com.example.borja.marketingcomputacional.general.Attribute;
 import com.example.borja.marketingcomputacional.general.CustomerProfile;
 import com.example.borja.marketingcomputacional.general.LinkedAttribute;
@@ -14,7 +18,7 @@ import java.util.HashMap;
 /**
  * Created by Borja on 14/06/2016.
  */
-public class Problem {
+public abstract class Problem {
 
 
     static final double KNOWN_ATTRIBUTES = 100;
@@ -47,6 +51,177 @@ public class Problem {
 
 
     private int CHANGE_ATTRIBUTE_PROB = 40;
+
+    /****************************************************************************************************
+     *                                             GENERAL                                              *
+     ****************************************************************************************************/
+
+
+
+    public void start(Context context) {
+
+        statisticsSA();
+
+        Intent dashboard_menu = new Intent(context, DashboardMenu.class);
+        dashboard_menu.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(dashboard_menu);
+    }
+
+    private void statisticsSA() {
+
+        ArrayList<Double> sum = new ArrayList<>();
+        ArrayList<Double> initSum = new ArrayList<>();
+        ArrayList<Integer> prices = new ArrayList<>();
+        int sumCust = 0;
+
+        for (int i = 0; i < StoredData.number_Products; i++) {
+            sum.add((double) 0);
+            initSum.add((double) 0);
+            prices.add(0);
+        }
+
+        Results = new ArrayList<>();
+        Initial_Results = new ArrayList<>();
+        Prices = new ArrayList<>();
+
+        generateInput();
+
+        for (int i = 0; i < NUM_EXECUTIONS; i++) {
+            if (i != 0) /*We reset myPP and create a new product as the first product*/ {
+                ArrayList<Product> products = new ArrayList<>();
+                for (int k = 0; k < StoredData.number_Products; k++)
+                    products.add(createNearProduct(Producers.get(MY_PRODUCER).getAvailableAttribute(), (int) (CustomerProfiles.size() * Math.random())));
+                Producers.get(MY_PRODUCER).setProducts(products);
+            }
+
+            solveProblem();
+
+            ArrayList<Double> auxSum = new ArrayList<>();
+            ArrayList<Double> auxinitSum = new ArrayList<>();
+            ArrayList<Integer> auxprice = new ArrayList<>();
+            for (int k = 0; k < StoredData.number_Products; k++) {
+                auxSum.add(sum.get(k) + Results.get(i).get(k));
+                auxinitSum.add(initSum.get(k) + Initial_Results.get(i).get(k));
+                auxprice.add(prices.get(k) + Prices.get(i).get(k));
+            }
+
+            sum = auxSum;
+            initSum = auxinitSum;
+            prices = auxprice;
+
+            sumCust += wscSum;
+        }
+
+        String meanTXT = "";
+        String initMeanTXT = "";
+        String stdDevTXT = "";
+        String initStdDevTXT = "";
+        String percCustTXT = "";
+        String initPercCustTXT = "";
+        String priceTXT = "";
+
+        StoredData.custMean = sumCust / NUM_EXECUTIONS;
+
+        for (int i = 0; i < StoredData.number_Products; i++) {
+
+            double mean = sum.get(i) / NUM_EXECUTIONS;
+            double initMean = initSum.get(i) / NUM_EXECUTIONS;
+            double variance = computeVariance(mean);
+            double initVariance = computeVariance(initMean);
+            double stdDev = Math.sqrt(variance);
+            double initStdDev = Math.sqrt(initVariance);
+            double percCust;
+            double initPercCust = -1;
+            if (StoredData.Fitness == StoredData.Customers) {
+                percCust = 100 * mean / StoredData.custMean;
+                initPercCust = 100 * initMean / StoredData.custMean;
+            } else {
+                percCust = 100 * mean / initMean;
+            }
+            double priceDoub = prices.get(i) / NUM_EXECUTIONS;
+
+            if (i == 0)
+                meanTXT += mean;
+            else
+                meanTXT += ", " + mean;
+
+            if (i == 0)
+                initMeanTXT += initMean;
+            else
+                initMeanTXT += ", " + initMean;
+
+            if (i == 0)
+                stdDevTXT += stdDev;
+            else
+                stdDevTXT += ", " + stdDev;
+
+            if (i == 0)
+                initStdDevTXT += initStdDev;
+            else
+                initStdDevTXT += ", " + initStdDev;
+
+            if (i == 0)
+                percCustTXT += percCust;
+            else
+                percCustTXT += ", " + percCust;
+
+            if (StoredData.Fitness == StoredData.Customers)
+                if (i == 0)
+                    initPercCustTXT += initPercCust;
+                else
+                    initPercCustTXT += ", " + initPercCust;
+
+            if (i == 0)
+                priceTXT += priceDoub;
+            else
+                priceTXT += ", " + priceDoub;
+        }
+
+        StoredData.mean = sum.get(0) / NUM_EXECUTIONS;
+        StoredData.initMean = initSum.get(0) / NUM_EXECUTIONS;
+        double variance = computeVariance(StoredData.mean);
+        double initVariance = computeVariance(StoredData.initMean);
+        StoredData.stdDev = Math.sqrt(variance);
+        StoredData.initStdDev = Math.sqrt(initVariance);
+        if (StoredData.Fitness == StoredData.Customers) {
+            StoredData.percCust = 100 * StoredData.mean / StoredData.custMean;
+            StoredData.initPercCust = 100 * StoredData.initMean / StoredData.custMean;
+        } else if (StoredData.Fitness == StoredData.Benefits) {
+            StoredData.percCust = (100 * StoredData.mean) / StoredData.initMean;
+        }
+
+        StoredData.My_price = prices.get(0) / NUM_EXECUTIONS;
+
+
+        StoredData.meanString = meanTXT;
+        StoredData.initMeanString = initMeanTXT;
+        StoredData.stdDevString = stdDevTXT;
+        StoredData.initStdDevString = initStdDevTXT;
+        StoredData.percCustString = percCustTXT;
+        StoredData.initPercCustString = initPercCustTXT;
+        StoredData.My_priceString = priceTXT;
+    }
+
+    protected abstract void solveProblem();
+
+    private void generateInput() {
+        TotalAttributes = StoredData.Atributos;
+        CustomerProfiles = StoredData.Profiles;
+        Producers = StoredData.Producers;
+    }
+
+    /*************************************** " AUXILIARY METHODS STATISTICSPD()" ***************************************/
+
+    /**
+     * Computing the variance
+     */
+    private double computeVariance(double mean) {//TODO me fijo solo en el primero
+        double sqrSum = 0;
+        for (int i = 0; i < NUM_EXECUTIONS; i++) {
+            sqrSum += Math.pow(Results.get(i).get(0) - mean, 2);
+        }
+        return (sqrSum / NUM_EXECUTIONS);
+    }
 
     /****************************************************************************************************
      * GENETIC ALGORITHM                                    *
