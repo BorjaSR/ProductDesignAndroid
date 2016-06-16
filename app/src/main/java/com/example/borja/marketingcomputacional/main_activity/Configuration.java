@@ -18,6 +18,7 @@ import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticProblem;
 import com.example.borja.marketingcomputacional.MinimaxAlgorithm.MinimaxProblem;
 import com.example.borja.marketingcomputacional.ParticleSwarmOptimization.ParticleSwarmOptimizationProblem;
 import com.example.borja.marketingcomputacional.R;
+import com.example.borja.marketingcomputacional.SimulatedAnnealing.SimulatedAnnealingAlgorithmNEW;
 import com.example.borja.marketingcomputacional.SimulatedAnnealing.SimulatedAnnealingProblem;
 import com.example.borja.marketingcomputacional.area_input.fragments.InputAttributes;
 import com.example.borja.marketingcomputacional.area_input.fragments.InputRandom;
@@ -130,7 +131,8 @@ public class Configuration extends AppCompatActivity implements View.OnClickList
                             ParticleSwarmOptimizationProblem.getInstance().start(getApplicationContext());
 
                         } else if (StoredData.Algorithm == StoredData.SA) {
-                            SimulatedAnnealingProblem.getInstance().start(getApplicationContext());
+                            SimulatedAnnealingAlgorithmNEW.getInstance().start(getApplicationContext());
+//                            SimulatedAnnealingProblem.getInstance().start(getApplicationContext());
                         }
 
                     } catch (Exception e) {

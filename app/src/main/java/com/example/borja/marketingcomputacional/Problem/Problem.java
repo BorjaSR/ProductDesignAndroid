@@ -58,7 +58,7 @@ public abstract class Problem {
 
 
 
-    public void start(Context context) {
+    public void start(Context context) throws Exception {
 
         statisticsSA();
 
@@ -67,7 +67,7 @@ public abstract class Problem {
         context.startActivity(dashboard_menu);
     }
 
-    private void statisticsSA() {
+    private void statisticsSA() throws Exception {
 
         ArrayList<Double> sum = new ArrayList<>();
         ArrayList<Double> initSum = new ArrayList<>();
@@ -94,7 +94,7 @@ public abstract class Problem {
                 Producers.get(MY_PRODUCER).setProducts(products);
             }
 
-            solveProblem();
+            startProblem();
 
             ArrayList<Double> auxSum = new ArrayList<>();
             ArrayList<Double> auxinitSum = new ArrayList<>();
@@ -202,7 +202,9 @@ public abstract class Problem {
         StoredData.My_priceString = priceTXT;
     }
 
-    protected abstract void solveProblem();
+    protected abstract void startProblem() throws Exception;
+
+    protected abstract Object solveProblem() throws Exception ;
 
     private void generateInput() {
         TotalAttributes = StoredData.Atributos;
@@ -348,7 +350,7 @@ public abstract class Problem {
      *
      * @throws Exception
      **/
-    private int computeWSC(Product product, int prodInd) throws Exception {
+    private int computeWSC(Product product, int prodInd) throws Exception { //, int prodInd
         int wsc = 0;
         boolean isTheFavourite;
         int meScore, score, k, p, numTies;
@@ -757,11 +759,14 @@ public abstract class Problem {
      * SIMUMLATED ANNEALING                                            *
      ****************************************************************************************************/
 
-    public int getFitness_SA(Object origin, int productIndex) throws Exception {
+    private int productIndex = 0;
+    public int getFitness_SA(Object origin) throws Exception {
+        Product p = (Product) origin;
+
         if (StoredData.Fitness == StoredData.Customers) {
-            return computeWSC_SA((Product) origin, productIndex);
+            return computeWSC_SA(p, productIndex);
         } else {
-            return computeBenefits_SA((Product) origin, MY_PRODUCER, productIndex);
+            return computeBenefits_SA(p, MY_PRODUCER, productIndex);
         }
     }
 
@@ -846,5 +851,67 @@ public abstract class Problem {
         }
 
         return new_product;
+    }
+
+    public void initializeSAProblem() throws Exception {
+
+        ArrayList<Integer> initial = new ArrayList<>();
+        for (int i = 0; i < Producers.get(MY_PRODUCER).getProducts().size(); i++) {
+            if (StoredData.Fitness == StoredData.Customers)
+                initial.add(computeWSC_SA(Producers.get(MY_PRODUCER).getProducts().get(i), i));
+            else
+                initial.add(computeBenefits_SA(Producers.get(MY_PRODUCER).getProducts().get(i), MY_PRODUCER, i));
+        }
+        Initial_Results.add(initial);
+
+
+        //Apply the SA Algorithm for each Product of our Producer
+        for (int i = 0; i < Producers.get(MY_PRODUCER).getProducts().size(); i++) {
+            productIndex = i;
+            Product better_product = (Product) solveProblem();
+            Producers.get(MY_PRODUCER).getProducts().set(i, better_product);
+        }
+
+
+        ArrayList<Integer> result = new ArrayList<>();
+        for (int i = 0; i < Producers.get(MY_PRODUCER).getProducts().size(); i++) {
+            if (StoredData.Fitness == StoredData.Customers)
+                result.add(computeWSC_SA(Producers.get(MY_PRODUCER).getProducts().get(i), i));
+            else
+                result.add(computeBenefits_SA(Producers.get(MY_PRODUCER).getProducts().get(i), MY_PRODUCER, i));
+        }
+        Results.add(result);
+        showWSC();
+
+        //Set prices
+        ArrayList<Integer> prices = new ArrayList<>();
+        for (int i = 0; i < Producers.get(MY_PRODUCER).getProducts().size(); i++) {
+            int price_MyProduct = calculatePrice(Producers.get(MY_PRODUCER).getProducts().get(i));
+            Producers.get(MY_PRODUCER).getProducts().get(i).setPrice(price_MyProduct);
+            prices.add(price_MyProduct);
+        }
+        Prices.add(prices);
+    }
+
+    /**
+     * Showing the wsc of the rest of products
+     *
+     * @throws Exception
+     */
+
+    private void showWSC() throws Exception {
+        int wsc;
+        wscSum = 0;
+
+        for (int i = 0; i < Producers.size(); i++) {
+            for (int j = 0; j < Producers.get(i).getProducts().size(); j++) {
+                wsc = computeWSC_SA(Producers.get(i).getProducts().get(j), j);
+                wscSum += wsc;
+            }
+        }
+    }
+
+    public Object getBestObjFound() throws Exception {
+        return Producers.get(MY_PRODUCER).getProducts().get(productIndex).clone();
     }
 }
