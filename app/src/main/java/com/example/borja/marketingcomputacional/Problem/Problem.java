@@ -56,9 +56,8 @@ public abstract class Problem {
     private int CHANGE_ATTRIBUTE_PROB = 40;
 
     /****************************************************************************************************
-     *                                             GENERAL                                              *
+     * GENERAL                                              *
      ****************************************************************************************************/
-
 
 
     public void start(Context context) throws Exception {
@@ -113,7 +112,7 @@ public abstract class Problem {
             prices = auxprice;
 
             sumCust += wscSum;
-            if(StoredData.Algorithm == StoredData.MINIMAX)
+            if (StoredData.Algorithm == StoredData.MINIMAX)
                 sumCust += countCustomers() * mNTurns * 2;
         }
 
@@ -209,12 +208,20 @@ public abstract class Problem {
 
     protected abstract void startProblem() throws Exception;
 
-    protected abstract Object solveProblem() throws Exception ;
+    protected abstract Object solveProblem() throws Exception;
 
     private void generateInput() {
         TotalAttributes = StoredData.Atributos;
         CustomerProfiles = StoredData.Profiles;
-        Producers = StoredData.Producers;
+
+        if (StoredData.Algorithm == StoredData.MINIMAX) {
+            ArrayList<Producer> producerMinimax = new ArrayList<>();
+            producerMinimax.add(StoredData.Producers.get(0));
+            producerMinimax.add(StoredData.Producers.get(1));
+
+            Producers = producerMinimax;
+        } else
+            Producers = StoredData.Producers;
     }
 
     /*************************************** " AUXILIARY METHODS STATISTICSPD()" ***************************************/
@@ -364,6 +371,9 @@ public abstract class Problem {
             for (int j = 0; j < CustomerProfiles.get(i).getSubProfiles().size(); j++) {
                 isTheFavourite = true;
                 numTies = 1;
+//                if (StoredData.Algorithm == StoredData.MINIMAX)
+//                    meScore = scoreProductMM(CustomerProfiles.get(i), product);
+//                else
                 meScore = scoreProduct(CustomerProfiles.get(i).getSubProfiles().get(j), product);
 
                 if (StoredData.isAttributesLinked)
@@ -375,6 +385,9 @@ public abstract class Problem {
                     while (isTheFavourite && p < Producers.get(k).getProducts().size()) {
                         if (Producers.get(k).getProducts().get(p) != product) {
 
+//                            if (StoredData.Algorithm == StoredData.MINIMAX)
+//                                score = scoreProductMM(CustomerProfiles.get(i), Producers.get(k).getProduct());
+//                            else
                             score = scoreProduct(CustomerProfiles.get(i).getSubProfiles().get(j), Producers.get(k).getProducts().get(p));
 
                             if (StoredData.isAttributesLinked)
@@ -415,6 +428,18 @@ public abstract class Problem {
         return modifyScore;
     }
 
+
+    /**
+     * Computing the score of a product given the customer profile index
+     * custProfInd and the product
+     */
+    private int scoreProductMM(CustomerProfile profile, Product product) throws Exception {
+        int score = 0;
+        for (int i = 0; i < TotalAttributes.size(); i++)
+            score += profile.getScoreAttributes().get(i).getScoreValues().get(product.getAttributeValue().get(TotalAttributes.get(i)));
+
+        return score;
+    }
 
     /**
      * Computing the score of a product given the customer profile index
@@ -746,15 +771,15 @@ public abstract class Problem {
         Population = new ArrayList<>();
         ArrayList<Object> finalPupolation = (ArrayList<Object>) solveProblem();
 
-        for(int i = 0; i < finalPupolation.size(); i++) {
+        for (int i = 0; i < finalPupolation.size(); i++) {
             Population.add((Product) finalPupolation.get(i));
             Fitness.set(i, getFitness(Population.get(i)));
         }
 
         // STEP 2 - UPDATE GENERAL BEST
-        for(int j = 0; j < Fitness.size(); j++){
+        for (int j = 0; j < Fitness.size(); j++) {
             int worstIndex = isBetweenBest(Fitness.get(j));
-            if(worstIndex != -1){
+            if (worstIndex != -1) {
                 BestWSC.set(worstIndex, Fitness.get(j));
                 Producers.get(MY_PRODUCER).getProducts().set(worstIndex, Population.get(j));
             }
@@ -848,6 +873,7 @@ public abstract class Problem {
      ****************************************************************************************************/
 
     private int productIndex = 0;
+
     public int getFitness_SA(Object origin) throws Exception {
         Product p = (Product) origin;
 
