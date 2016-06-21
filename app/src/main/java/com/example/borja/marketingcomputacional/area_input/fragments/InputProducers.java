@@ -17,8 +17,9 @@ import android.widget.Toast;
 
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticProblem;
 import com.example.borja.marketingcomputacional.MinimaxAlgorithm.MinimaxProblem;
+import com.example.borja.marketingcomputacional.ParticleSwarmOptimization.ParticleSwarmOptimizationNEW;
 import com.example.borja.marketingcomputacional.ParticleSwarmOptimization.ParticleSwarmOptimizationProblem;
-import com.example.borja.marketingcomputacional.SimulatedAnnealing.SimulatedAnnealingProblem;
+import com.example.borja.marketingcomputacional.SimulatedAnnealing.SimulatedAnnealingAlgorithm;
 import com.example.borja.marketingcomputacional.general.Attribute;
 import com.example.borja.marketingcomputacional.general.Producer;
 import com.example.borja.marketingcomputacional.general.Product;
@@ -213,13 +214,13 @@ public class InputProducers extends AppCompatActivity {
 
                     } else if (StoredData.Algorithm == StoredData.PSO) {
                         try {
-                            ParticleSwarmOptimizationProblem.getInstance().start(getApplicationContext());
+                            ParticleSwarmOptimizationNEW.getInstance().start(getApplicationContext());
                         } catch (Exception e) {
                             e.printStackTrace();
-                            ParticleSwarmOptimizationProblem.getInstance().start(getApplicationContext());
+                            ParticleSwarmOptimizationNEW.getInstance().start(getApplicationContext());
                         }
                     } else if (StoredData.Algorithm == StoredData.SA) {
-                        SimulatedAnnealingProblem.getInstance().start(getApplicationContext());
+                        SimulatedAnnealingAlgorithm.getInstance().start(getApplicationContext());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

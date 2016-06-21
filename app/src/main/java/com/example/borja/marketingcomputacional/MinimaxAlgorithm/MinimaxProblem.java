@@ -115,11 +115,6 @@ public class MinimaxProblem extends MinimaxAlgorithm {
         StoredData.My_priceString = price / NUM_EXEC + "";
     }
 
-    public void playPDG() throws Exception {
-        generateInput();
-        playGame();
-    }
-
     /*******************
      * INPUT METHODS
      ************************/

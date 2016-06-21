@@ -15,11 +15,12 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticProblem;
+import com.example.borja.marketingcomputacional.MinimaxAlgorithm.MinimaxAlgorithmNEW;
 import com.example.borja.marketingcomputacional.MinimaxAlgorithm.MinimaxProblem;
+import com.example.borja.marketingcomputacional.ParticleSwarmOptimization.ParticleSwarmOptimizationNEW;
 import com.example.borja.marketingcomputacional.ParticleSwarmOptimization.ParticleSwarmOptimizationProblem;
 import com.example.borja.marketingcomputacional.R;
-import com.example.borja.marketingcomputacional.SimulatedAnnealing.SimulatedAnnealingAlgorithmNEW;
-import com.example.borja.marketingcomputacional.SimulatedAnnealing.SimulatedAnnealingProblem;
+import com.example.borja.marketingcomputacional.SimulatedAnnealing.SimulatedAnnealingAlgorithm;
 import com.example.borja.marketingcomputacional.area_input.fragments.InputAttributes;
 import com.example.borja.marketingcomputacional.area_input.fragments.InputRandom;
 import com.example.borja.marketingcomputacional.general.StoredData;
@@ -125,13 +126,13 @@ public class Configuration extends AppCompatActivity implements View.OnClickList
                             GeneticProblem.getInstance().start(getApplicationContext());
 
                         } else if (StoredData.Algorithm == StoredData.MINIMAX) {
-                            MinimaxProblem.getInstance().start(getApplicationContext());
+                            MinimaxAlgorithmNEW.getInstance().start(getApplicationContext());
 
                         } else if (StoredData.Algorithm == StoredData.PSO) {
-                            ParticleSwarmOptimizationProblem.getInstance().start(getApplicationContext());
+                            ParticleSwarmOptimizationNEW.getInstance().start(getApplicationContext());
 
                         } else if (StoredData.Algorithm == StoredData.SA) {
-                            SimulatedAnnealingAlgorithmNEW.getInstance().start(getApplicationContext());
+                            SimulatedAnnealingAlgorithm.getInstance().start(getApplicationContext());
 //                            SimulatedAnnealingProblem.getInstance().start(getApplicationContext());
                         }
 

@@ -30,9 +30,12 @@ public abstract class Problem {
 											 * RESP_PER_GROUP respondents*/
 
     static final int NUM_EXECUTIONS = 1; /* number of executions */
+    private static int EXECUTION = 0;
 
     static final int MY_PRODUCER = 0;  //The index of my producer
 
+
+    private int mNTurns = 5; // Number of turns to play (tf)
 
     private static ArrayList<CustomerProfile> CustomerProfiles = new ArrayList<>();
     private static ArrayList<Attribute> TotalAttributes = new ArrayList<>();
@@ -86,13 +89,13 @@ public abstract class Problem {
 
         generateInput();
 
-        for (int i = 0; i < NUM_EXECUTIONS; i++) {
-            if (i != 0) /*We reset myPP and create a new product as the first product*/ {
-                ArrayList<Product> products = new ArrayList<>();
-                for (int k = 0; k < StoredData.number_Products; k++)
-                    products.add(createNearProduct(Producers.get(MY_PRODUCER).getAvailableAttribute(), (int) (CustomerProfiles.size() * Math.random())));
-                Producers.get(MY_PRODUCER).setProducts(products);
-            }
+        for (EXECUTION = 0; EXECUTION < NUM_EXECUTIONS; EXECUTION++) {
+//            if (EXECUTION != 0) { /*We reset myPP and create a new product as the first product*/
+//                ArrayList<Product> products = new ArrayList<>();
+//                for (int k = 0; k < StoredData.number_Products; k++)
+//                    products.add(createNearProduct(Producers.get(MY_PRODUCER).getAvailableAttribute(), (int) (CustomerProfiles.size() * Math.random())));
+//                Producers.get(MY_PRODUCER).setProducts(products);
+//            }
 
             startProblem();
 
@@ -100,9 +103,9 @@ public abstract class Problem {
             ArrayList<Double> auxinitSum = new ArrayList<>();
             ArrayList<Integer> auxprice = new ArrayList<>();
             for (int k = 0; k < StoredData.number_Products; k++) {
-                auxSum.add(sum.get(k) + Results.get(i).get(k));
-                auxinitSum.add(initSum.get(k) + Initial_Results.get(i).get(k));
-                auxprice.add(prices.get(k) + Prices.get(i).get(k));
+                auxSum.add(sum.get(k) + Results.get(EXECUTION).get(k));
+                auxinitSum.add(initSum.get(k) + Initial_Results.get(EXECUTION).get(k));
+                auxprice.add(prices.get(k) + Prices.get(EXECUTION).get(k));
             }
 
             sum = auxSum;
@@ -110,6 +113,8 @@ public abstract class Problem {
             prices = auxprice;
 
             sumCust += wscSum;
+            if(StoredData.Algorithm == StoredData.MINIMAX)
+                sumCust += countCustomers() * mNTurns * 2;
         }
 
         String meanTXT = "";
@@ -645,12 +650,36 @@ public abstract class Problem {
      * MINIMAX                                              *
      ****************************************************************************************************/
 
+    public void initializeMinimax() throws Exception {
+
+        ArrayList<Integer> aux = new ArrayList<>();
+        if (StoredData.Fitness == StoredData.Benefits)
+            aux.add(computeBenefits(Producers.get(MY_PRODUCER).getProduct(), MY_PRODUCER));
+        else
+            aux.add(computeWSC(Producers.get(MY_PRODUCER).getProduct(), MY_PRODUCER));
+        Initial_Results.add(aux);
+
+
+        solveProblem();
+
+        aux = new ArrayList<>();
+        if (StoredData.Fitness == StoredData.Benefits)
+            aux.add(Producers.get(MY_PRODUCER).getNumber_CustomerGathered() * calculatePrice(Producers.get(MY_PRODUCER).getProduct()));
+        else
+            aux.add(Producers.get(MY_PRODUCER).getNumber_CustomerGathered());
+        Results.add(aux);
+
+        aux = new ArrayList<>();
+        aux.add(calculatePrice(Producers.get(MY_PRODUCER).getProduct()));
+        Prices.add(aux);
+    }
+
     protected void setFitnessAcumulated(int i, ArrayList<Integer> customersAcumulated) {
         Producers.get(i).setCustomersGathered(customersAcumulated);
     }
 
     public Object getObject(int playerIndex) {
-        return Producers.get(playerIndex).getProduct();
+        return Producers.get(playerIndex).getProducts().get(0);
     }
 
     public Integer getFitness(Object object, int index) throws Exception {
@@ -672,7 +701,7 @@ public abstract class Problem {
     }
 
     protected int getSolution(int playerIndex, int dimension) {
-        return Producers.get(playerIndex).getProduct().getAttributeValue().get(TotalAttributes.get(dimension));
+        return Producers.get(playerIndex).getProducts().get(0).getAttributeValue().get(TotalAttributes.get(dimension));
     }
 
     protected boolean isPosibleToChange(int playerIndex, int dimension, int attrVal) {
@@ -684,7 +713,15 @@ public abstract class Problem {
     }
 
     protected void setSolution(int playerIndex, int dimension, int solution) {
-        Producers.get(playerIndex).getProduct().getAttributeValue().put(TotalAttributes.get(dimension), solution);
+        Producers.get(playerIndex).getProducts().get(0).getAttributeValue().put(TotalAttributes.get(dimension), solution);
+    }
+
+    public int countCustomers() {
+        int total = 0;
+        for (int i = 0; i < CustomerProfiles.size(); i++)
+            total += CustomerProfiles.get(i).getNumberCustomers();
+
+        return total;
     }
 
 
@@ -695,6 +732,57 @@ public abstract class Problem {
 
     protected int getDimensions() {
         return TotalAttributes.size();
+    }
+
+    public void initializePSOproblem() throws Exception {
+
+        if (EXECUTION != 0) { /*We reset myPP and create a new product as the first product*/
+            ArrayList<Product> products = new ArrayList<>();
+            for (int k = 0; k < StoredData.number_Products; k++)
+                products.add(createNearProduct(Producers.get(MY_PRODUCER).getAvailableAttribute(), (int) (CustomerProfiles.size() * Math.random())));
+            Producers.get(MY_PRODUCER).setProducts(products);
+        }
+
+        Population = new ArrayList<>();
+        ArrayList<Object> finalPupolation = (ArrayList<Object>) solveProblem();
+
+        for(int i = 0; i < finalPupolation.size(); i++) {
+            Population.add((Product) finalPupolation.get(i));
+            Fitness.set(i, getFitness(Population.get(i)));
+        }
+
+        // STEP 2 - UPDATE GENERAL BEST
+        for(int j = 0; j < Fitness.size(); j++){
+            int worstIndex = isBetweenBest(Fitness.get(j));
+            if(worstIndex != -1){
+                BestWSC.set(worstIndex, Fitness.get(j));
+                Producers.get(MY_PRODUCER).getProducts().set(worstIndex, Population.get(j));
+            }
+        }
+
+        Results.add(BestWSC);
+        showWSC();
+
+        ArrayList<Integer> prices = new ArrayList<>();
+        for (int i = 0; i < Producers.get(MY_PRODUCER).getProducts().size(); i++) {
+            int price_MyProduct = calculatePrice(Producers.get(MY_PRODUCER).getProducts().get(i));
+            Producers.get(MY_PRODUCER).getProducts().get(i).setPrice(price_MyProduct);
+            prices.add(price_MyProduct);
+        }
+        Prices.add(prices);
+
+    }
+
+    private void showWSC() throws Exception {
+        int wsc;
+        wscSum = 0;
+
+        for (int i = 0; i < Producers.size(); i++) {
+            for (int j = 0; j < Producers.get(i).getProducts().size(); j++) {
+                wsc = computeWSC(Producers.get(i).getProducts().get(j), i);
+                wscSum += wsc;
+            }
+        }
     }
 
     public ArrayList<Object> createInitSwarm() throws Exception {
@@ -855,6 +943,13 @@ public abstract class Problem {
 
     public void initializeSAProblem() throws Exception {
 
+        if (EXECUTION != 0) { /*We reset myPP and create a new product as the first product*/
+            ArrayList<Product> products = new ArrayList<>();
+            for (int k = 0; k < StoredData.number_Products; k++)
+                products.add(createNearProduct(Producers.get(MY_PRODUCER).getAvailableAttribute(), (int) (CustomerProfiles.size() * Math.random())));
+            Producers.get(MY_PRODUCER).setProducts(products);
+        }
+
         ArrayList<Integer> initial = new ArrayList<>();
         for (int i = 0; i < Producers.get(MY_PRODUCER).getProducts().size(); i++) {
             if (StoredData.Fitness == StoredData.Customers)
@@ -881,7 +976,7 @@ public abstract class Problem {
                 result.add(computeBenefits_SA(Producers.get(MY_PRODUCER).getProducts().get(i), MY_PRODUCER, i));
         }
         Results.add(result);
-        showWSC();
+        showWSC_SA();
 
         //Set prices
         ArrayList<Integer> prices = new ArrayList<>();
@@ -899,7 +994,7 @@ public abstract class Problem {
      * @throws Exception
      */
 
-    private void showWSC() throws Exception {
+    private void showWSC_SA() throws Exception {
         int wsc;
         wscSum = 0;
 

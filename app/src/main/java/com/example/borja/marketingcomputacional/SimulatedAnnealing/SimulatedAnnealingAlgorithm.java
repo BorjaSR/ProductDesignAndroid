@@ -2,19 +2,48 @@ package com.example.borja.marketingcomputacional.SimulatedAnnealing;
 
 import android.util.Log;
 
+import com.example.borja.marketingcomputacional.Problem.Problem;
+
 /**
  * Created by Borja on 27/05/2016.
  */
-public abstract class SimulatedAnnealingAlgorithm {
+public class SimulatedAnnealingAlgorithm extends Problem{
+
+    private static SimulatedAnnealingAlgorithm SAInstance = null;
 
     private final double Start_TEMP = 1000;
     private double TEMPERATURE = Start_TEMP;
     private double coolingRate = 0.006;
 
-    public Object solve_SA(Object BestObjFound){
 
-        Object bestObject = BestObjFound;
-        Object currency_object = BestObjFound;
+    public static SimulatedAnnealingAlgorithm getInstance() {
+
+        if (SAInstance == null)
+            SAInstance = new SimulatedAnnealingAlgorithm();
+
+        return SAInstance;
+    }
+
+    private double acceptanceProbability(int OLD_fitness, int NEW_fitness) {
+        double ret;
+        if (NEW_fitness > OLD_fitness)
+            ret = 1;
+        else
+            ret = Math.exp((NEW_fitness - OLD_fitness) / TEMPERATURE);
+
+        return ret;
+    }
+
+
+    @Override
+    protected void startProblem() throws Exception {
+        initializeSAProblem();
+    }
+
+    @Override
+    protected Object solveProblem() throws Exception {
+        Object bestObject = getBestObjFound();
+        Object currency_object = getBestObjFound();
 
         TEMPERATURE = Start_TEMP;
         while (TEMPERATURE > 1) {
@@ -39,18 +68,4 @@ public abstract class SimulatedAnnealingAlgorithm {
         }
         return bestObject;
     }
-
-    private double acceptanceProbability(int OLD_fitness, int NEW_fitness) {
-        double ret;
-        if (NEW_fitness > OLD_fitness)
-            ret = 1;
-        else
-            ret = Math.exp((NEW_fitness - OLD_fitness) / TEMPERATURE);
-
-        return ret;
-    }
-
-    abstract public Object changeObject(Object new_obj);
-
-    abstract public int getFitness(Object origin);
 }
