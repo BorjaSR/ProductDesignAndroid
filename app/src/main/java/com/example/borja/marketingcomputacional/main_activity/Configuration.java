@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticAlgorithmNEW;
 import com.example.borja.marketingcomputacional.GeneticAlgorithm.GeneticProblem;
 import com.example.borja.marketingcomputacional.MinimaxAlgorithm.MinimaxAlgorithmNEW;
 import com.example.borja.marketingcomputacional.MinimaxAlgorithm.MinimaxProblem;
@@ -123,7 +124,7 @@ public class Configuration extends AppCompatActivity implements View.OnClickList
                         input.generate();
 
                         if (StoredData.Algorithm == StoredData.GENETIC) {
-                            GeneticProblem.getInstance().start(getApplicationContext());
+                            GeneticAlgorithmNEW.getInstance().start(getApplicationContext());
 
                         } else if (StoredData.Algorithm == StoredData.MINIMAX) {
                             MinimaxAlgorithmNEW.getInstance().start(getApplicationContext());
@@ -133,7 +134,6 @@ public class Configuration extends AppCompatActivity implements View.OnClickList
 
                         } else if (StoredData.Algorithm == StoredData.SA) {
                             SimulatedAnnealingAlgorithm.getInstance().start(getApplicationContext());
-//                            SimulatedAnnealingProblem.getInstance().start(getApplicationContext());
                         }
 
                     } catch (Exception e) {

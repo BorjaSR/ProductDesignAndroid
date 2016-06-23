@@ -241,6 +241,32 @@ public abstract class Problem {
      * GENETIC ALGORITHM                                    *
      ****************************************************************************************************/
 
+    /**
+     * Solving the PD problem by using a GA
+     */
+    protected void solvePD_GA() throws Exception {
+
+        ArrayList<Object> BestResults = (ArrayList<Object>) solveProblem();
+
+        for(int i = 0; i < BestResults.size(); i++) {
+            BestWSC.set(i, getFitness(BestResults.get(i)));
+            Producers.get(MY_PRODUCER).getProducts().set(i, (Product) BestResults.get(i));
+        }
+
+        Results.add(BestWSC);
+
+        showWSC();
+
+        ArrayList<Integer> prices = new ArrayList<>();
+        for (int i = 0; i < Producers.get(MY_PRODUCER).getProducts().size(); i++) {
+            int price_MyProduct = calculatePrice(Producers.get(MY_PRODUCER).getProducts().get(i));
+            Producers.get(MY_PRODUCER).getProducts().get(i).setPrice(price_MyProduct);
+            prices.add(price_MyProduct);
+        }
+        Prices.add(prices);
+    }
+
+
     protected Object breed(Object father, Object mother) {
         Product son = new Product();
         /*Random value in range [0,100)*/

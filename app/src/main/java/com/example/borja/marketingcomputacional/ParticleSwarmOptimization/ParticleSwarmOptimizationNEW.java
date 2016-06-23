@@ -56,7 +56,7 @@ public class ParticleSwarmOptimizationNEW extends Problem {
         Best = null;
         BestFitness = 0;
 
-        SWARM = createInitSwarm();
+        SWARM = createInitPopulation();
 
         for (int i = 0; i < SWARM.size(); i++) {
             ArrayList<Double> vel = new ArrayList<>();
